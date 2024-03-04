@@ -1,7 +1,11 @@
 ---
-description: Machine-payable transactions on Stacks.
+description: Welcome to the working group!
 ---
 
-# 🤖💳🤖 Stacks M2M
+# Bitcoin x AI
 
-Machine-payable transactions on Stacks.
+## Resources
+
+* [Main Website](https://aibtc.dev)
+* [GitHub Organization](https://github.com/aibtcdev)
+* [RSVP Thursdays](https://evt.to/emamdeggw)

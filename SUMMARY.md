@@ -1,3 +1,3 @@
 # Table of contents
 
-* [💳 Stacks M2M](README.md)
+* [Bitcoin x AI](README.md)
