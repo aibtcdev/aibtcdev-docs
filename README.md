@@ -1,5 +1,5 @@
 ---
-description: Welcome to the Bitcoin x AI working group!
+description: Welcome to the AIBTCdev working group!
 ---
 
 # Introduction
@@ -27,19 +27,22 @@ We also use the [Stacks.js SDK](https://docs.hiro.so/stacks.js) for interacting 
 
 ## Resources
 
-* [Main Website](https://aibtc.dev)
-* [GitHub Discussions](https://github.com/orgs/stacks-network/discussions/categories/bitcoin-x-ai)
-* [RSVP Thursdays](https://evt.to/emamdeggw)
+* [Main Website: https://aibtc.dev](https://aibtc.dev)
+* [RSVP Thursdays at 9am PST](https://evt.to/emamdeggw)
+* [Meeting Minutes, Recordings, and Presentations](https://github.com/aibtcdev/communication)
+* [Stacks Working Group GitHub Discussions](https://github.com/orgs/stacks-network/discussions/categories/bitcoin-x-ai)
 
 ## Repositories
 
 [Main GitHub Organization: aibtcdev](https://github.com/aibtcdev)
 
-| Name                                                           | Description                                                                          |
-| -------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| [agent-tools-ts](https://github.com/aibtcdev/agent-tools-ts)   | TS scripts for interacting with the Stacks blockchain, powered by Bun and Stacks.js. |
-| [ai-agent-crew](https://github.com/aibtcdev/ai-agent-crew)     | Langchain + CrewAI powered AI agents with Bitcoin wallets.                           |
-| [gated-402-api](https://github.com/aibtcdev/gated-402-api)     | Example API implementation with HTTP 402 responses for unpaid resources.             |
-| [protocol-docs](https://github.com/aibtcdev/protocol-docs)     | Documentation for using CrewAI AI agents with a Bitcoin wallet.                      |
-| [landing-page](https://github.com/aibtcdev/landing-page)       | Main landing page for https://aibtc.dev                                              |
-| [smart-contracts](https://github.com/aibtcdev/smart-contracts) | Stacks smart contracts, test suite, and deployment plans.                            |
+| Name                                                           | Description                                                                                            |
+| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| [agent-tools-ts](https://github.com/aibtcdev/agent-tools-ts)   | TS scripts for interacting with the Stacks blockchain, powered by Bun and Stacks.js.                   |
+| [ai-agent-crew](https://github.com/aibtcdev/ai-agent-crew)     | [CrewAI powered](https://crewai.com) AI agents with Bitcoin wallets.                                   |
+| [communication](https://github.com/aibtcdev/communication)     | Meeting minutes, presentations, and communications resources.                                          |
+| [gated-402-api](https://github.com/aibtcdev/gated-402-api)     | Example API implementation with HTTP 402 responses for unpaid resources.                               |
+| [protocol-docs](https://github.com/aibtcdev/protocol-docs)     | Documentation for using CrewAI AI agents with a Bitcoin wallet [(this page!)](https://docs.aibtc.dev). |
+| [landing-page](https://github.com/aibtcdev/landing-page)       | Main landing page for [https://aibtc.dev](https://aibtc.dev).                                          |
+| [smart-contracts](https://github.com/aibtcdev/smart-contracts) | Stacks smart contracts and test suite.                                                                 |
+| [training-data](https://github.com/aibtcdev/training-data)     | A curated collection of raw data for training language models.                                         |
