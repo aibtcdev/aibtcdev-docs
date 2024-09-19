@@ -1,5 +1,5 @@
 ---
-description: Welcome to the AIBTCdev working group!
+description: Welcome to the AIBTC working group!
 ---
 
 # Introduction
@@ -10,7 +10,7 @@ We are developing primitives for integrating L2 Bitcoin into resources and tools
 
 ### CrewAI Agent Framework
 
-We use the [CrewAI Agent Framework](https://www.crewai.io/) which enables the following key concepts:
+We use the [CrewAI Agent Framework](https://crewai.com) which enables the following key concepts:
 
 * **agents:** individual AI agents with a role, backstory, and tools
 * **tools:** functions available to the agent while completing a task
@@ -27,10 +27,10 @@ We also use the [Stacks.js SDK](https://docs.hiro.so/stacks.js) for interacting 
 
 ## Resources
 
-* [Main Website: https://aibtc.dev](https://aibtc.dev)
-* [RSVP Thursdays at 9am PST](https://evt.to/emamdeggw)
+* [Main AIBTC Website: https://aibtc.dev](https://aibtc.dev)
+* [RSVP Thursdays at 9am PST](https://evt.to/emamdeggw) - anyone is welcome!
 * [Meeting Minutes, Recordings, and Presentations](https://github.com/aibtcdev/communication)
-* [Stacks Working Group GitHub Discussions](https://github.com/orgs/stacks-network/discussions/categories/bitcoin-x-ai)
+* AIBTC [Community Discord](https://discord.gg/Z59Z3FNbEX) and [X account](https://x.com/aibtcdev)
 
 ## Repositories
 
@@ -45,4 +45,4 @@ We also use the [Stacks.js SDK](https://docs.hiro.so/stacks.js) for interacting 
 | [protocol-docs](https://github.com/aibtcdev/protocol-docs)     | Documentation for using CrewAI AI agents with a Bitcoin wallet [(this page!)](https://docs.aibtc.dev). |
 | [landing-page](https://github.com/aibtcdev/landing-page)       | Main landing page for [https://aibtc.dev](https://aibtc.dev).                                          |
 | [smart-contracts](https://github.com/aibtcdev/smart-contracts) | Stacks smart contracts and test suite.                                                                 |
-| [training-data](https://github.com/aibtcdev/training-data)     | A curated collection of raw data for training language models.                                         |
+| [training-data](https://github.com/aibtcdev/training-data)     | A curated collection of raw data for training.                                                         |
