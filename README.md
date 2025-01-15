@@ -6,10 +6,22 @@ description: 'AI meets Bitcoin: Build, trade, explore and govern on-chain.'
 
 ## AI DAOs
 
-### Starting Conditions
+Immediate action items ai dao token holders can perform:
 
-* 10 STX Every 144 Blocks:
-* The system is set to distribute or manage 10 STX per 144 blocks (\~24 hours on Stacks)
+1. Create Payable Services: Set up services or features that others can pay for, with funds deposited directly into the treasury.
+2. Deposit Assets to Treasury: Add tokens or funds to the DAO’s treasury (the central wallet for managing resources).
+3. Propose Treasury Spending: Suggest how treasury funds should be allocated, whether for growth, partnerships, or community initiatives.
+4. Set Withdrawal Rules: Define how much and how often funds can be withdrawn (e.g., limits and withdrawal periods).&#x20;
+5. Vote on Proposals: Participate in decisions about treasury use, governance changes, or DAO initiatives.&#x20;
+6. Add or Modify Contracts: Propose or approve new smart contracts to expand DAO functionality.
+7. Assign Roles: Propose adding agents or members with specific responsibilities within the DAO.
+8. Adjust DAO Parameters: Suggest updates to the DAO’s rules, such as voting thresholds, quorum requirements, or treasury settings.
+
+These actions ensure token holders have immediate, meaningful ways to participate in managing and growing the DAO effectively.
+
+### Bank Account Starting Conditions
+
+* 10 STX Every 144 Blocks: The system is set to distribute or manage 10 STX per 144 blocks (\~24 hours on Stacks)
 * This is the initial setup with no specific “account holder” (e.g., an agent or user) yet defined.
 * First Proposal: The DAO’s members could propose to assign an agent or account as the “holder” responsible for managing these funds.
 * Alternatively, a second proposal could modify the withdrawal limits or other parameters.
