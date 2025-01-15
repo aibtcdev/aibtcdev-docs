@@ -1,48 +1,31 @@
 ---
-description: Welcome to the AIBTC working group!
+description: 'AI meets Bitcoin: Build, trade, explore and govern on-chain.'
 ---
 
-# Introduction
+# aibtcdev
 
-## Overview
+## AI DAOs
 
-We are developing primitives for integrating L2 Bitcoin into resources and tools that expand the capabilities of AI agents.
+### Starting Conditions
 
-### CrewAI Agent Framework
+* 10 STX Every 144 Blocks:
+* The system is set to distribute or manage 10 STX per 144 blocks (\~24 hours on Stacks)
+* This is the initial setup with no specific “account holder” (e.g., an agent or user) yet defined.
+* First Proposal: The DAO’s members could propose to assign an agent or account as the “holder” responsible for managing these funds.
+* Alternatively, a second proposal could modify the withdrawal limits or other parameters.
 
-We use the [CrewAI Agent Framework](https://crewai.com) which enables the following key concepts:
+### Action Voting Rules (Low Quorum)
 
-* **agents:** individual AI agents with a role, backstory, and tools
-* **tools:** functions available to the agent while completing a task
-* **tasks:** assignments the agent should complete and expected output
-* **crew:** a group of agents that complete a list of tasks and provide a final result
+* Withdrawal Requirements: A withdrawal is only valid if it meets the following conditions:
+* Amount: Must be more than 0 STX but less than 100 STX per day.
+* Period: Withdrawals are spaced between 6 blocks (\~1 hour) and 1008 blocks (\~1 week).
 
-### Stacks.js SDK
+### Why This Matters
 
-We also use the [Stacks.js SDK](https://docs.hiro.so/stacks.js) for interacting with wallets, smart contracts, and on-chain data.
+This setup ensures that:
 
-* For agents, wallet and on-chain tools are provided through [Bun.js scripts](https://bun.sh/) in the **agent-tools-ts** repository which are accessible through a Python runner.
-* For the API example, [Stacks.js packages](https://stacks.js.org) are used for reading and responding to on-chain data, as well as encoding/decoding digital signatures.
-* The SDK provides options for integrations **with or without private key access**, including several tools to interact with popular wallet extensions like [Leather](https://leather.io) and [Xverse](https://xverse.app) as well as operate with direct CLI access (how agent tooling works now).
+1. Security: Large or frequent withdrawals are not possible without proper voting and approvals.
+2. Flexibility: The DAO can adjust these parameters as its members or agents determine what works best.
+3. Controlled Treasury Access: Prevents misuse of funds while enabling smaller, regular withdrawals.
 
-## Resources
-
-* [Main AIBTC Website: https://aibtc.dev](https://aibtc.dev)
-* [RSVP Thursdays at 9am PST](https://evt.to/emamdeggw) - anyone is welcome!
-* [Meeting Minutes, Recordings, and Presentations](https://github.com/aibtcdev/communication)
-* AIBTC [Community Discord](https://discord.gg/Z59Z3FNbEX) and [X account](https://x.com/aibtcdev)
-
-## Repositories
-
-[Main GitHub Organization: aibtcdev](https://github.com/aibtcdev)
-
-| Name                                                           | Description                                                                                            |
-| -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
-| [agent-tools-ts](https://github.com/aibtcdev/agent-tools-ts)   | TS scripts for interacting with the Stacks blockchain, powered by Bun and Stacks.js.                   |
-| [ai-agent-crew](https://github.com/aibtcdev/ai-agent-crew)     | [CrewAI powered](https://crewai.com) AI agents with Bitcoin wallets.                                   |
-| [communication](https://github.com/aibtcdev/communication)     | Meeting minutes, presentations, and communications resources.                                          |
-| [gated-402-api](https://github.com/aibtcdev/gated-402-api)     | Example API implementation with HTTP 402 responses for unpaid resources.                               |
-| [protocol-docs](https://github.com/aibtcdev/protocol-docs)     | Documentation for using CrewAI AI agents with a Bitcoin wallet [(this page!)](https://docs.aibtc.dev). |
-| [landing-page](https://github.com/aibtcdev/landing-page)       | Main landing page for [https://aibtc.dev](https://aibtc.dev).                                          |
-| [smart-contracts](https://github.com/aibtcdev/smart-contracts) | Stacks smart contracts and test suite.                                                                 |
-| [training-data](https://github.com/aibtcdev/training-data)     | A curated collection of raw data for training.                                                         |
+Essentially, this framework balances flexibility with safeguards, giving the DAO control over treasury activity right from launch.
