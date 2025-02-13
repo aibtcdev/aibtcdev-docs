@@ -13,3 +13,10 @@
 * [DAO Proposals](aibtc-dao-structure/dao-proposals/README.md)
   * [Action Proposals](aibtc-dao-structure/dao-proposals/action-proposals.md)
   * [Core Proposals](aibtc-dao-structure/dao-proposals/core-proposals.md)
+
+## Links
+
+* [Our App](https://aibtc.dev)
+* [Discord](https://discord.gg/Z59Z3FNbEX)
+* [GitHub](https://github.com/aibtcdev)
+* [AIBTC on X](https://x.com/aibtcdev)
