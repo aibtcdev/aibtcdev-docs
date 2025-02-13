@@ -1,43 +1,22 @@
 ---
-description: 'AI meets Bitcoin: Build, trade, explore and govern on-chain.'
+description: 'AI Meets Bitcoin: Build, trade, explore, and govern—all on-chain.'
 ---
 
-# aibtcdev
+# AIBTC
 
-## AI DAOs
+## AI DAOs: On-Chain Governance Without Permission
 
-Immediate action items ai dao token holders can perform:
+AI DAOs are autonomous entities that act, decide, and evolve based on community-driven logic. Token holders have immediate, actionable ways to shape their trajectory:&#x20;
 
-1. Create Payable Services: Set up services or features that others can pay for, with funds deposited directly into the treasury.
-2. Deposit Assets to Treasury: Add tokens or funds to the DAO’s treasury (the central wallet for managing resources).
-3. Propose Treasury Spending: Suggest how treasury funds should be allocated, whether for growth, partnerships, or community initiatives.
-4. Set Withdrawal Rules: Define how much and how often funds can be withdrawn (e.g., limits and withdrawal periods).&#x20;
-5. Vote on Proposals: Participate in decisions about treasury use, governance changes, or DAO initiatives.&#x20;
-6. Add or Modify Contracts: Propose or approve new smart contracts to expand DAO functionality.
-7. Assign Roles: Propose adding agents or members with specific responsibilities within the DAO.
-8. Adjust DAO Parameters: Suggest updates to the DAO’s rules, such as voting thresholds, quorum requirements, or treasury settings.
+* Create Payable Services: Monetize features or services—payments flow directly to the treasury.&#x20;
+* Deposit Assets to Treasury: Secure capital in the DAO’s core financial engine.&#x20;
+* Propose Treasury Spending: Drive growth, fund partnerships, or launch community initiatives.&#x20;
+* Set Withdrawal Rules: Establish how often and how much can be withdrawn.&#x20;
+* Vote on Proposals: Influence treasury use, governance updates, and new initiatives.
+* Modify Contracts: Expand functionality by proposing and approving new smart contracts.
+* Assign Roles: Empower agents with defined responsibilities.
+* Adjust DAO Parameters: Refine rules—voting thresholds, quorums, treasury settings.
 
-These actions ensure token holders have immediate, meaningful ways to participate in managing and growing the DAO effectively.
+> **Why It Matters:** AI DAOs enable immediate, meaningful participation. Holders don’t just vote—they execute change.
 
-### Bank Account Starting Conditions
-
-* 10 STX Every 144 Blocks: The system is set to distribute or manage 10 STX per 144 blocks (\~24 hours on Stacks)
-* This is the initial setup with no specific “account holder” (e.g., an agent or user) yet defined.
-* First Proposal: The DAO’s members could propose to assign an agent or account as the “holder” responsible for managing these funds.
-* Alternatively, a second proposal could modify the withdrawal limits or other parameters.
-
-### Action Voting Rules (Low Quorum)
-
-* Withdrawal Requirements: A withdrawal is only valid if it meets the following conditions:
-* Amount: Must be more than 0 STX but less than 100 STX per day.
-* Period: Withdrawals are spaced between 6 blocks (\~1 hour) and 1008 blocks (\~1 week).
-
-### Why This Matters
-
-This setup ensures that:
-
-1. Security: Large or frequent withdrawals are not possible without proper voting and approvals.
-2. Flexibility: The DAO can adjust these parameters as its members or agents determine what works best.
-3. Controlled Treasury Access: Prevents misuse of funds while enabling smaller, regular withdrawals.
-
-Essentially, this framework balances flexibility with safeguards, giving the DAO control over treasury activity right from launch.
+This framework launches with both security and adaptability in mind, giving the DAO collective control over its treasury and governance right from the start.
