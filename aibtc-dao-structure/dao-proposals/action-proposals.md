@@ -32,24 +32,12 @@ Actions must be registered as an extension with the base dao contract before the
 }%%
 
 timeline
-    title Action Proposal Timeline
-    
-    section Creation Phase
-        Day 0: Proposal Created
-    
-    section Waiting Period
+    section Action Proposal Timeline
+        Start: Proposal Created
         Day 1: Voting Delay
-        
-    section Voting Phase
-        Day 2: Voting Active
-        Day 3: Voting Active
-    
-    section Execution Preparation
+        Days 2-3: Voting Active
         Day 4: Execution Delay
-    
-    section Execution Phase
-        Day 5: Execution Allowed
-        Day 6: Execution Allowed
+        Days 5-6: Execution Allowed
 ```
 
 {% hint style="info" %}

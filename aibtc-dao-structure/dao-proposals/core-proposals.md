@@ -28,30 +28,13 @@ Core proposals can execute arbitrary Clarity code within the DAO context, requir
 }%%
 
 timeline
-    title Core Proposal Timeline
     
-    section Creation Phase
-        Day 0: Proposal Created
-    
-    section Waiting Period
-        Day 1: Voting Delay
-        Day 2: Voting Delay
-        Day 3: Voting Delay
-        
-    section Voting Phase
-        Day 4: Voting Active
-        Day 5: Voting Active
-        Day 6: Voting Active
-    
-    section Execution Preparation
-        Day 7: Execution Delay
-        Day 8: Execution Delay
-        Day 9: Execution Delay
-    
-    section Execution Phase
-        Day 10: Execution Allowed
-        Day 11: Execution Allowed
-        Day 12: Execution Allowed
+    section Core Proposal Timeline
+        Start: Proposal Created
+        Days 1-3: Voting Delay
+        Days 4-6: Voting Active
+        Days 7-9: Execution Delay
+        Days 10-12: Execution Allowed
 ```
 
 {% hint style="info" %}
