@@ -14,6 +14,19 @@ Core proposals can execute arbitrary Clarity code within the DAO context, requir
 * 25% quorum requirement
 
 ```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#FFF',
+      'primaryTextColor': '#FF4F03',
+      'primaryBorderColor': '#000',
+      'lineColor': '#FF4F03',
+      'fontWeight': 'bold'
+    }
+  }
+}%%
+
 timeline
     title Core Proposal Timeline
     

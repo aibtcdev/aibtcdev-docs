@@ -18,6 +18,19 @@ Actions must be registered as an extension with the base dao contract before the
 * 15% quorum requirement
 
 ```mermaid
+%%{
+  init: {
+    'theme': 'base',
+    'themeVariables': {
+      'primaryColor': '#FFF',
+      'primaryTextColor': '#FF4F03',
+      'primaryBorderColor': '#000',
+      'lineColor': '#FF4F03',
+      'fontWeight': 'bold'
+    }
+  }
+}%%
+
 timeline
     title Action Proposal Timeline
     
