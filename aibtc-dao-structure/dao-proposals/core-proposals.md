@@ -41,7 +41,11 @@ timeline
         Day 12: Execution Allowed
 ```
 
+{% hint style="info" %}
+Proposals expire and will not execute if not submitted in time. This prevents holding an early proposal and executing it later.
 
+The proposal must be executed within 1 voting period following the end block + the voting delay.
+{% endhint %}
 
 ### Available Core Proposals
 

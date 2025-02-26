@@ -1,7 +1,7 @@
 # Table of contents
 
 * [AIBTC](README.md)
-* [Prompt2DAO](prompt2dao.md)
+* [Prompt2DAO](what-is-a-dao/prompt2dao.md)
 
 ## AIBTC DAO Structure
 
