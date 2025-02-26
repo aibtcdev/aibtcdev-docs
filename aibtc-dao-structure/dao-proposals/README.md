@@ -1,10 +1,8 @@
 ---
-description: The DAO is governed entirely by token holders
+description: Submit proposals, vote on them, and execute if they pass.
 ---
 
 # DAO Proposals
-
-## DAO Proposals
 
 The DAO is governed entirely by token holders through a proposal system. Proposals come in two main categories: Action Proposals for predefined operations with lower thresholds, and Core Proposals for arbitrary changes with higher thresholds.
 

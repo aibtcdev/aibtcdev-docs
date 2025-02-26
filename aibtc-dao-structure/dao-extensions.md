@@ -4,6 +4,14 @@ description: Modular components that provide specific functionality to the dao
 
 # DAO Extensions
 
+Extensions are what gives the dao form and enable new features.
+
+Extensions can be enabled or disabled in the base dao contract, and should use this check for their operation when appropriate.
+
+Several extensions are included with each dao and more can be added through core proposals.
+
+## Extension List
+
 ### Action Proposals (aibtc-action-proposals-v2)
 
 * Manages voting on predefined actions with lower thresholds

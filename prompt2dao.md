@@ -18,5 +18,5 @@ Once an idea is deemed worthy it will then kick off the initiation:
    3. Bitflow trading pool, for reaching liquidity target in DEX
 4. Create smart contracts to support the DAO, powered by the token
    1. Base: the main contract that all others operate through
-   2. Extensions: feature with on-going functionality
+   2. Extensions: features with on-going functionality
    3. Proposals: one-time changes enacted by voting

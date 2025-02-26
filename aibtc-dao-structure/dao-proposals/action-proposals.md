@@ -6,14 +6,44 @@ description: >-
 
 # Action Proposals
 
-Action proposals are predefined operations that can be executed with lower voting requirements. Each action is implemented as a contract that executes specific functionality through the DAO's extensions.
+Action proposals are predefined operations that can be executed with lower voting requirements.
+
+Each action is implemented as a smart contract that executes specific functionality through the DAO's extensions.
+
+Actions must be registered as an extension with the base dao contract before they can be used in action proposal voting.
 
 ### Voting Parameters
 
 * 66% approval threshold
 * 15% quorum requirement
-* 1-day voting delay
-* 2-day voting period
+
+```mermaid
+timeline
+    title Action Proposal Timeline
+    
+    section Creation Phase
+        Day 0: Proposal Created
+    
+    section Waiting Period
+        Day 1: Voting Delay
+        
+    section Voting Phase
+        Day 2: Voting Active
+        Day 3: Voting Active
+    
+    section Execution Preparation
+        Day 4: Execution Delay
+    
+    section Execution Phase
+        Day 5: Execution Allowed
+        Day 6: Execution Allowed
+```
+
+{% hint style="info" %}
+Proposals expire and will not execute if not submitted in time. This prevents holding an early proposal and executing it later.
+
+The proposal must be executed within 1 voting period following the end block + the voting delay.
+{% endhint %}
 
 ### Available Actions
 

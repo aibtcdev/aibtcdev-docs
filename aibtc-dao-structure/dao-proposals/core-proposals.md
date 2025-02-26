@@ -12,8 +12,36 @@ Core proposals can execute arbitrary Clarity code within the DAO context, requir
 
 * 90% approval threshold
 * 25% quorum requirement
-* 3-day voting delay
-* 3-day voting period
+
+```mermaid
+timeline
+    title Core Proposal Timeline
+    
+    section Creation Phase
+        Day 0: Proposal Created
+    
+    section Waiting Period
+        Day 1: Voting Delay
+        Day 2: Voting Delay
+        Day 3: Voting Delay
+        
+    section Voting Phase
+        Day 4: Voting Active
+        Day 5: Voting Active
+        Day 6: Voting Active
+    
+    section Execution Preparation
+        Day 7: Execution Delay
+        Day 8: Execution Delay
+        Day 9: Execution Delay
+    
+    section Execution Phase
+        Day 10: Execution Allowed
+        Day 11: Execution Allowed
+        Day 12: Execution Allowed
+```
+
+
 
 ### Available Core Proposals
 
