@@ -25,8 +25,7 @@ Actions must be registered as an extension with the base dao contract before the
       'primaryColor': '#FFF',
       'primaryTextColor': '#FF4F03',
       'primaryBorderColor': '#000',
-      'lineColor': '#FF4F03',
-      'fontWeight': 'bold'
+      'lineColor': '#FF4F03'
     }
   }
 }%%
@@ -41,9 +40,7 @@ timeline
 ```
 
 {% hint style="info" %}
-Proposals expire and will not execute if not submitted in time. This prevents holding an early proposal and executing it later.
-
-The proposal must be executed within 1 voting period following the end block + the voting delay.
+Proposals expire and will not execute if not submitted in time. This prevents holding an early proposal and executing it later. The proposal must be executed within 1 voting period following the end block + the voting delay.
 {% endhint %}
 
 ### Available Actions

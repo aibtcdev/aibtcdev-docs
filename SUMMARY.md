@@ -16,5 +16,5 @@
 * [Our App](https://aibtc.dev)
 * [Discord](https://discord.gg/Z59Z3FNbEX)
 * [GitHub](https://github.com/aibtcdev)
-* [AIBTC on X](https://x.com/aibtcdev)
 * [Prompt2DAO on X](https://x.com/prompt2dao)
+* [AIBTC on X](https://x.com/aibtcdev)
