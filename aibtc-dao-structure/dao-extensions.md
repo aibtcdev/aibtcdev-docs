@@ -17,6 +17,7 @@ Several extensions are included with each dao and more can be added through core
 | [Action Proposals (aibtc-action-proposals-v2)](./dao-extensions/action-proposals.md) | Manages voting on predefined actions with lower thresholds | [Details](./dao-extensions/action-proposals.md) |
 | [Bank Account (aibtc-bank-account)](./dao-extensions/bank-account.md) | Manages periodic STX withdrawals for designated account holder | [Details](./dao-extensions/bank-account.md) |
 | [Core Proposals (aibtc-core-proposals-v2)](./dao-extensions/core-proposals.md) | Manages voting on arbitrary Clarity code execution | [Details](./dao-extensions/core-proposals.md) |
+| [DAO Charter (aibtc-dao-charter)](./dao-extensions/dao-charter.md) | Manages the DAO charter and records mission and values on-chain | [Details](./dao-extensions/dao-charter.md) |
 | [Onchain Messaging (aibtc-onchain-messaging)](./dao-extensions/onchain-messaging.md) | Enables sending verified messages from the DAO | [Details](./dao-extensions/onchain-messaging.md) |
 | [Payments/Invoices (aibtc-payments-invoices)](./dao-extensions/payments-invoices.md) | Handles payment processing for DAO services | [Details](./dao-extensions/payments-invoices.md) |
 | [Token Owner (aibtc-token-owner)](./dao-extensions/token-owner.md) | Manages the DAO token configuration | [Details](./dao-extensions/token-owner.md) |
@@ -48,6 +49,11 @@ Several extensions are included with each dao and more can be added through core
 * Manages resources with prices and descriptions
 * Tracks user payment history
 * Supports enabling/disabling resources
+
+#### DAO Charter
+* Records the organization's mission and values on-chain
+* Maintains versioned history of all charter changes
+* Supports optional inscription IDs for blockchain permanence
 
 #### Token Owner
 * Controls token URI updates
