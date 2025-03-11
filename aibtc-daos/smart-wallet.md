@@ -105,3 +105,25 @@ When deployed, the smart wallet is configured with:
 - User principal (wallet owner)
 - Agent principal (proposal voter)
 - Pre-approved tokens (sBTC and DAO token)
+
+## Contract Naming Convention
+
+Smart wallet contracts follow a specific naming convention:
+
+```
+aibtc-smart-wallet-FIRST5-LAST5
+```
+
+Where:
+- `FIRST5` represents the first 5 characters of the user's Stacks address
+- `LAST5` represents the last 5 characters of the user's Stacks address
+
+For example, a user with address `ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM` would have a smart wallet named:
+```
+aibtc-smart-wallet-ST1PQ-PGZGM
+```
+
+This naming convention ensures that:
+1. Each user can have only one smart wallet deployed by a specific agent
+2. Smart wallets are easily identifiable by their owner's address
+3. Naming conflicts are avoided when multiple agents deploy wallets for different users
