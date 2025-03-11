@@ -20,6 +20,10 @@
   - [Core Proposals](aibtc-daos/dao-proposals/core-proposals.md)
 - [Smart Wallet](aibtc-daos/smart-wallet.md)
 
+## Agent Tools
+
+TBD
+
 ## Links
 
 - [Our App](https://aibtc.dev)
