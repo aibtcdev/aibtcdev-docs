@@ -22,7 +22,11 @@
 
 ## Agent Tools
 
-TBD
+- [Overview](agent-tools/README.md)
+- [Wallet Tools](agent-tools/wallet-tools.md)
+- [DAO Tools](agent-tools/dao-tools.md)
+- [Faktory Tools](agent-tools/faktory-tools.md)
+- [Database Tools](agent-tools/database-tools.md)
 
 ## Links
 
