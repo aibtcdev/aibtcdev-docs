@@ -141,3 +141,28 @@ Tools follow these security principles:
 - Tools emit detailed logs for auditing purposes
 
 For detailed documentation on each tool category, see the individual tool pages.
+
+## Related Repositories
+
+The agent tools system is built on two key repositories:
+
+### agent-tools-ts
+
+[agent-tools-ts](https://github.com/aibtcdev/agent-tools-ts) contains the TypeScript implementation of the agent tools, powered by Bun and Stacks.js. This repository provides:
+
+- Low-level blockchain interactions
+- Wallet management utilities
+- Smart contract interactions
+- TypeScript interfaces and implementations
+- Command-line tools for testing and development
+
+### aibtcdev-backend
+
+[aibtcdev-backend](https://github.com/aibtcdev/aibtcdev-backend) is the Python backend service that exposes these tools to LLM agents. This repository includes:
+
+- Python wrappers for the TypeScript tools
+- FastAPI endpoints for agent interactions
+- CrewAI integration for agent workflows
+- Background task scheduling
+- Database abstractions and models
+- Webhook handling for blockchain events
