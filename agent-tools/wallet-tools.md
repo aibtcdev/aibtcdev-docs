@@ -33,9 +33,9 @@ Retrieves the current STX balance of the agent's wallet.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the wallet_get_my_balance tool to check my current STX balance
+Check your wallet balance and report the balances of STX.
 ```
 
 ### wallet_get_my_address
@@ -52,9 +52,9 @@ Retrieves the Stacks address (principal) of the agent's wallet.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the wallet_get_my_address tool to get my wallet address
+Get your wallet address.
 ```
 
 ### wallet_fund_my_wallet_faucet
@@ -72,9 +72,9 @@ Requests testnet STX from the faucet to fund the agent's wallet.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the wallet_fund_my_wallet_faucet tool to get some testnet STX
+Fund my wallet with STX from the testnet faucet.
 ```
 
 ### wallet_send_stx
@@ -95,9 +95,11 @@ Sends STX from the agent's wallet to another address.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the wallet_send_stx tool with amount=1000000 (1 STX) and recipient=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+Send STX to another address.
+- amount: 1000000
+- recipient: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
 ```
 
 ### wallet_get_my_transactions
@@ -125,9 +127,10 @@ Retrieves transaction history for the agent's wallet.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the wallet_get_my_transactions tool with limit=5 to see my recent transactions
+Get my recent transaction history.
+- limit: 5
 ```
 
 ### wallet_send_sip10
@@ -149,9 +152,12 @@ Sends SIP-10 tokens from the agent's wallet to another address.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the wallet_send_sip10 tool with amount=10, recipient=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM, and token_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-token
+Send SIP-10 tokens to another address.
+- amount: 10
+- recipient: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+- token_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-token
 ```
 
 ## Error Handling

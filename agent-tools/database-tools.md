@@ -40,9 +40,12 @@ Adds a new scheduled task to the database.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the database_add_scheduled_task tool with name="Daily Bitcoin Price Check", prompt="Check the current Bitcoin price and report any significant changes", and cron="0 0 * * *"
+Add a new scheduled task with the following details:
+- name: Daily Bitcoin Price Check
+- prompt: Check the current Bitcoin price and report any significant changes
+- cron: 0 0 * * *
 ```
 
 ### database_list_scheduled_tasks
@@ -69,9 +72,9 @@ Lists all scheduled tasks for the current agent.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the database_list_scheduled_tasks tool to see all my scheduled tasks
+List all my scheduled tasks.
 ```
 
 ### database_update_scheduled_task
@@ -98,9 +101,12 @@ Updates an existing scheduled task in the database.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the database_update_scheduled_task tool with task_id="550e8400-e29b-41d4-a716-446655440000", name="Updated Bitcoin Price Check", and cron="0 12 * * *"
+Update an existing scheduled task with the following details:
+- task_id: 550e8400-e29b-41d4-a716-446655440000
+- name: Updated Bitcoin Price Check
+- cron: 0 12 * * *
 ```
 
 ### database_delete_scheduled_task
@@ -118,9 +124,10 @@ Deletes a scheduled task from the database.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the database_delete_scheduled_task tool with task_id="550e8400-e29b-41d4-a716-446655440000"
+Delete a scheduled task:
+- task_id: 550e8400-e29b-41d4-a716-446655440000
 ```
 
 ### database_get_dao_list
@@ -153,9 +160,9 @@ Retrieves a list of all DAOs with their associated tokens.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the database_get_dao_list tool to see all DAOs
+Get a list of all DAOs with their associated tokens.
 ```
 
 ### database_get_dao_get_by_name
@@ -203,9 +210,10 @@ Searches for DAOs using multiple criteria.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the database_get_dao_get_by_name tool with name="Bitcoin" to find Bitcoin-related DAOs
+Search for DAOs with the following criteria:
+- name: Bitcoin
 ```
 
 ## Error Handling

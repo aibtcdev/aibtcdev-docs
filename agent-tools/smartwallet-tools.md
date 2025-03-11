@@ -39,9 +39,11 @@ Deploys a new smart wallet for a user.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the smartwallet_deploy_smart_wallet tool with owner_address=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM and dao_token_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
+Deploy a new smart wallet with the following details:
+- owner_address: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
+- dao_token_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
 ```
 
 ### smartwallet_deposit_stx
@@ -62,9 +64,11 @@ Deposits STX into a smart wallet.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the smartwallet_deposit_stx tool with smart_wallet_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18 and amount=1000000
+Deposit STX to a smart wallet with the following details:
+- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
+- amount: 1000000
 ```
 
 ### smartwallet_deposit_ft
@@ -87,9 +91,12 @@ Deposits fungible tokens into a smart wallet.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the smartwallet_deposit_ft tool with smart_wallet_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18, ft_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token, and amount=100
+Deposit fungible tokens to a smart wallet with the following details:
+- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
+- ft_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
+- amount: 100
 ```
 
 ### smartwallet_approve_asset
@@ -110,9 +117,11 @@ Approves an asset for use with the smart wallet.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the smartwallet_approve_asset tool with smart_wallet_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18 and asset_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-faktory
+Approve an asset for use with the smart wallet:
+- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
+- asset_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-faktory
 ```
 
 ### smartwallet_revoke_asset
@@ -133,9 +142,11 @@ Revokes an asset from the smart wallet.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the smartwallet_revoke_asset tool with smart_wallet_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18 and asset_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-faktory
+Revoke an asset from the smart wallet:
+- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
+- asset_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-faktory
 ```
 
 ### smartwallet_get_balance_stx
@@ -154,9 +165,10 @@ Gets the STX balance from a smart wallet.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the smartwallet_get_balance_stx tool with smart_wallet_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
+Get the STX balance from a smart wallet:
+- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
 ```
 
 ### smartwallet_is_approved_asset
@@ -176,9 +188,11 @@ Checks if a specific asset is approved in the smart wallet.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the smartwallet_is_approved_asset tool with smart_wallet_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18 and asset_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-faktory
+Check if an asset is approved in the smart wallet:
+- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
+- asset_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-faktory
 ```
 
 ### smartwallet_get_configuration
@@ -201,9 +215,10 @@ Gets the configuration of a smart wallet.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the smartwallet_get_configuration tool with smart_wallet_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
+Get the configuration of a smart wallet:
+- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
 ```
 
 ## Smart Wallet Workflow Example

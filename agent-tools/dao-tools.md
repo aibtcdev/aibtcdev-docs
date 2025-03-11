@@ -48,9 +48,11 @@ Retrieves details about a specific action proposal.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the dao_actionproposals_get_proposal tool with dao_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-dao and proposal_id=1
+Get details about a specific action proposal:
+- dao_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-dao
+- proposal_id: 1
 ```
 
 ### dao_actionproposals_vote_on_proposal
@@ -73,9 +75,13 @@ Votes on an action proposal.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the dao_actionproposals_vote_on_proposal tool with dao_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-dao, proposal_id=1, vote=for, and amount=1000000
+Vote on an action proposal:
+- dao_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-dao
+- proposal_id: 1
+- vote: for
+- amount: 1000000
 ```
 
 ### dao_bank_deposit_stx
@@ -96,9 +102,11 @@ Deposits STX to a DAO's bank account.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the dao_bank_deposit_stx tool with dao_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-dao and amount=1000000
+Deposit STX to a DAO's bank account:
+- dao_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-dao
+- amount: 1000000
 ```
 
 ### dao_bank_withdraw_stx
@@ -118,9 +126,10 @@ Withdraws STX from a DAO's bank account (requires authorization).
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the dao_bank_withdraw_stx tool with dao_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-dao
+Withdraw STX from a DAO's bank account:
+- dao_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-dao
 ```
 
 ### dao_charter_get_current
@@ -141,9 +150,10 @@ Retrieves the current charter for a DAO.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the dao_charter_get_current tool with dao_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-dao
+Get the current charter for a DAO:
+- dao_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-dao
 ```
 
 ### dao_payments_get_invoice
@@ -168,9 +178,11 @@ Retrieves details about a specific invoice.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the dao_payments_get_invoice tool with dao_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-dao and invoice_id=1
+Get details about a specific invoice:
+- dao_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-dao
+- invoice_id: 1
 ```
 
 ### dao_treasury_is_allowed_asset
@@ -190,9 +202,11 @@ Checks if an asset is allowed in the DAO's treasury.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the dao_treasury_is_allowed_asset tool with dao_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-dao and asset_contract=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-token
+Check if an asset is allowed in the DAO's treasury:
+- dao_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-dao
+- asset_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-token
 ```
 
 ## Error Handling

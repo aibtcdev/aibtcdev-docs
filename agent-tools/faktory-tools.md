@@ -34,9 +34,9 @@ Requests testnet sBTC from the Faktory faucet.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the faktory_get_sbtc tool to get some testnet sBTC
+Request testnet sBTC from the Faktory faucet.
 ```
 
 ### faktory_exec_buy
@@ -59,9 +59,11 @@ Executes a buy order on Faktory DEX using BTC.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the faktory_exec_buy tool with btc_amount=0.0004 and dao_token_dex_contract_address=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-token
+Execute a buy order for tokens on the Faktory DEX with the following details:
+- btc_amount: 0.0004
+- dao_token_dex_contract_address: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-token
 ```
 
 ### faktory_exec_buy_stx
@@ -84,9 +86,11 @@ Executes a buy order on Faktory DEX using STX.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the faktory_exec_buy_stx tool with stx_amount=100 and dao_token_dex_contract_address=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-token
+Execute a buy order with STX on the Faktory DEX with the following details:
+- stx_amount: 100
+- dao_token_dex_contract_address: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-token
 ```
 
 ### faktory_exec_sell
@@ -109,9 +113,11 @@ Executes a sell order on Faktory DEX.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the faktory_exec_sell tool with token_amount=100 and dao_token_dex_contract_address=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-token
+Execute a sell order on the Faktory DEX with the following details:
+- token_amount: 100
+- dao_token_dex_contract_address: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-token
 ```
 
 ### faktory_get_dao_tokens
@@ -145,9 +151,11 @@ Retrieves a list of DAO tokens from Faktory.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the faktory_get_dao_tokens tool with limit=5 and search=bitcoin
+Get a list of DAO tokens from Faktory with the following criteria:
+- limit: 5
+- search: bitcoin
 ```
 
 ### faktory_get_token
@@ -178,9 +186,10 @@ Retrieves detailed information about a token from its DEX contract.
 }
 ```
 
-**Example Usage**:
+**Example Prompt**:
 ```
-Use the faktory_get_token tool with dex_contract_id=ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-token-dex
+Get detailed information about a token from its DEX contract.
+- dex_contract_id: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-token-dex
 ```
 
 ## Error Handling
