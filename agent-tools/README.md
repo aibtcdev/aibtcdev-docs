@@ -162,7 +162,7 @@ The agent tools system is built on two key repositories:
 
 - Python wrappers for the TypeScript tools
 - FastAPI endpoints for agent interactions
-- CrewAI integration for agent workflows
+- LangGraph integration for agent workflows
 - Background task scheduling
 - Database abstractions and models
 - Webhook handling for blockchain events
