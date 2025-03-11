@@ -27,6 +27,7 @@
 - [DAO Tools](agent-tools/dao-tools.md)
 - [Faktory Tools](agent-tools/faktory-tools.md)
 - [Database Tools](agent-tools/database-tools.md)
+- [Smart Wallet Tools](agent-tools/smartwallet-tools.md)
 
 ## Links
 
