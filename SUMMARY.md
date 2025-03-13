@@ -20,6 +20,15 @@
   - [Core Proposals](aibtc-daos/dao-proposals/core-proposals.md)
 - [Smart Wallet](aibtc-daos/smart-wallet.md)
 
+## Agent Tools
+
+- [Overview](agent-tools/README.md)
+- [Wallet Tools](agent-tools/wallet-tools.md)
+- [DAO Tools](agent-tools/dao-tools.md)
+- [Faktory Tools](agent-tools/faktory-tools.md)
+- [Database Tools](agent-tools/database-tools.md)
+- [Smart Wallet Tools](agent-tools/smartwallet-tools.md)
+
 ## Links
 
 - [Our App](https://aibtc.dev)
