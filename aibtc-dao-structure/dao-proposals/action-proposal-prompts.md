@@ -52,7 +52,7 @@ Set the account holder in the timed vault, who can withdraw in STX based on the 
 Create an action proposal to set the account holder in the timed vault using the following info:
 - Account holder: ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA
 - VOTING_EXTENSION: ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media2-action-proposals-v2
-- ACTION_ALLOW_ASSET: ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media2-action-set-account-holder
+- ACTION_SET_ACCOUNT_HOLDER: ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media2-action-set-account-holder
 - TOKEN_DAO: ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media2-faktory
 ```
 
