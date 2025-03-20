@@ -21,9 +21,9 @@ Deploy a smart wallet using the following info:
 Deposit STX into an existing smart wallet.
 
 ```
-Deposit STX to a smart wallet with the following details:
+Deposit STX to a smart wallet using the following info:
 - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
-- amount: 1000000
+- amount: 10000000 (10 STX in micro-STX)
 ```
 
 ## Deposit Fungible Tokens to a Smart Wallet
@@ -31,10 +31,10 @@ Deposit STX to a smart wallet with the following details:
 Deposit fungible tokens into an existing smart wallet.
 
 ```
-Deposit fungible tokens to a smart wallet with the following details:
+Deposit fungible tokens to a smart wallet using the following info:
 - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
 - ft_contract: ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media2-faktory
-- amount: 100
+- amount: 1000000000000 (10,000 MEDIA2 tokens with 8 decimals)
 ```
 
 ## Approve an Asset for Smart Wallet
@@ -42,7 +42,7 @@ Deposit fungible tokens to a smart wallet with the following details:
 Approve an asset for use with the smart wallet.
 
 ```
-Approve an asset for use with the smart wallet:
+Approve an asset for use with the smart wallet using the following info:
 - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
 - asset_contract: ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media2-faktory
 ```
@@ -52,7 +52,7 @@ Approve an asset for use with the smart wallet:
 Revoke an asset from the smart wallet.
 
 ```
-Revoke an asset from the smart wallet:
+Revoke an asset from the smart wallet using the following info:
 - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
 - asset_contract: ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media2-faktory
 ```
@@ -62,7 +62,7 @@ Revoke an asset from the smart wallet:
 Get the STX balance from a smart wallet.
 
 ```
-Get the STX balance from a smart wallet:
+Get the STX balance from a smart wallet using the following info:
 - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
 ```
 
@@ -71,7 +71,7 @@ Get the STX balance from a smart wallet:
 Check if a specific asset is approved in the smart wallet.
 
 ```
-Check if an asset is approved in the smart wallet:
+Check if an asset is approved in the smart wallet using the following info:
 - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
 - asset_contract: ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media2-faktory
 ```
@@ -81,7 +81,6 @@ Check if an asset is approved in the smart wallet:
 Get the configuration of a smart wallet.
 
 ```
-Get the configuration of a smart wallet:
+Get the configuration of a smart wallet using the following info:
 - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
 ```
-
