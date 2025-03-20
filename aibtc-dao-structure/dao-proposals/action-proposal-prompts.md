@@ -1,10 +1,11 @@
 ---
-description: Sample prompts for submitting action proposals.
+description: >-
+  Sample prompts for submitting action proposals to a DAO.
 ---
 
 # Action Proposal Prompts
 
-Add a resource anyone can pay for to the payments/invoices extension:
+## Add a Resource for Invoicing
 
 ```
 Create an action proposal to add a resource for invoicing using the following info:
@@ -17,7 +18,7 @@ Create an action proposal to add a resource for invoicing using the following in
 - TOKEN_DAO: ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media2-faktory
 ```
 
-Toggle the status for a resource in the payments/invoices extension:
+## Toggle Resource Status
 
 ```
 Create an action proposal to toggle the status of a resource using the following info:
@@ -27,7 +28,7 @@ Create an action proposal to toggle the status of a resource using the following
 - TOKEN_DAO: ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media2-faktory
 ```
 
-Allow an asset for deposit/withdrawal in the treasury:
+## Allow Asset in Treasury
 
 ```
 Create an action proposal to allow an asset in the treasury using the following info:
@@ -37,7 +38,7 @@ Create an action proposal to allow an asset in the treasury using the following 
 - TOKEN_DAO: ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media2-faktory
 ```
 
-Send an on-chain message through the DAO:
+## Send On-Chain Message
 
 ```
 Create an action proposal to send a message to all DAO members about XYZ using the following info:
@@ -46,7 +47,7 @@ Create an action proposal to send a message to all DAO members about XYZ using t
 - TOKEN_DAO: ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media2-faktory
 ```
 
-Set the account holder in the timed vault, who can withdraw in STX based on the set amount and period. Default is 10 STX once every 144 blocks (1 day).
+## Set Account Holder in Timed Vault
 
 ```
 Create an action proposal to set the account holder in the timed vault using the following info:
@@ -56,7 +57,7 @@ Create an action proposal to set the account holder in the timed vault using the
 - TOKEN_DAO: ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media2-faktory
 ```
 
-Set the withdrawal amount in the timed vault:
+## Set Withdrawal Amount
 
 ```
 Create an action proposal to set the withdrawal amount in the timed vault using the following info:
@@ -66,7 +67,7 @@ Create an action proposal to set the withdrawal amount in the timed vault using 
 - TOKEN_DAO: ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media2-faktory
 ```
 
-Set the withdrawal period in the timed vault:
+## Set Withdrawal Period
 
 ```
 Create an action proposal to set the withdrawal period in the timed vault using the following info:
