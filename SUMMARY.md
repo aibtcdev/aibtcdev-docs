@@ -19,7 +19,8 @@
   * [Action Proposals](aibtc-daos/dao-proposals/action-proposals.md)
   * [Action Proposal Prompts](aibtc-dao-structure/dao-proposals/action-proposal-prompts.md)
   * [Core Proposals](aibtc-daos/dao-proposals/core-proposals.md)
-* [Smart Wallet](aibtc-daos/smart-wallet.md)
+* [Smart Wallet](aibtc-dao-structure/smart-wallet/README.md)
+  * [Smart Wallet Prompts](aibtc-dao-structure/smart-wallet/smart-wallet-prompts.md)
 
 ## Agent Tools
 
