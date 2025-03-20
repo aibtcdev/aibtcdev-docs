@@ -8,8 +8,6 @@ description: >-
 
 ## Deploy a Smart Wallet
 
-Deploy a smart wallet between the user and the active agent in chat:
-
 ```
 Deploy a smart wallet using the following info:
 - owner_address: ST3YT0XW92E6T2FE59B2G5N2WNNFSBZ6MZKQS5D18
@@ -18,8 +16,6 @@ Deploy a smart wallet using the following info:
 
 ## Deposit STX to a Smart Wallet
 
-Deposit STX into an existing smart wallet:
-
 ```
 Deposit STX to a smart wallet using the following info:
 - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
@@ -27,8 +23,6 @@ Deposit STX to a smart wallet using the following info:
 ```
 
 ## Deposit Fungible Tokens to a Smart Wallet
-
-Deposit fungible tokens into an existing smart wallet:
 
 ```
 Deposit fungible tokens to a smart wallet using the following info:
@@ -39,8 +33,6 @@ Deposit fungible tokens to a smart wallet using the following info:
 
 ## Approve an Asset for Smart Wallet
 
-Approve an asset for use with the smart wallet:
-
 ```
 Approve an asset for use with the smart wallet using the following info:
 - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
@@ -48,8 +40,6 @@ Approve an asset for use with the smart wallet using the following info:
 ```
 
 ## Revoke an Asset from Smart Wallet
-
-Revoke an asset from the smart wallet:
 
 ```
 Revoke an asset from the smart wallet using the following info:
@@ -59,16 +49,12 @@ Revoke an asset from the smart wallet using the following info:
 
 ## Get STX Balance from Smart Wallet
 
-Get the STX balance from a smart wallet:
-
 ```
 Get the STX balance from a smart wallet using the following info:
 - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST3YT-S5D18
 ```
 
 ## Check if Asset is Approved in Smart Wallet
-
-Check if a specific asset is approved in the smart wallet:
 
 ```
 Check if an asset is approved in the smart wallet using the following info:
@@ -77,8 +63,6 @@ Check if an asset is approved in the smart wallet using the following info:
 ```
 
 ## Get Smart Wallet Configuration
-
-Get the configuration of a smart wallet:
 
 ```
 Get the configuration of a smart wallet using the following info:

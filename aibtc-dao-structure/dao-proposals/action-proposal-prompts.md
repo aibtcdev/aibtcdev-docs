@@ -7,8 +7,6 @@ description: >-
 
 ## Add a Resource for Invoicing
 
-Add a resource anyone can pay for to the payments/invoices extension:
-
 ```
 Create an action proposal to add a resource for invoicing using the following info:
 - Name: Consulting
@@ -22,8 +20,6 @@ Create an action proposal to add a resource for invoicing using the following in
 
 ## Toggle Resource Status
 
-Toggle the status for a resource in the payments/invoices extension:
-
 ```
 Create an action proposal to toggle the status of a resource using the following info:
 - Name: Consulting (must exist first!)
@@ -33,8 +29,6 @@ Create an action proposal to toggle the status of a resource using the following
 ```
 
 ## Allow Asset in Treasury
-
-Allow an asset for deposit/withdrawal in the treasury:
 
 ```
 Create an action proposal to allow an asset in the treasury using the following info:
@@ -46,8 +40,6 @@ Create an action proposal to allow an asset in the treasury using the following 
 
 ## Send On-Chain Message
 
-Send an on-chain message through the DAO:
-
 ```
 Create an action proposal to send a message to all DAO members about XYZ using the following info:
 - VOTING_EXTENSION: ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media2-action-proposals-v2
@@ -56,8 +48,6 @@ Create an action proposal to send a message to all DAO members about XYZ using t
 ```
 
 ## Set Account Holder in Timed Vault
-
-Set the account holder in the timed vault, who can withdraw in STX based on the set amount and period. Default is 10 STX once every 144 blocks (1 day):
 
 ```
 Create an action proposal to set the account holder in the timed vault using the following info:
@@ -69,8 +59,6 @@ Create an action proposal to set the account holder in the timed vault using the
 
 ## Set Withdrawal Amount
 
-Set the withdrawal amount in the timed vault:
-
 ```
 Create an action proposal to set the withdrawal amount in the timed vault using the following info:
 - Withdrawal amount: 50000000 (50 STX in micro-STX)
@@ -80,8 +68,6 @@ Create an action proposal to set the withdrawal amount in the timed vault using 
 ```
 
 ## Set Withdrawal Period
-
-Set the withdrawal period in the timed vault:
 
 ```
 Create an action proposal to set the withdrawal period in the timed vault using the following info:
