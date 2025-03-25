@@ -1,6 +1,6 @@
 # Known Contracts
 
-This endpoint lists all contracts that have been accessed through the cache.
+This endpoint lists all contracts that have been accessed through the cache and have their ABIs stored in the contract ABI cache.
 
 ## Endpoint
 
@@ -55,6 +55,8 @@ except requests.exceptions.RequestException as e:
 ```
 
 ## Response
+
+### Current Format
 ```json
 {
   "stats": {
@@ -71,6 +73,23 @@ except requests.exceptions.RequestException as e:
         "contractAddress": "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA",
         "contractName": "media3-faktory"
       },
+      // ... other contracts
+    ]
+  }
+}
+```
+
+### Alternative Format (String Array)
+```json
+{
+  "stats": {
+    "total": 10,
+    "cached": 10
+  },
+  "contracts": {
+    "cached": [
+      "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media3-core-proposals-v2",
+      "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media3-faktory",
       // ... other contracts
     ]
   }
