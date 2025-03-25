@@ -22,6 +22,20 @@
 * [Smart Wallet](aibtc-dao-structure/smart-wallet/README.md)
   * [Smart Wallet Prompts](aibtc-dao-structure/smart-wallet/smart-wallet-prompts.md)
 
+## AIBTC Cache
+
+* [Overview](aibtc-cache/README.md)
+* [Contract Calls Endpoints](aibtc-cache/contract-calls-endpoints.md)
+  * [Overview](aibtc-cache/contract-calls/README.md)
+  * [Read-Only Function Calls](aibtc-cache/contract-calls/read-only-calls.md)
+  * [Contract ABI](aibtc-cache/contract-calls/contract-abi.md)
+  * [Known Contracts](aibtc-cache/contract-calls/known-contracts.md)
+  * [Decode Clarity Value](aibtc-cache/contract-calls/decode-clarity-value.md)
+  * [Clarity Value Types](aibtc-cache/contract-calls/clarity-value-types.md)
+  * [Integration Examples](aibtc-cache/contract-calls/integration-examples.md)
+* [Cache Services](aibtc-cache/cache-services.md)
+* [Utilities](aibtc-cache/utilities.md)
+
 ## Agent Tools
 
 * [Overview](agent-tools/README.md)
