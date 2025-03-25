@@ -27,6 +27,7 @@
 * [Overview](aibtc-cache/README.md)
 * [Contract Calls Endpoints](aibtc-cache/contract-calls-endpoints.md)
   * [Overview](aibtc-cache/contract-calls/README.md)
+  * [API Overview](aibtc-cache/contract-calls/overview.md)
   * [Read-Only Function Calls](aibtc-cache/contract-calls/read-only-calls.md)
   * [Contract ABI](aibtc-cache/contract-calls/contract-abi.md)
   * [Known Contracts](aibtc-cache/contract-calls/known-contracts.md)
@@ -34,6 +35,7 @@
   * [Clarity Value Types](aibtc-cache/contract-calls/clarity-value-types.md)
   * [Integration Examples](aibtc-cache/contract-calls/integration-examples.md)
 * [Cache Services](aibtc-cache/cache-services.md)
+* [Error Handling](aibtc-cache/error-handling.md)
 * [Utilities](aibtc-cache/utilities.md)
 
 ## Agent Tools

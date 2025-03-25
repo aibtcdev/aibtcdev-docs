@@ -22,6 +22,7 @@ All contract call endpoints are available under:
 
 | Endpoint | Description |
 |----------|-------------|
+| [API Overview](overview.md) | Comprehensive overview of the API architecture and features |
 | [Read-Only Function Calls](read-only-calls.md) | Make read-only calls to smart contract functions |
 | [Contract ABI](contract-abi.md) | Retrieve the ABI for a smart contract |
 | [Known Contracts](known-contracts.md) | List all contracts accessed through the cache |

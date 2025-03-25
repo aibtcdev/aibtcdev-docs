@@ -7,6 +7,7 @@ description: Endpoints for interacting with Stacks smart contracts
 The Contract Calls documentation is organized into the following sections:
 
 - [Overview](contract-calls/README.md) - Introduction to the Contract Calls API
+- [API Overview](contract-calls/overview.md) - Comprehensive overview of the API architecture and features
 - [Read-Only Function Calls](contract-calls/read-only-calls.md) - Make read-only calls to smart contract functions
 - [Contract ABI](contract-calls/contract-abi.md) - Retrieve the ABI for a smart contract
 - [Known Contracts](contract-calls/known-contracts.md) - List all contracts accessed through the cache

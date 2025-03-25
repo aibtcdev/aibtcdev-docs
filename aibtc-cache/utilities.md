@@ -36,6 +36,25 @@ Creates a standardized error response.
 - 
 **Returns:** Response object with standardized format: `{ success: false, error: { id, code, message, details } }`
 
+#### `createSuccessResponse<T>(data: T, status = 200): Response`
+
+Creates a standardized success response with the data wrapped in a success object.
+
+**Parameters:**
+- `data`: The response data to include
+- `status`: HTTP status code, defaults to 200
+
+**Returns:** Response object with standardized format: `{ success: true, data: ... }`
+
+#### `createErrorResponse(error: unknown): Response`
+
+Creates a standardized error response.
+
+**Parameters:**
+- `error`: The error to include (ApiError or any other error)
+- 
+**Returns:** Response object with standardized format: `{ success: false, error: { id, code, message, details } }`
+
 #### `createJsonResponse(body: unknown, status = 200): Response`
 
 **Deprecated:** Use `createSuccessResponse` or `createErrorResponse` instead.

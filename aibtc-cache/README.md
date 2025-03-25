@@ -16,7 +16,7 @@ The cache service is available at the following URLs:
 - **Rate Limiting**: Intelligent rate limiting to prevent exceeding external API quotas
 - **Caching**: KV-based caching with configurable TTLs
 - **Request Queuing**: Orderly processing of requests with automatic retries
-- **Error Handling**: Standardized error responses with detailed information
+- **[Error Handling](error-handling.md)**: Standardized error responses with detailed information
 - **Logging**: Comprehensive logging with performance tracking
 
 ## Available Services

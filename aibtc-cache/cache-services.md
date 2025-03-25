@@ -55,10 +55,11 @@ The `ApiRateLimiterService` provides rate-limited API fetching capabilities.
 
 ### Features
 
-- Caching of API responses
-- Request queuing and rate limiting
-- Automatic retries for failed requests
-- Standardized success/error response format
+- Caching of API responses with configurable TTL
+- Request queuing and rate limiting using token bucket algorithm
+- Automatic retries for failed requests with exponential backoff
+- Standardized success/error response format with detailed error information
+- Performance tracking and logging for monitoring
 
 ### Methods
 
@@ -66,6 +67,7 @@ The `ApiRateLimiterService` provides rate-limited API fetching capabilities.
 - `getQueueLength(): number` - Returns the current length of the request queue
 - `getTokenCount(): number` - Returns the current number of available tokens
 - `getWindowRequestsCount(): number` - Returns the number of requests made in the current time window
+- `getPerformanceStats(): { avgResponseTime: number, slowestRequests: Array<{ endpoint: string, time: number }> }` - Returns performance statistics for API requests
 
 ## Stacks API Service
 

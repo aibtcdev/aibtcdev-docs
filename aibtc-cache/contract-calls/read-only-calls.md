@@ -38,6 +38,8 @@ POST /contract-calls/read-only/{contractAddress}/{contractName}/{functionName}
 
 ## Response Format
 
+All responses follow a standardized format to make integration consistent and error handling predictable.
+
 ### Success Response
 ```json
 {
@@ -50,6 +52,17 @@ POST /contract-calls/read-only/{contractAddress}/{contractName}/{functionName}
   }
 }
 ```
+
+The `data` field contains the decoded Clarity value returned by the contract function. The values are automatically converted to JavaScript/JSON-compatible types:
+
+- Clarity integers become JavaScript numbers (or strings for large numbers)
+- Clarity booleans become JavaScript booleans
+- Clarity strings become JavaScript strings
+- Clarity principals become JavaScript strings
+- Clarity tuples become JavaScript objects
+- Clarity lists become JavaScript arrays
+- Clarity optional values become the value or null
+- Clarity response values become the unwrapped value (the error is thrown if it's an error response)
 
 ### Error Response
 ```json
@@ -65,6 +78,12 @@ POST /contract-calls/read-only/{contractAddress}/{contractName}/{functionName}
   }
 }
 ```
+
+The error response includes:
+- `id`: A unique identifier for the error instance (useful for tracking in logs)
+- `code`: A standardized error code (see Common Error Codes below)
+- `message`: A human-readable description of the error
+- `details`: Additional context-specific information about the error
 
 ## Common Error Codes
 - `INVALID_CONTRACT_ADDRESS` - The contract address is not a valid Stacks address
