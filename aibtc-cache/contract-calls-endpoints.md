@@ -4,9 +4,7 @@ description: Endpoints for interacting with Stacks smart contracts
 
 # Contract Calls Endpoints
 
-> **Note:** This documentation has been reorganized into smaller, more focused pages. Please use the links below to navigate to the specific information you need.
-
-The Contract Calls documentation is now organized into the following sections:
+The Contract Calls documentation is organized into the following sections:
 
 - [Overview](contract-calls/README.md) - Introduction to the Contract Calls API
 - [Read-Only Function Calls](contract-calls/read-only-calls.md) - Make read-only calls to smart contract functions
