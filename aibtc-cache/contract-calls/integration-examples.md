@@ -55,52 +55,91 @@ const decodedResultAlt = await responseAlt.json();
 
 ## Backend Integration
 
-For backend applications, you can use either Stacks.js Clarity values or the simplified format:
+For backend applications in Python, you can use the simplified format without needing any Stacks-specific libraries:
 
-```javascript
-// Node.js example using fetch and @stacks/transactions
-const fetch = require('node-fetch');
-const { uintCV } = require('@stacks/transactions');
-// Or using the clarity namespace
-// const { clarity: cl } = require('@stacks/transactions');
+```python
+import requests
+import json
 
-// Using Stacks.js Clarity values directly
-async function getProposalWithStacksJs(id) {
-  const response = await fetch('https://cache.aibtc.dev/contract-calls/read-only/ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA/media3-action-proposals-v2/get-proposal', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      functionArgs: [uintCV(id)]  // Use Stacks.js Clarity values directly
-      // Or with clarity namespace: [cl.uint(id)]
-    })
-  });
-  
-  return response.json();
-}
+def get_proposal(proposal_id):
+    """
+    Fetch a proposal from the contract using the cache service.
+    
+    Args:
+        proposal_id (int): The ID of the proposal to fetch
+        
+    Returns:
+        dict: The proposal data
+    """
+    url = 'https://cache.aibtc.dev/contract-calls/read-only/ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA/media3-action-proposals-v2/get-proposal'
+    
+    payload = {
+        "functionArgs": [
+            {
+                "type": "uint",
+                "value": str(proposal_id)
+            }
+        ]
+    }
+    
+    response = requests.post(
+        url,
+        headers={'Content-Type': 'application/json'},
+        data=json.dumps(payload)
+    )
+    
+    # Raise an exception for HTTP errors
+    response.raise_for_status()
+    
+    return response.json()
 
-// Using simplified format (no Stacks.js dependency required)
-async function getProposalSimplified(id) {
-  const response = await fetch('https://cache.aibtc.dev/contract-calls/read-only/ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA/media3-action-proposals-v2/get-proposal', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      functionArgs: [
-        {
-          type: 'uint',
-          value: id.toString()
-        }
-      ]
-    })
-  });
-  
-  return response.json();
-}
+def get_token_balance(address, token_contract_address, token_contract_name):
+    """
+    Fetch a token balance for an address.
+    
+    Args:
+        address (str): The Stacks address to check
+        token_contract_address (str): The contract address of the token
+        token_contract_name (str): The contract name of the token
+        
+    Returns:
+        dict: The balance data
+    """
+    url = f'https://cache.aibtc.dev/contract-calls/read-only/{token_contract_address}/{token_contract_name}/get-balance'
+    
+    payload = {
+        "functionArgs": [
+            {
+                "type": "principal",
+                "value": address
+            }
+        ]
+    }
+    
+    response = requests.post(
+        url,
+        headers={'Content-Type': 'application/json'},
+        data=json.dumps(payload)
+    )
+    
+    response.raise_for_status()
+    return response.json()
 
-// Usage
-getProposalWithStacksJs(3).then(proposal => console.log(proposal));
-getProposalSimplified(3).then(proposal => console.log(proposal));
+# Usage examples
+if __name__ == "__main__":
+    try:
+        # Get proposal with ID 3
+        proposal = get_proposal(3)
+        print(f"Proposal data: {json.dumps(proposal, indent=2)}")
+        
+        # Get token balance for an address
+        balance = get_token_balance(
+            "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA",
+            "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA",
+            "media3-token"
+        )
+        print(f"Token balance: {balance}")
+        
+    except requests.exceptions.RequestException as e:
+        print(f"Error making request: {e}")
 ```
