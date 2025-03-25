@@ -1,0 +1,92 @@
+# Decode Clarity Value
+
+This endpoint decodes a Clarity value into a JavaScript/JSON representation. It accepts both Clarity value objects and serialized hexadecimal strings.
+
+## Endpoint
+
+```
+POST /contract-calls/decode-clarity-value
+```
+
+## Request Body
+```json
+{
+  "clarityValue": {
+    "type": "responseOk",
+    "value": {
+      "type": "uint",
+      "value": "123"
+    }
+  },
+  "strictJsonCompat": true,
+  "preserveContainers": false
+}
+```
+
+Or with a serialized string:
+
+```json
+{
+  "clarityValue": "0x0d0000009f4578636974696e67206e6577732c2044414f206d656d6265727321204f75722070726f6a656374206973206d616b696e672066616e7461737469632070726f67726573732c20616e6420776527726520746872696c6c656420746f20736861726520746865206c61746573742075706461746573207769746820796f7520616c6c2e20537461792074756e656420666f72206d6f72652064657461696c7321",
+  "strictJsonCompat": true,
+  "preserveContainers": false
+}
+```
+
+## Request Body Parameters
+- `clarityValue`: The Clarity value to decode (can be a serialized hexadecimal string or a Clarity value object)
+- `strictJsonCompat` (optional): Whether to ensure values are JSON compatible (defaults to `true`)
+- `preserveContainers` (optional): Whether to preserve container types in the output (defaults to `false`)
+
+## Response
+For a Clarity value object:
+```json
+{
+  "original": {
+    "type": "responseOk",
+    "value": {
+      "type": "uint",
+      "value": "123"
+    }
+  },
+  "decoded": 123
+}
+```
+
+For a serialized string (containing a UTF-8 string in this example):
+```json
+{
+  "original": "0x0d0000009f4578636974696e67206e6577732c2044414f206d656d6265727321204f75722070726f6a656374206973206d616b696e672066616e7461737469632070726f67726573732c20616e6420776527726520746872696c6c656420746f20736861726520746865206c61746573742075706461746573207769746820796f7520616c6c2e20537461792074756e656420666f72206d6f72652064657461696c7321",
+  "decoded": "Exciting news, DAO members! Our project is making fantastic progress, and we're thrilled to share the latest updates with you all. Stay tuned for more details!"
+}
+```
+
+## Example Request (cURL) - Clarity Value Object
+
+```bash
+curl -X POST \
+  https://cache.aibtc.dev/contract-calls/decode-clarity-value \
+  -H "Content-Type: application/json" \
+  -d '{"clarityValue": { "type": "uint", "value": "1000" }}' \
+  -w "\n"
+```
+
+## Example Response
+```json
+{"original":{"type":"uint","value":"1000"},"decoded":"1000"}
+```
+
+## Example Request (cURL) - Serialized String
+
+```bash
+curl -X POST \
+  https://cache.aibtc.dev/contract-calls/decode-clarity-value \
+  -H "Content-Type: application/json" \
+  -d '{"clarityValue": "0x0d0000009f4578636974696e67206e6577732c2044414f206d656d6265727321204f75722070726f6a656374206973206d616b696e672066616e7461737469632070726f67726573732c20616e6420776527726520746872696c6c656420746f20736861726520746865206c61746573742075706461746573207769746820796f7520616c6c2e20537461792074756e656420666f72206d6f72652064657461696c7321"}' \
+  -w "\n"
+```
+
+## Example Response
+```json
+{"original":"0x0d0000009f4578636974696e67206e6577732c2044414f206d656d6265727321204f75722070726f6a656374206973206d616b696e672066616e7461737469632070726f67726573732c20616e6420776527726520746872696c6c656420746f20736861726520746865206c61746573742075706461746573207769746820796f7520616c6c2e20537461792074756e656420666f72206d6f72652064657461696c7321","decoded":"Exciting news, DAO members! Our project is making fantastic progress, and we're thrilled to share the latest updates with you all. Stay tuned for more details!"}
+```
