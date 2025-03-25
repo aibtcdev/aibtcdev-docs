@@ -39,7 +39,9 @@ POST /contract-calls/read-only/{contractAddress}/{contractName}/{functionName}
 ## Response
 The function's return value, decoded from Clarity format to JavaScript/JSON.
 
-## Example Request (cURL)
+## Example Requests
+
+### cURL
 
 ```bash
 curl -X POST \
@@ -47,6 +49,71 @@ curl -X POST \
   -H "Content-Type: application/json" \
   -d '{"functionArgs": [{ "type": "uint", "value": "3" }]}' \
   -w "\n"
+```
+
+### Node.js with Stacks.js
+
+```javascript
+import { uintCV } from '@stacks/transactions';
+// Or using the clarity namespace: import { clarity as cl } from '@stacks/transactions';
+
+async function getProposal(proposalId) {
+  // Create function arguments using Stacks.js
+  const functionArgs = [uintCV(proposalId)];
+  
+  const response = await fetch(
+    'https://cache.aibtc.dev/contract-calls/read-only/ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA/media3-action-proposals-v2/get-proposal',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ functionArgs }),
+    }
+  );
+  
+  return response.json();
+}
+
+// Usage
+getProposal(3)
+  .then(proposal => console.log('Proposal:', proposal))
+  .catch(error => console.error('Error:', error));
+```
+
+### Python with Simplified Format
+
+```python
+import requests
+import json
+
+def get_proposal(proposal_id):
+    url = 'https://cache.aibtc.dev/contract-calls/read-only/ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA/media3-action-proposals-v2/get-proposal'
+    
+    payload = {
+        "functionArgs": [
+            {
+                "type": "uint",
+                "value": str(proposal_id)
+            }
+        ]
+    }
+    
+    response = requests.post(
+        url,
+        headers={'Content-Type': 'application/json'},
+        data=json.dumps(payload)
+    )
+    
+    response.raise_for_status()
+    return response.json()
+
+# Usage
+try:
+    proposal = get_proposal(3)
+    print(f"Proposal data: {json.dumps(proposal, indent=2)}")
+except requests.exceptions.RequestException as e:
+    print(f"Error making request: {e}")
 ```
 
 ## Example Response
