@@ -15,10 +15,56 @@ GET /contract-calls/abi/{contractAddress}/{contractName}
 ## Response
 The contract's ABI in JSON format.
 
-## Example Request
+## Example Requests
+
+### cURL
 
 ```bash
 curl https://cache.aibtc.dev/contract-calls/abi/ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA/media3-core-proposals-v2
+```
+
+### Node.js
+
+```javascript
+async function getContractAbi(contractAddress, contractName) {
+  const response = await fetch(
+    `https://cache.aibtc.dev/contract-calls/abi/${contractAddress}/${contractName}`
+  );
+  
+  return response.json();
+}
+
+// Usage
+getContractAbi(
+  'ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA',
+  'media3-core-proposals-v2'
+)
+  .then(abi => console.log('Contract ABI:', abi))
+  .catch(error => console.error('Error:', error));
+```
+
+### Python
+
+```python
+import requests
+import json
+
+def get_contract_abi(contract_address, contract_name):
+    url = f'https://cache.aibtc.dev/contract-calls/abi/{contract_address}/{contract_name}'
+    
+    response = requests.get(url)
+    response.raise_for_status()
+    return response.json()
+
+# Usage
+try:
+    abi = get_contract_abi(
+        'ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA',
+        'media3-core-proposals-v2'
+    )
+    print(f"Contract ABI: {json.dumps(abi, indent=2)}")
+except requests.exceptions.RequestException as e:
+    print(f"Error making request: {e}")
 ```
 
 ## Example Response
