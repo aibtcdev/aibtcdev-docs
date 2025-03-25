@@ -36,8 +36,42 @@ POST /contract-calls/read-only/{contractAddress}/{contractName}/{functionName}
 - `strictJsonCompat` (optional): Whether to ensure values are JSON compatible (defaults to `true`)
 - `preserveContainers` (optional): Whether to preserve container types in the output (defaults to `false`)
 
-## Response
-The function's return value, decoded from Clarity format to JavaScript/JSON.
+## Response Format
+
+### Success Response
+```json
+{
+  "success": true,
+  "data": {
+    // The decoded function return value
+    "action": "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media3-action-send-message",
+    "bond": "100000000000",
+    // ... other fields
+  }
+}
+```
+
+### Error Response
+```json
+{
+  "success": false,
+  "error": {
+    "id": "unique-error-id",
+    "code": "ERROR_CODE",
+    "message": "Human-readable error message",
+    "details": {
+      // Optional additional error details
+    }
+  }
+}
+```
+
+## Common Error Codes
+- `INVALID_CONTRACT_ADDRESS` - The contract address is not a valid Stacks address
+- `INVALID_FUNCTION` - The function doesn't exist in the contract ABI
+- `INVALID_ARGUMENTS` - The arguments don't match what the function expects
+- `UPSTREAM_API_ERROR` - Error from the Stacks API when calling the function
+- `VALIDATION_ERROR` - Error validating the request parameters
 
 ## Example Requests
 
@@ -72,7 +106,13 @@ async function getProposal(proposalId) {
     }
   );
   
-  return response.json();
+  const result = await response.json();
+  
+  if (result.success) {
+    return result.data;
+  } else {
+    throw new Error(`API Error: ${result.error.code} - ${result.error.message}`);
+  }
 }
 
 // Usage
@@ -106,35 +146,61 @@ def get_proposal(proposal_id):
     )
     
     response.raise_for_status()
-    return response.json()
+    result = response.json()
+    
+    if result.get('success'):
+        return result['data']
+    else:
+        error = result.get('error', {})
+        raise Exception(f"API Error: {error.get('code')} - {error.get('message')}")
 
 # Usage
 try:
     proposal = get_proposal(3)
     print(f"Proposal data: {json.dumps(proposal, indent=2)}")
-except requests.exceptions.RequestException as e:
-    print(f"Error making request: {e}")
+except Exception as e:
+    print(f"Error: {e}")
 ```
 
 ## Example Response
 
+### Success Response
 ```json
 {
-  "action": "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media3-action-send-message",
-  "bond": "100000000000",
-  "caller": "ST1F8Z1TDZQVP9P0D05VAW5MHKS2EYXZZ1PDE9Q8A",
-  "concluded": false,
-  "createdAt": "586130",
-  "creator": "ST1F8Z1TDZQVP9P0D05VAW5MHKS2EYXZZ1PDE9Q8A",
-  "endBlock": "27570",
-  "executed": false,
-  "liquidTokens": "2104509663564782",
-  "metQuorum": false,
-  "metThreshold": false,
-  "parameters": "0x0d0000009f4578636974696e67206e6577732c2044414f206d656d6265727321204f75722070726f6a656374206973206d616b696e672066616e7461737469632070726f67726573732c20616e6420776527726520746872696c6c656420746f20736861726520746865206c61746573742075706461746573207769746820796f7520616c6c2e20537461792074756e656420666f72206d6f72652064657461696c7321",
-  "passed": false,
-  "startBlock": "27566",
-  "votesAgainst": "650503728846681",
-  "votesFor": "0"
+  "success": true,
+  "data": {
+    "action": "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media3-action-send-message",
+    "bond": "100000000000",
+    "caller": "ST1F8Z1TDZQVP9P0D05VAW5MHKS2EYXZZ1PDE9Q8A",
+    "concluded": false,
+    "createdAt": "586130",
+    "creator": "ST1F8Z1TDZQVP9P0D05VAW5MHKS2EYXZZ1PDE9Q8A",
+    "endBlock": "27570",
+    "executed": false,
+    "liquidTokens": "2104509663564782",
+    "metQuorum": false,
+    "metThreshold": false,
+    "parameters": "0x0d0000009f4578636974696e67206e6577732c2044414f206d656d6265727321204f75722070726f6a656374206973206d616b696e672066616e7461737469632070726f67726573732c20616e6420776527726520746872696c6c656420746f20736861726520746865206c61746573742075706461746573207769746820796f7520616c6c2e20537461792074756e656420666f72206d6f72652064657461696c7321",
+    "passed": false,
+    "startBlock": "27566",
+    "votesAgainst": "650503728846681",
+    "votesFor": "0"
+  }
+}
+```
+
+### Error Response Example
+```json
+{
+  "success": false,
+  "error": {
+    "id": "a1b2c3",
+    "code": "INVALID_FUNCTION",
+    "message": "Function get-proposals not found in contract ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media3-action-proposals-v2",
+    "details": {
+      "function": "get-proposals",
+      "contract": "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media3-action-proposals-v2"
+    }
+  }
 }
 ```
