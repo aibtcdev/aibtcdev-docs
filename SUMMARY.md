@@ -22,6 +22,13 @@
 * [Smart Wallet](aibtc-dao-structure/smart-wallet/README.md)
   * [Smart Wallet Prompts](aibtc-dao-structure/smart-wallet/smart-wallet-prompts.md)
 
+## AIBTC Cache
+
+* [Overview](aibtc-cache/README.md)
+* [Contract Calls Endpoints](aibtc-cache/contract-calls-endpoints.md)
+* [Cache Services](aibtc-cache/cache-services.md)
+* [Utilities](aibtc-cache/utilities.md)
+
 ## Agent Tools
 
 * [Overview](agent-tools/README.md)
