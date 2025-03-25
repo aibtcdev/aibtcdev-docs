@@ -23,43 +23,363 @@ curl https://cache.aibtc.dev/contract-calls/abi/ST252TFQ08T74ZZ6XK426TQNV4EXF1D4
 
 ## Example Response
 
+### Core Proposals Contract ABI
+
 ```json
 {
   "functions": [
     {
-      "name": "get-proposal",
-      "access": "read_only",
+      "name": "get-block-hash",
+      "access": "private",
       "args": [
         {
-          "name": "id",
+          "name": "blockHeight",
           "type": "uint128"
         }
       ],
       "outputs": {
         "type": {
-          "tuple": [
-            {
-              "name": "action",
-              "type": "principal"
-            },
-            {
-              "name": "bond",
-              "type": "uint128"
-            },
-            // ... other fields
-          ]
+          "optional": {
+            "buffer": {
+              "length": 32
+            }
+          }
         }
       }
     },
-    // ... other functions
+    {
+      "name": "is-dao-or-extension",
+      "access": "private",
+      "args": [],
+      "outputs": {
+        "type": {
+          "response": {
+            "ok": "bool",
+            "error": "uint128"
+          }
+        }
+      }
+    },
+    {
+      "name": "get-proposal",
+      "access": "read_only",
+      "args": [
+        {
+          "name": "proposal",
+          "type": "principal"
+        }
+      ],
+      "outputs": {
+        "type": {
+          "optional": {
+            "tuple": [
+              {
+                "name": "bond",
+                "type": "uint128"
+              },
+              {
+                "name": "caller",
+                "type": "principal"
+              },
+              {
+                "name": "concluded",
+                "type": "bool"
+              },
+              {
+                "name": "createdAt",
+                "type": "uint128"
+              },
+              {
+                "name": "creator",
+                "type": "principal"
+              },
+              {
+                "name": "endBlock",
+                "type": "uint128"
+              },
+              {
+                "name": "executed",
+                "type": "bool"
+              },
+              {
+                "name": "liquidTokens",
+                "type": "uint128"
+              },
+              {
+                "name": "metQuorum",
+                "type": "bool"
+              },
+              {
+                "name": "metThreshold",
+                "type": "bool"
+              },
+              {
+                "name": "passed",
+                "type": "bool"
+              },
+              {
+                "name": "startBlock",
+                "type": "uint128"
+              },
+              {
+                "name": "votesAgainst",
+                "type": "uint128"
+              },
+              {
+                "name": "votesFor",
+                "type": "uint128"
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "vote-on-proposal",
+      "access": "public",
+      "args": [
+        {
+          "name": "proposal",
+          "type": "trait_reference"
+        },
+        {
+          "name": "vote",
+          "type": "bool"
+        }
+      ],
+      "outputs": {
+        "type": {
+          "response": {
+            "ok": "bool",
+            "error": "uint128"
+          }
+        }
+      }
+    }
   ],
   "variables": [
-    // ... contract variables
+    {
+      "name": "ERR_ALREADY_VOTED",
+      "type": {
+        "response": {
+          "ok": "none",
+          "error": "uint128"
+        }
+      },
+      "access": "constant"
+    },
+    {
+      "name": "VOTING_DELAY",
+      "type": "uint128",
+      "access": "constant"
+    },
+    {
+      "name": "VOTING_PERIOD",
+      "type": "uint128",
+      "access": "constant"
+    },
+    {
+      "name": "proposalBond",
+      "type": "uint128",
+      "access": "variable"
+    }
   ],
   "maps": [
-    // ... contract maps
+    {
+      "name": "Proposals",
+      "key": "principal",
+      "value": {
+        "tuple": [
+          {
+            "name": "bond",
+            "type": "uint128"
+          },
+          {
+            "name": "caller",
+            "type": "principal"
+          },
+          {
+            "name": "concluded",
+            "type": "bool"
+          },
+          {
+            "name": "createdAt",
+            "type": "uint128"
+          },
+          {
+            "name": "creator",
+            "type": "principal"
+          },
+          {
+            "name": "endBlock",
+            "type": "uint128"
+          },
+          {
+            "name": "executed",
+            "type": "bool"
+          },
+          {
+            "name": "liquidTokens",
+            "type": "uint128"
+          },
+          {
+            "name": "metQuorum",
+            "type": "bool"
+          },
+          {
+            "name": "metThreshold",
+            "type": "bool"
+          },
+          {
+            "name": "passed",
+            "type": "bool"
+          },
+          {
+            "name": "startBlock",
+            "type": "uint128"
+          },
+          {
+            "name": "votesAgainst",
+            "type": "uint128"
+          },
+          {
+            "name": "votesFor",
+            "type": "uint128"
+          }
+        ]
+      }
+    }
   ],
   "fungible_tokens": [],
-  "non_fungible_tokens": []
+  "non_fungible_tokens": [],
+  "epoch": "Epoch31",
+  "clarity_version": "Clarity3"
+}
+```
+
+### Token Contract ABI Example
+
+```bash
+curl https://cache.aibtc.dev/contract-calls/abi/ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA/media3-faktory
+```
+
+```json
+{
+  "functions": [
+    {
+      "name": "get-balance",
+      "access": "read_only",
+      "args": [
+        {
+          "name": "account",
+          "type": "principal"
+        }
+      ],
+      "outputs": {
+        "type": {
+          "response": {
+            "ok": "uint128",
+            "error": "none"
+          }
+        }
+      }
+    },
+    {
+      "name": "get-name",
+      "access": "read_only",
+      "args": [],
+      "outputs": {
+        "type": {
+          "response": {
+            "ok": {
+              "string-ascii": {
+                "length": 13
+              }
+            },
+            "error": "none"
+          }
+        }
+      }
+    },
+    {
+      "name": "get-symbol",
+      "access": "read_only",
+      "args": [],
+      "outputs": {
+        "type": {
+          "response": {
+            "ok": {
+              "string-ascii": {
+                "length": 6
+              }
+            },
+            "error": "none"
+          }
+        }
+      }
+    },
+    {
+      "name": "transfer",
+      "access": "public",
+      "args": [
+        {
+          "name": "amount",
+          "type": "uint128"
+        },
+        {
+          "name": "sender",
+          "type": "principal"
+        },
+        {
+          "name": "recipient",
+          "type": "principal"
+        },
+        {
+          "name": "memo",
+          "type": {
+            "optional": {
+              "buffer": {
+                "length": 34
+              }
+            }
+          }
+        }
+      ],
+      "outputs": {
+        "type": {
+          "response": {
+            "ok": "bool",
+            "error": "uint128"
+          }
+        }
+      }
+    }
+  ],
+  "variables": [
+    {
+      "name": "ERR-NOT-AUTHORIZED",
+      "type": "uint128",
+      "access": "constant"
+    },
+    {
+      "name": "MAX",
+      "type": "uint128",
+      "access": "constant"
+    },
+    {
+      "name": "contract-owner",
+      "type": "principal",
+      "access": "variable"
+    }
+  ],
+  "maps": [],
+  "fungible_tokens": [
+    {
+      "name": "MEDIA3"
+    }
+  ],
+  "non_fungible_tokens": [],
+  "epoch": "Epoch31",
+  "clarity_version": "Clarity3"
 }
 ```
