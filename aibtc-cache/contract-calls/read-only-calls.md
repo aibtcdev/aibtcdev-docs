@@ -55,7 +55,7 @@ curl -X POST \
 
 ```javascript
 import { uintCV } from '@stacks/transactions';
-// Or using the clarity namespace: import { clarity as cl } from '@stacks/transactions';
+// Or using the clarity namespace: import { Cl } from '@stacks/transactions';
 
 async function getProposal(proposalId) {
   // Create function arguments using Stacks.js

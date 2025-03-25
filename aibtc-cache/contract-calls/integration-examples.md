@@ -11,7 +11,7 @@ import {
   uintCV
 } from '@stacks/transactions';
 // Or using the clarity namespace
-// import { clarity as cl } from '@stacks/transactions';
+// import { Cl } from '@stacks/transactions';
 
 // Using Stacks.js directly (without cache)
 const result = await callReadOnlyFunction({
