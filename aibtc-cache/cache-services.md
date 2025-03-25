@@ -11,6 +11,7 @@ The `CacheService` provides a simple interface for caching data in Cloudflare KV
 - JSON serialization/deserialization with BigInt support
 - Configurable TTL (Time-To-Live)
 - Option to cache items indefinitely
+- Error handling with standardized ApiError responses
 
 ### Methods
 
@@ -41,6 +42,7 @@ The `RequestQueue<T>` manages a queue of requests with rate limiting and automat
 - Rate limiting using the token bucket algorithm
 - Automatic retries with exponential backoff
 - Minimum request spacing to prevent bursts
+- Comprehensive error handling and logging
 
 ### Methods
 
@@ -56,6 +58,7 @@ The `ApiRateLimiterService` provides rate-limited API fetching capabilities.
 - Caching of API responses
 - Request queuing and rate limiting
 - Automatic retries for failed requests
+- Standardized success/error response format
 
 ### Methods
 
@@ -67,6 +70,12 @@ The `ApiRateLimiterService` provides rate-limited API fetching capabilities.
 ## Stacks API Service
 
 The `StacksApiService` provides methods for interacting with the Stacks blockchain API.
+
+### Features
+
+- Performance tracking for slow contract calls
+- Comprehensive error handling with ApiError
+- Detailed logging
 
 ### Methods
 
@@ -81,6 +90,7 @@ The `StacksContractFetcher` handles fetching data from Stacks smart contracts wi
 - Caching of contract call responses
 - Rate limiting and request queuing
 - Automatic retries for failed requests
+- Network validation
 
 ### Methods
 
@@ -95,6 +105,7 @@ The `ContractAbiService` handles fetching and managing Clarity smart contract AB
 - Caching of contract ABIs (indefinitely, as they don't change)
 - Validation of function calls against ABIs
 - Tracking of known contracts
+- Address validation
 
 ### Methods
 

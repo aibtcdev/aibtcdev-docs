@@ -12,8 +12,42 @@ GET /contract-calls/abi/{contractAddress}/{contractName}
 - `contractAddress`: The principal address of the contract
 - `contractName`: The name of the contract
 
-## Response
-The contract's ABI in JSON format.
+## Response Format
+
+### Success Response
+```json
+{
+  "success": true,
+  "data": {
+    "functions": [...],
+    "variables": [...],
+    "maps": [...],
+    "fungible_tokens": [...],
+    "non_fungible_tokens": [...],
+    "epoch": "Epoch31",
+    "clarity_version": "Clarity3"
+  }
+}
+```
+
+### Error Response
+```json
+{
+  "success": false,
+  "error": {
+    "id": "unique-error-id",
+    "code": "ERROR_CODE",
+    "message": "Human-readable error message",
+    "details": {
+      // Optional additional error details
+    }
+  }
+}
+```
+
+## Common Error Codes
+- `INVALID_CONTRACT_ADDRESS` - The contract address is not a valid Stacks address
+- `UPSTREAM_API_ERROR` - Error from the Stacks API when fetching the ABI
 
 ## Example Requests
 
@@ -31,7 +65,13 @@ async function getContractAbi(contractAddress, contractName) {
     `https://cache.aibtc.dev/contract-calls/abi/${contractAddress}/${contractName}`
   );
   
-  return response.json();
+  const result = await response.json();
+  
+  if (result.success) {
+    return result.data;
+  } else {
+    throw new Error(`API Error: ${result.error.code} - ${result.error.message}`);
+  }
 }
 
 // Usage
@@ -54,7 +94,13 @@ def get_contract_abi(contract_address, contract_name):
     
     response = requests.get(url)
     response.raise_for_status()
-    return response.json()
+    result = response.json()
+    
+    if result.get('success'):
+        return result['data']
+    else:
+        error = result.get('error', {})
+        raise Exception(f"API Error: {error.get('code')} - {error.get('message')}")
 
 # Usage
 try:
@@ -63,8 +109,8 @@ try:
         'media3-core-proposals-v2'
     )
     print(f"Contract ABI: {json.dumps(abi, indent=2)}")
-except requests.exceptions.RequestException as e:
-    print(f"Error making request: {e}")
+except Exception as e:
+    print(f"Error: {e}")
 ```
 
 ## Example Response

@@ -8,6 +8,34 @@ This endpoint lists all contracts that have been accessed through the cache and 
 GET /contract-calls/known-contracts
 ```
 
+## Response Format
+
+### Success Response
+```json
+{
+  "success": true,
+  "data": {
+    "stats": {
+      "total": 10,
+      "cached": 10
+    },
+    "contracts": {
+      "cached": [
+        {
+          "contractAddress": "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA",
+          "contractName": "media3-core-proposals-v2"
+        },
+        {
+          "contractAddress": "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA",
+          "contractName": "media3-faktory"
+        },
+        // ... other contracts
+      ]
+    }
+  }
+}
+```
+
 ## Example Requests
 
 ### cURL
@@ -24,12 +52,21 @@ async function getKnownContracts() {
     'https://cache.aibtc.dev/contract-calls/known-contracts'
   );
   
-  return response.json();
+  const result = await response.json();
+  
+  if (result.success) {
+    return result.data;
+  } else {
+    throw new Error(`API Error: ${result.error.code} - ${result.error.message}`);
+  }
 }
 
 // Usage
 getKnownContracts()
-  .then(contracts => console.log('Known contracts:', contracts))
+  .then(data => {
+    console.log(`Total contracts: ${data.stats.total}`);
+    console.log('Known contracts:', data.contracts.cached);
+  })
   .catch(error => console.error('Error:', error));
 ```
 
@@ -44,54 +81,19 @@ def get_known_contracts():
     
     response = requests.get(url)
     response.raise_for_status()
-    return response.json()
+    result = response.json()
+    
+    if result.get('success'):
+        return result['data']
+    else:
+        error = result.get('error', {})
+        raise Exception(f"API Error: {error.get('code')} - {error.get('message')}")
 
 # Usage
 try:
-    contracts = get_known_contracts()
-    print(f"Known contracts: {json.dumps(contracts, indent=2)}")
-except requests.exceptions.RequestException as e:
-    print(f"Error making request: {e}")
-```
-
-## Response
-
-### Current Format
-```json
-{
-  "stats": {
-    "total": 10,
-    "cached": 10
-  },
-  "contracts": {
-    "cached": [
-      {
-        "contractAddress": "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA",
-        "contractName": "media3-core-proposals-v2"
-      },
-      {
-        "contractAddress": "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA",
-        "contractName": "media3-faktory"
-      },
-      // ... other contracts
-    ]
-  }
-}
-```
-
-### Alternative Format (String Array)
-```json
-{
-  "stats": {
-    "total": 10,
-    "cached": 10
-  },
-  "contracts": {
-    "cached": [
-      "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media3-core-proposals-v2",
-      "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media3-faktory",
-      // ... other contracts
-    ]
-  }
-}
+    data = get_known_contracts()
+    print(f"Total contracts: {data['stats']['total']}")
+    print(f"Known contracts: {json.dumps(data['contracts']['cached'], indent=2)}")
+except Exception as e:
+    print(f"Error: {e}")
 ```

@@ -33,7 +33,13 @@ const response = await fetch('https://cache.aibtc.dev/contract-calls/read-only/S
     functionArgs: [uintCV(3)]  // Use the same Stacks.js Clarity values directly
   })
 });
-const decodedResult = await response.json();
+const result = await response.json();
+if (result.success) {
+  const decodedResult = result.data;
+  console.log('Proposal data:', decodedResult);
+} else {
+  console.error('Error:', result.error);
+}
 
 // Alternatively, you can use the simplified format
 const responseAlt = await fetch('https://cache.aibtc.dev/contract-calls/read-only/ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA/media3-action-proposals-v2/get-proposal', {
@@ -50,7 +56,13 @@ const responseAlt = await fetch('https://cache.aibtc.dev/contract-calls/read-onl
     ]
   })
 });
-const decodedResultAlt = await responseAlt.json();
+const resultAlt = await responseAlt.json();
+if (resultAlt.success) {
+  const decodedResultAlt = resultAlt.data;
+  console.log('Proposal data (alt):', decodedResultAlt);
+} else {
+  console.error('Error (alt):', resultAlt.error);
+}
 ```
 
 ## Backend Integration
@@ -91,7 +103,12 @@ def get_proposal(proposal_id):
     # Raise an exception for HTTP errors
     response.raise_for_status()
     
-    return response.json()
+    result = response.json()
+    if result.get('success'):
+        return result['data']
+    else:
+        error = result.get('error', {})
+        raise Exception(f"API Error: {error.get('code')} - {error.get('message')}")
 
 def get_token_balance(address, token_contract_address, token_contract_name):
     """
@@ -123,7 +140,13 @@ def get_token_balance(address, token_contract_address, token_contract_name):
     )
     
     response.raise_for_status()
-    return response.json()
+    result = response.json()
+    
+    if result.get('success'):
+        return result['data']
+    else:
+        error = result.get('error', {})
+        raise Exception(f"API Error: {error.get('code')} - {error.get('message')}")
 
 # Usage examples
 if __name__ == "__main__":
@@ -140,6 +163,147 @@ if __name__ == "__main__":
         )
         print(f"Token balance: {balance}")
         
+    except Exception as e:
+        print(f"Error: {e}")
+```
+
+## Error Handling Examples
+
+### JavaScript Error Handling
+
+```javascript
+async function callContract(contractAddress, contractName, functionName, args) {
+  try {
+    const response = await fetch(
+      `https://cache.aibtc.dev/contract-calls/read-only/${contractAddress}/${contractName}/${functionName}`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          functionArgs: args
+        })
+      }
+    );
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      return result.data;
+    } else {
+      // Handle specific error codes
+      switch (result.error.code) {
+        case 'INVALID_CONTRACT_ADDRESS':
+          console.error('The contract address is invalid:', result.error.details.address);
+          break;
+        case 'INVALID_FUNCTION':
+          console.error(`Function ${result.error.details.function} not found in contract`);
+          break;
+        case 'INVALID_ARGUMENTS':
+          console.error(`Invalid arguments: ${result.error.details.reason}`);
+          break;
+        case 'UPSTREAM_API_ERROR':
+          console.error('Error from Stacks API:', result.error.message);
+          break;
+        default:
+          console.error(`Error: ${result.error.code} - ${result.error.message}`);
+      }
+      
+      throw new Error(`API Error: ${result.error.code} - ${result.error.message}`);
+    }
+  } catch (error) {
+    // Handle network errors or other exceptions
+    console.error('Failed to call contract:', error);
+    throw error;
+  }
+}
+```
+
+### Python Error Handling
+
+```python
+import requests
+import json
+
+class ApiError(Exception):
+    def __init__(self, code, message, details=None, error_id=None):
+        self.code = code
+        self.message = message
+        self.details = details or {}
+        self.error_id = error_id
+        super().__init__(f"{code}: {message}")
+
+def call_contract(contract_address, contract_name, function_name, args):
+    """
+    Call a read-only contract function with error handling
+    
+    Args:
+        contract_address (str): The contract address
+        contract_name (str): The contract name
+        function_name (str): The function to call
+        args (list): The function arguments
+        
+    Returns:
+        The function result
+        
+    Raises:
+        ApiError: If the API returns an error
+        requests.RequestException: For network-related errors
+    """
+    url = f'https://cache.aibtc.dev/contract-calls/read-only/{contract_address}/{contract_name}/{function_name}'
+    
+    payload = {
+        "functionArgs": args
+    }
+    
+    try:
+        response = requests.post(
+            url,
+            headers={'Content-Type': 'application/json'},
+            data=json.dumps(payload)
+        )
+        
+        # Raise HTTP errors
+        response.raise_for_status()
+        
+        result = response.json()
+        
+        if result.get('success'):
+            return result['data']
+        else:
+            error = result.get('error', {})
+            raise ApiError(
+                code=error.get('code', 'UNKNOWN_ERROR'),
+                message=error.get('message', 'Unknown error occurred'),
+                details=error.get('details'),
+                error_id=error.get('id')
+            )
+            
     except requests.exceptions.RequestException as e:
-        print(f"Error making request: {e}")
+        print(f"Network error: {e}")
+        raise
+        
+# Usage example with error handling
+try:
+    result = call_contract(
+        "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA",
+        "media3-action-proposals-v2",
+        "get-proposal",
+        [{"type": "uint", "value": "3"}]
+    )
+    print(f"Success: {json.dumps(result, indent=2)}")
+    
+except ApiError as e:
+    print(f"API Error ({e.code}): {e.message}")
+    if e.details:
+        print(f"Details: {json.dumps(e.details, indent=2)}")
+    if e.error_id:
+        print(f"Error ID: {e.error_id}")
+        
+except requests.exceptions.RequestException as e:
+    print(f"Network error: {e}")
+    
+except Exception as e:
+    print(f"Unexpected error: {e}")
 ```

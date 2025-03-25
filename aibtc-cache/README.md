@@ -16,6 +16,8 @@ The cache service is available at the following URLs:
 - **Rate Limiting**: Intelligent rate limiting to prevent exceeding external API quotas
 - **Caching**: KV-based caching with configurable TTLs
 - **Request Queuing**: Orderly processing of requests with automatic retries
+- **Error Handling**: Standardized error responses with detailed information
+- **Logging**: Comprehensive logging with performance tracking
 
 ## Available Services
 
@@ -34,6 +36,35 @@ The cache uses a multi-layered approach:
 2. **Durable Object Layer**: Maintains state and handles service-specific logic
 3. **Service Layer**: Provides reusable services for API interactions, caching, and rate limiting
 4. **Utility Layer**: Common utilities for request/response handling and data transformation
+
+## Response Format
+
+All API responses follow a standardized format:
+
+### Success Response
+```json
+{
+  "success": true,
+  "data": {
+    // The actual response data
+  }
+}
+```
+
+### Error Response
+```json
+{
+  "success": false,
+  "error": {
+    "id": "unique-error-id",
+    "code": "ERROR_CODE",
+    "message": "Human-readable error message",
+    "details": {
+      // Optional additional error details
+    }
+  }
+}
+```
 
 ## Getting Started
 
@@ -58,7 +89,13 @@ fetch('https://cache.aibtc.dev/contract-calls/read-only/ST252TFQ08T74ZZ6XK426TQN
   })
 })
 .then(response => response.json())
-.then(data => console.log(data));
+.then(result => {
+  if (result.success) {
+    console.log('Proposal data:', result.data);
+  } else {
+    console.error('Error:', result.error);
+  }
+});
 ```
 
 ### Example: Fetching a contract ABI
@@ -67,5 +104,11 @@ fetch('https://cache.aibtc.dev/contract-calls/read-only/ST252TFQ08T74ZZ6XK426TQN
 // Example: Fetch the ABI for media3-core-proposals-v2
 fetch('https://cache.aibtc.dev/contract-calls/abi/ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA/media3-core-proposals-v2')
 .then(response => response.json())
-.then(abi => console.log(abi));
+.then(result => {
+  if (result.success) {
+    console.log('Contract ABI:', result.data);
+  } else {
+    console.error('Error:', result.error);
+  }
+});
 ```
