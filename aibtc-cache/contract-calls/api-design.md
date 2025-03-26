@@ -39,7 +39,10 @@ All endpoints return responses in a consistent format:
 
 - Responses are cached to reduce API calls and improve performance
 - Default TTL (Time-To-Live) is configurable per endpoint
-- Cache can be bypassed with the `bustCache` parameter
+- Cache control options provide fine-grained control:
+  - `bustCache`: Bypass the cache and force a fresh request
+  - `skipCache`: Don't cache the result of this specific request
+  - `ttl`: Set a custom TTL for this specific request
 
 ### Rate Limiting
 
@@ -105,6 +108,8 @@ Implement specific handling for common error codes:
 
 - Use consistent cache keys for the same data
 - Only use `bustCache` when you need the latest data
+- Use `skipCache` for frequently changing data that shouldn't be cached
+- Set custom `ttl` values based on how frequently the data changes
 - Group related calls to minimize API requests
 
 ### Working with BigInt Values

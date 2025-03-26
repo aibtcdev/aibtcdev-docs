@@ -30,7 +30,8 @@ const response = await fetch('https://cache.aibtc.dev/contract-calls/read-only/S
     'Content-Type': 'application/json',
   },
   body: JSON.stringify({
-    functionArgs: [uintCV(3)]  // Use the same Stacks.js Clarity values directly
+    functionArgs: [uintCV(3)],  // Use the same Stacks.js Clarity values directly
+    network: 'testnet'  // Specify the network explicitly
   })
 });
 const result = await response.json();
@@ -53,7 +54,8 @@ const responseAlt = await fetch('https://cache.aibtc.dev/contract-calls/read-onl
         type: 'uint',
         value: '3'
       }
-    ]
+    ],
+    network: 'testnet'
   })
 });
 const resultAlt = await responseAlt.json();
@@ -62,6 +64,33 @@ if (resultAlt.success) {
   console.log('Proposal data (alt):', decodedResultAlt);
 } else {
   console.error('Error (alt):', resultAlt.error);
+}
+
+// Example with cache control options
+const responseWithCacheControl = await fetch('https://cache.aibtc.dev/contract-calls/read-only/ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA/media3-action-proposals-v2/get-proposal', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    functionArgs: [
+      {
+        type: 'uint',
+        value: '3'
+      }
+    ],
+    network: 'mainnet',
+    cacheControl: {
+      bustCache: true,  // Force a fresh request, bypassing the cache
+      ttl: 3600         // Cache this result for 1 hour (3600 seconds)
+    }
+  })
+});
+const resultWithCacheControl = await responseWithCacheControl.json();
+if (resultWithCacheControl.success) {
+  console.log('Fresh data with custom TTL:', resultWithCacheControl.data);
+} else {
+  console.error('Error:', resultWithCacheControl.error);
 }
 ```
 
@@ -73,12 +102,14 @@ For backend applications in Python, you can use the simplified format without ne
 import requests
 import json
 
-def get_proposal(proposal_id):
+def get_proposal(proposal_id, network='testnet', bust_cache=False):
     """
     Fetch a proposal from the contract using the cache service.
     
     Args:
         proposal_id (int): The ID of the proposal to fetch
+        network (str): The Stacks network to use ('mainnet' or 'testnet')
+        bust_cache (bool): Whether to bypass the cache and force a fresh request
         
     Returns:
         dict: The proposal data
@@ -91,7 +122,11 @@ def get_proposal(proposal_id):
                 "type": "uint",
                 "value": str(proposal_id)
             }
-        ]
+        ],
+        "network": network,
+        "cacheControl": {
+            "bustCache": bust_cache
+        }
     }
     
     response = requests.post(
@@ -110,7 +145,7 @@ def get_proposal(proposal_id):
         error = result.get('error', {})
         raise Exception(f"API Error: {error.get('code')} - {error.get('message')}")
 
-def get_token_balance(address, token_contract_address, token_contract_name):
+def get_token_balance(address, token_contract_address, token_contract_name, network='mainnet', custom_ttl=None):
     """
     Fetch a token balance for an address.
     
@@ -118,20 +153,30 @@ def get_token_balance(address, token_contract_address, token_contract_name):
         address (str): The Stacks address to check
         token_contract_address (str): The contract address of the token
         token_contract_name (str): The contract name of the token
+        network (str): The Stacks network to use ('mainnet' or 'testnet')
+        custom_ttl (int, optional): Custom cache TTL in seconds
         
     Returns:
         dict: The balance data
     """
     url = f'https://cache.aibtc.dev/contract-calls/read-only/{token_contract_address}/{token_contract_name}/get-balance'
     
+    # Build the payload with cache control options if needed
     payload = {
         "functionArgs": [
             {
                 "type": "principal",
                 "value": address
             }
-        ]
+        ],
+        "network": network
     }
+    
+    # Add cache control options if a custom TTL is specified
+    if custom_ttl is not None:
+        payload["cacheControl"] = {
+            "ttl": custom_ttl
+        }
     
     response = requests.post(
         url,
@@ -151,17 +196,33 @@ def get_token_balance(address, token_contract_address, token_contract_name):
 # Usage examples
 if __name__ == "__main__":
     try:
-        # Get proposal with ID 3
-        proposal = get_proposal(3)
+        # Get proposal with ID 3 from testnet
+        proposal = get_proposal(3, network='testnet')
         print(f"Proposal data: {json.dumps(proposal, indent=2)}")
         
-        # Get token balance for an address
+        # Get fresh proposal data (bypass cache)
+        fresh_proposal = get_proposal(3, network='testnet', bust_cache=True)
+        print(f"Fresh proposal data: {json.dumps(fresh_proposal, indent=2)}")
+        
+        # Get token balance for an address on mainnet with custom TTL
         balance = get_token_balance(
             "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA",
             "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA",
-            "media3-token"
+            "media3-token",
+            network='mainnet',
+            custom_ttl=600  # Cache for 10 minutes
         )
         print(f"Token balance: {balance}")
+        
+        # Example of skipping cache for a frequently changing value
+        latest_price = get_token_balance(
+            "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA",
+            "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR",
+            "usda-token",
+            network='mainnet',
+            custom_ttl=0  # Don't cache this result
+        )
+        print(f"Latest price: {latest_price}")
         
     except Exception as e:
         print(f"Error: {e}")
