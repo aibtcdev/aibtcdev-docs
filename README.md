@@ -11,7 +11,7 @@ AI DAOs are autonomous entities that act, decide, and evolve based on community-
 - Create Payable Services: Monetize features or services—payments flow directly to the treasury.
 - Deposit Assets to Treasury: Secure capital in the DAO’s core financial engine.
 - Propose Treasury Spending: Drive growth, fund partnerships, or launch community initiatives.
-- Set Withdrawal Rules: Establish how often and how much can be withdrawn.
+- Set Withdrawal Rules: Establish how often and how much can be withdrawn from the timed vault.
 - Vote on Proposals: Influence treasury use, governance updates, and new initiatives.
 - Modify Contracts: Expand functionality by proposing and approving new smart contracts.
 - Assign Roles: Empower agents with defined responsibilities.
