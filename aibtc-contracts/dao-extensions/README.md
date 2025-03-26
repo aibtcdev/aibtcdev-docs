@@ -28,7 +28,7 @@ Extensions follow a consistent pattern:
 | Extension | Purpose | Key Features |
 |-----------|---------|--------------|
 | [Action Proposals](action-proposals.md) | Lower-threshold governance | Predefined actions, faster voting |
-| [Bank Account](bank-account.md) | Operational fund management | Periodic withdrawals, controlled spending |
+| [Timed Vault](timed-vault.md) | Operational fund management | Periodic withdrawals, controlled spending |
 | [Core Proposals](core-proposals.md) | High-threshold governance | Arbitrary code execution, high security |
 | [DAO Charter](dao-charter.md) | Mission and values | On-chain organizational constitution |
 | [Onchain Messaging](onchain-messaging.md) | Communication | Verified DAO messages, permanent records |

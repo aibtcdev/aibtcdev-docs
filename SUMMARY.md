@@ -8,7 +8,7 @@
 - [DAO Base Layer](aibtc-contracts/dao-base-layer.md)
 - [DAO Extensions](aibtc-contracts/dao-extensions/README.md)
   - [Action Proposals](aibtc-contracts/dao-extensions/action-proposals.md)
-  - [Bank Account](aibtc-contracts/dao-extensions/bank-account.md)
+  - [Timed Vault](aibtc-contracts/dao-extensions/timed-vault.md)
   - [Core Proposals](aibtc-contracts/dao-extensions/core-proposals.md)
   - [DAO Charter](aibtc-contracts/dao-extensions/dao-charter.md)
   - [Onchain Messaging](aibtc-contracts/dao-extensions/onchain-messaging.md)

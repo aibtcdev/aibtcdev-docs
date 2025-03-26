@@ -2,17 +2,17 @@
 description: Manages periodic STX withdrawals for designated account holder
 ---
 
-# Bank Account Extension
+# Timed Vault Extension
 
-The Bank Account extension (`aibtc-bank-account`) provides a mechanism for periodic STX withdrawals by a designated account holder. This extension is useful for managing operational expenses or recurring payments with controlled withdrawal limits.
+The Timed Vault extension (`aibtc-timed-vault`) provides a mechanism for periodic STX withdrawals by a designated account holder. This extension is useful for managing operational expenses or recurring payments with controlled withdrawal limits.
 
 ## Contract Overview
 
-- **Title**: aibtc-bank-account
+- **Title**: aibtc-timed-vault
 - **Version**: 1.0.0
 - **Implements**: 
   - `extension` trait
-  - `bank-account` trait
+  - `timed-vault` trait
 
 ## Print Events
 
