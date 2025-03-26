@@ -42,16 +42,16 @@ Proposals expire and will not execute if not submitted in time. This prevents ho
 
 ### Available Core Proposals
 
-#### Bank Account Management
+#### Timed Vault Management
 
-* **Set Account Holder** (`aibtc-bank-account-set-account-holder`)
-  * Changes the authorized withdrawer for the bank account
+* **Set Account Holder** (`aibtc-timed-vault-set-account-holder`)
+  * Changes the authorized withdrawer for the timed vault
   * New account holder can withdraw according to configured limits
-* **Withdraw STX** (`aibtc-bank-account-withdraw-stx`)
-  * Triggers a withdrawal from the bank account
-  * Must respect configured withdrawal limits
+* **Withdraw STX** (`aibtc-timed-vault-withdraw-stx`)
+  * Triggers a withdrawal from the timed vault
+  * Must respect configured withdrawal periods
 * **Configure Withdrawal Rules**
-  * Set withdrawal periods beyond action limits
+  * Set withdrawal periods and amounts
   * Override last withdrawal block
   * Emergency account controls
 
