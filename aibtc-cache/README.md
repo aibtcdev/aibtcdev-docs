@@ -87,6 +87,11 @@ fetch(
           value: "3",
         },
       ],
+      network: "testnet",
+      cacheControl: {
+        bustCache: false,  // Use cached value if available
+        ttl: 3600          // Cache for 1 hour
+      }
     }),
   }
 )

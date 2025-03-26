@@ -9,7 +9,7 @@ GET /contract-calls/abi/{contractAddress}/{contractName}
 ```
 
 ## Path Parameters
-- `contractAddress`: The principal address of the contract
+- `contractAddress`: The principal address of the contract (e.g., `ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA` for testnet or `SP252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA` for mainnet)
 - `contractName`: The name of the contract
 
 ## Response Format

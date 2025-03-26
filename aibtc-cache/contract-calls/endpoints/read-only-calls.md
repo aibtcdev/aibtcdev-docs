@@ -25,7 +25,12 @@ POST /contract-calls/read-only/{contractAddress}/{contractName}/{functionName}
   "network": "testnet",
   "senderAddress": "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA",
   "strictJsonCompat": true,
-  "preserveContainers": false
+  "preserveContainers": false,
+  "cacheControl": {
+    "bustCache": false,
+    "skipCache": false,
+    "ttl": 3600
+  }
 }
 ```
 
@@ -35,6 +40,10 @@ POST /contract-calls/read-only/{contractAddress}/{contractName}/{functionName}
 - `senderAddress` (optional): The address to use as the sender (defaults to the contract address)
 - `strictJsonCompat` (optional): Whether to ensure values are JSON compatible (defaults to `true`)
 - `preserveContainers` (optional): Whether to preserve container types in the output (defaults to `false`)
+- `cacheControl` (optional): Options to control caching behavior:
+  - `bustCache` (optional): If true, bypass the cache and force a fresh request (defaults to `false`)
+  - `skipCache` (optional): If true, don't cache the result of this request (defaults to `false`)
+  - `ttl` (optional): Custom time-to-live in seconds for this specific request (overrides default TTL)
 
 ## Response Format
 
