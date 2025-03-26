@@ -118,12 +118,3 @@ For large numbers that exceed JavaScript's safe integer limits:
 ## Integration Examples
 
 See the [Integration Examples](integration-examples.md) document for detailed code examples in various programming languages.
-
-## Available Endpoints
-
-| Endpoint                 | Description                                      | Documentation                                   |
-| ------------------------ | ------------------------------------------------ | ----------------------------------------------- |
-| Read-Only Function Calls | Make read-only calls to smart contract functions | [Read-Only Calls](read-only-calls.md)           |
-| Contract ABI             | Retrieve the ABI for a smart contract            | [Contract ABI](contract-abi.md)                 |
-| Known Contracts          | List all contracts accessed through the cache    | [Known Contracts](known-contracts.md)           |
-| Decode Clarity Value     | Decode Clarity values into JavaScript/JSON       | [Decode Clarity Value](decode-clarity-value.md) |
