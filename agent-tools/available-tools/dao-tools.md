@@ -12,8 +12,8 @@ DAO tools provide functionality for interacting with DAOs, managing proposals, v
 |-----------|-------------|--------------|
 | `dao_actionproposals_get_proposal` | Get details of an action proposal | Proposal status, voting info |
 | `dao_actionproposals_vote_on_proposal` | Vote on an action proposal | For/against voting, vote tracking |
-| `dao_bank_deposit_stx` | Deposit STX to a DAO's bank account | Transaction creation, receipt |
-| `dao_bank_withdraw_stx` | Withdraw STX from a DAO's bank account | Authorization check, receipt |
+| `dao_timedvault_deposit_stx` | Deposit STX to a DAO's timed vault | Transaction creation, receipt |
+| `dao_timedvault_withdraw_stx` | Withdraw STX from a DAO's timed vault | Authorization check, receipt |
 | `dao_charter_get_current` | Get the current DAO charter | Full charter text, version info |
 | `dao_payments_get_invoice` | Get details of a payment invoice | Invoice status, payment details |
 | `dao_treasury_is_allowed_asset` | Check if an asset is allowed in treasury | Asset validation |
@@ -84,9 +84,9 @@ Vote on an action proposal:
 - amount: 1000000
 ```
 
-### dao_bank_deposit_stx
+### dao_timedvault_deposit_stx
 
-Deposits STX to a DAO's bank account.
+Deposits STX to a DAO's timed vault.
 
 **Input Parameters**:
 - `dao_contract`: Contract principal of the DAO
@@ -104,14 +104,14 @@ Deposits STX to a DAO's bank account.
 
 **Example Prompt**:
 ```
-Deposit STX to a DAO's bank account:
+Deposit STX to a DAO's timed vault:
 - dao_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-dao
 - amount: 1000000
 ```
 
-### dao_bank_withdraw_stx
+### dao_timedvault_withdraw_stx
 
-Withdraws STX from a DAO's bank account (requires authorization).
+Withdraws STX from a DAO's timed vault (requires authorization and respects withdrawal period).
 
 **Input Parameters**:
 - `dao_contract`: Contract principal of the DAO
@@ -122,13 +122,14 @@ Withdraws STX from a DAO's bank account (requires authorization).
   "success": true,
   "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
   "amount": 1000000,
-  "new_balance": 4000000
+  "new_balance": 4000000,
+  "next_withdrawal_block": 12589
 }
 ```
 
 **Example Prompt**:
 ```
-Withdraw STX from a DAO's bank account:
+Withdraw STX from a DAO's timed vault:
 - dao_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.my-dao
 ```
 

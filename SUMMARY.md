@@ -1,56 +1,60 @@
 # Table of contents
 
-* [AIBTC](README.md)
-* [Prompt2DAO](what-is-a-dao/prompt2dao.md)
+- [AIBTC](README.md)
+- [Prompt2DAO](introduction/prompt2dao.md)
 
-## AIBTC DAO Structure
+## AIBTC Contracts
 
-* [DAO Base Layer](aibtc-daos/dao-base-layer.md)
-* [DAO Extensions](aibtc-daos/dao-extensions/README.md)
-  * [Action Proposals](aibtc-daos/dao-extensions/action-proposals.md)
-  * [Bank Account](aibtc-daos/dao-extensions/bank-account.md)
-  * [Core Proposals](aibtc-daos/dao-extensions/core-proposals.md)
-  * [DAO Charter](aibtc-daos/dao-extensions/dao-charter.md)
-  * [Onchain Messaging](aibtc-daos/dao-extensions/onchain-messaging.md)
-  * [Payments/Invoices](aibtc-daos/dao-extensions/payments-invoices.md)
-  * [Token Owner](aibtc-daos/dao-extensions/token-owner.md)
-  * [Treasury](aibtc-daos/dao-extensions/treasury.md)
-* [DAO Proposals](aibtc-daos/dao-proposals/README.md)
-  * [Action Proposals](aibtc-daos/dao-proposals/action-proposals.md)
-  * [Action Proposal Prompts](aibtc-dao-structure/dao-proposals/action-proposal-prompts.md)
-  * [Core Proposals](aibtc-daos/dao-proposals/core-proposals.md)
-* [Smart Wallet](aibtc-dao-structure/smart-wallet/README.md)
-  * [Smart Wallet Prompts](aibtc-dao-structure/smart-wallet/smart-wallet-prompts.md)
-
-## AIBTC Cache
-
-* [Overview](aibtc-cache/README.md)
-* [Contract Calls Endpoints](aibtc-cache/contract-calls-endpoints.md)
-  * [Overview](aibtc-cache/contract-calls/README.md)
-  * [API Overview](aibtc-cache/contract-calls/overview.md)
-  * [Read-Only Function Calls](aibtc-cache/contract-calls/read-only-calls.md)
-  * [Contract ABI](aibtc-cache/contract-calls/contract-abi.md)
-  * [Known Contracts](aibtc-cache/contract-calls/known-contracts.md)
-  * [Decode Clarity Value](aibtc-cache/contract-calls/decode-clarity-value.md)
-  * [Clarity Value Types](aibtc-cache/contract-calls/clarity-value-types.md)
-  * [Integration Examples](aibtc-cache/contract-calls/integration-examples.md)
-* [Cache Services](aibtc-cache/cache-services.md)
-* [Error Handling](aibtc-cache/error-handling.md)
-* [Utilities](aibtc-cache/utilities.md)
+- [DAO Base Layer](aibtc-contracts/dao-base-layer.md)
+- [DAO Extensions](aibtc-contracts/dao-extensions/README.md)
+  - [Action Proposal Voting](aibtc-contracts/dao-extensions/action-proposals.md)
+  - [Core Proposal Voting](aibtc-contracts/dao-extensions/core-proposals.md)
+  - [DAO Charter](aibtc-contracts/dao-extensions/dao-charter.md)
+  - [Onchain Messaging](aibtc-contracts/dao-extensions/onchain-messaging.md)
+  - [Payments/Invoices](aibtc-contracts/dao-extensions/payments-invoices.md)
+  - [Timed Vault](aibtc-contracts/dao-extensions/timed-vault.md)
+  - [Token Owner](aibtc-contracts/dao-extensions/token-owner.md)
+  - [Treasury](aibtc-contracts/dao-extensions/treasury.md)
+- [DAO Proposals](aibtc-contracts/dao-proposals/README.md)
+  - [Action Proposals](aibtc-contracts/dao-proposals/action-proposals.md)
+  - [Core Proposals](aibtc-contracts/dao-proposals/core-proposals.md)
+- [Smart Wallet](aibtc-contracts/smart-wallet/README.md)
 
 ## Agent Tools
 
-* [Overview](agent-tools/README.md)
-* [Wallet Tools](agent-tools/wallet-tools.md)
-* [DAO Tools](agent-tools/dao-tools.md)
-* [Faktory Tools](agent-tools/faktory-tools.md)
-* [Database Tools](agent-tools/database-tools.md)
-* [Smart Wallet Tools](agent-tools/smartwallet-tools.md)
+- [Overview](agent-tools/README.md)
+- [Available Tools](agent-tools/available-tools/README.md)
+  - [Smart Wallet Tools](agent-tools/available-tools/smartwallet-tools.md)
+  - [Agent Wallet Tools](agent-tools/available-tools/wallet-tools.md)
+  - [DAO Tools](agent-tools/available-tools/dao-tools.md)
+  - [Database Tools](agent-tools/available-tools/database-tools.md)
+  - [Faktory Tools](agent-tools/available-tools/faktory-tools.md)
+
+## AIBTC Cache
+
+- [Overview](aibtc-cache/README.md)
+- [Contract Calls](aibtc-cache/contract-calls/README.md)
+  - [API Design](aibtc-cache/contract-calls/api-design.md)
+  - [Endpoints](aibtc-cache/contract-calls/endpoints/README.md)
+    - [Decode Clarity Value](aibtc-cache/contract-calls/endpoints/decode-clarity-value.md)
+    - [Read-Only Function Calls](aibtc-cache/contract-calls/endpoints/read-only-calls.md)
+    - [Contract ABI](aibtc-cache/contract-calls/endpoints/contract-abi.md)
+    - [Known ABI Contracts](aibtc-cache/contract-calls/endpoints/known-contracts.md)
+  - [Clarity Value Types](aibtc-cache/contract-calls/clarity-value-types.md)
+  - [Integration Examples](aibtc-cache/contract-calls/integration-examples.md)
+- [Cache Services](aibtc-cache/cache-services.md)
+- [Error Handling](aibtc-cache/error-handling.md)
+- [Utilities](aibtc-cache/utilities.md)
+
+## Prompting
+
+- [Action Proposal Prompts](prompting/action-proposal-prompts.md)
+- [Smart Wallet Prompts](prompting/smart-wallet-prompts.md)
 
 ## Links
 
-* [Our App](https://aibtc.dev)
-* [Discord](https://discord.gg/Z59Z3FNbEX)
-* [GitHub](https://github.com/aibtcdev)
-* [Prompt2DAO on X](https://x.com/prompt2dao)
-* [AIBTC on X](https://x.com/aibtcdev)
+- [Our App](https://aibtc.dev)
+- [Discord](https://discord.gg/Z59Z3FNbEX)
+- [GitHub](https://github.com/aibtcdev)
+- [Prompt2DAO on X](https://x.com/prompt2dao)
+- [AIBTC on X](https://x.com/aibtcdev)
