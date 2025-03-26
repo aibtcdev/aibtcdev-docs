@@ -36,25 +36,6 @@ Creates a standardized error response.
 - 
 **Returns:** Response object with standardized format: `{ success: false, error: { id, code, message, details } }`
 
-#### `createSuccessResponse<T>(data: T, status = 200): Response`
-
-Creates a standardized success response with the data wrapped in a success object.
-
-**Parameters:**
-- `data`: The response data to include
-- `status`: HTTP status code, defaults to 200
-
-**Returns:** Response object with standardized format: `{ success: true, data: ... }`
-
-#### `createErrorResponse(error: unknown): Response`
-
-Creates a standardized error response.
-
-**Parameters:**
-- `error`: The error to include (ApiError or any other error)
-- 
-**Returns:** Response object with standardized format: `{ success: false, error: { id, code, message, details } }`
-
 #### `createJsonResponse(body: unknown, status = 200): Response`
 
 **Deprecated:** Use `createSuccessResponse` or `createErrorResponse` instead.
@@ -77,6 +58,45 @@ Stringifies a value with special handling for BigInt values.
 - `space` (optional): Space parameter for JSON.stringify formatting
 
 **Returns:** JSON string with BigInt values converted to strings with 'n' suffix
+
+#### `handleRequest<T>(handler: () => Promise<T>, env?: Env, options?: { slowThreshold?: number }): Promise<Response>`
+
+Wraps a request handler function with standardized error handling and performance tracking.
+
+**Parameters:**
+- `handler`: The async function that handles the request
+- `env` (optional): The environment for logging
+- `options` (optional): Configuration options
+  - `slowThreshold` (optional): Time in ms after which a request is considered slow (defaults to 1000ms)
+
+**Returns:** A standardized Response object
+
+**Example:**
+```typescript
+// Example of using handleRequest in a Cloudflare Worker
+export async function handleReadOnlyCall(request: Request, env: Env): Promise<Response> {
+  return handleRequest(
+    async () => {
+      // Parse request body
+      const body = await request.json();
+      
+      // Process the request
+      const result = await processRequest(body);
+      
+      // Return the result (will be wrapped in a success response)
+      return result;
+    },
+    env,
+    { slowThreshold: 2000 } // Consider requests slow if they take more than 2 seconds
+  );
+}
+```
+
+**Benefits:**
+- Automatically handles errors and converts them to standardized error responses
+- Tracks request duration and logs slow requests
+- Provides consistent request ID tracking for debugging
+- Ensures all responses follow the standardized format
 
 ## Clarity Response Utilities
 
@@ -107,6 +127,24 @@ Recursively decodes Clarity values into JavaScript objects.
 - `preserveContainers`: If true, preserves container types in the output
 
 **Returns:** JavaScript representation of the Clarity value
+
+**Example with preserveContainers=false (default):**
+```javascript
+// Input: ResponseOkCV with UIntCV(123)
+const clarityValue = responseOkCV(uintCV(123));
+
+// Output: 123 (unwrapped value)
+const decoded = decodeClarityValues(clarityValue);
+```
+
+**Example with preserveContainers=true:**
+```javascript
+// Input: ResponseOkCV with UIntCV(123)
+const clarityValue = responseOkCV(uintCV(123));
+
+// Output: { type: 'responseOk', value: 123 }
+const decoded = decodeClarityValues(clarityValue, false, true);
+```
 
 #### `decodeTupleRecursively(tuple: TupleCV, strictJsonCompat = false, preserveContainers = false): any`
 
@@ -141,6 +179,25 @@ This allows non-TypeScript clients to use a simpler JSON format for contract cal
 **Returns:** A proper ClarityValue object
 
 **Throws:** ApiError with ErrorCode.VALIDATION_ERROR if the type is unsupported or the conversion fails
+
+**Example:**
+```javascript
+// Convert a simplified representation to a ClarityValue
+const simplifiedValue = {
+  type: "tuple",
+  value: {
+    name: { type: "string", value: "Example" },
+    amount: { type: "uint", value: "100" }
+  }
+};
+
+// Result is equivalent to:
+// tupleCV({
+//   name: stringAsciiCV("Example"),
+//   amount: uintCV(100)
+// })
+const clarityValue = convertToClarityValue(simplifiedValue);
+```
 
 ## Stacks Network Utilities
 
@@ -194,31 +251,92 @@ Standardized error codes used throughout the application:
 
 ## Logging Utilities
 
-The `logger.ts` module provides logging capabilities across the application.
+The `logger-util.ts` module provides comprehensive logging capabilities across the application.
 
 ### Classes
 
 #### `Logger`
 
-Simple logger that writes to console and optionally to KV storage.
+A singleton logger that writes to console and optionally to KV storage for persistence.
+
+**Properties:**
+- `private static instance`: The singleton instance of the logger
+- `private env?`: Optional Cloudflare Worker environment for KV storage
+- `private readonly LOG_KEY_PREFIX`: Prefix for log keys in KV storage
+- `private readonly MAX_LOG_AGE`: Maximum age of logs in KV storage (7 days by default)
 
 **Methods:**
 - `getInstance(env?: Env): Logger`: Get the singleton logger instance
-- `log(level: LogLevel, message: string, context?: Record<string, any>, error?: Error, duration?: number): string`: Log a message
+  - `env` (optional): The Cloudflare Worker environment
+  - Returns: The Logger instance
+
+- `log(level: LogLevel, message: string, context?: Record<string, any>, error?: Error, duration?: number): string`: Log a message at the specified level
+  - `level`: The log level (DEBUG, INFO, WARN, ERROR)
+  - `message`: The log message
+  - `context` (optional): Additional context data
+  - `error` (optional): Error object if applicable
+  - `duration` (optional): Duration of the operation in milliseconds
+  - Returns: A unique log ID for tracking
+
 - `debug(message: string, context?: Record<string, any>, duration?: number): string`: Log a debug message
 - `info(message: string, context?: Record<string, any>, duration?: number): string`: Log an info message
 - `warn(message: string, context?: Record<string, any>, duration?: number): string`: Log a warning message
 - `error(message: string, error?: Error, context?: Record<string, any>, duration?: number): string`: Log an error message
+
+**Private Methods:**
+- `private generateId(): string`: Generates a unique ID for each log entry
+- `private logToConsole(entry: LogEntry): void`: Logs to the console with appropriate formatting
+- `private async logToKV(entry: LogEntry): Promise<void>`: Logs to KV storage for persistence (only for WARN and ERROR levels)
+
+**Example:**
+```typescript
+// Get the logger instance
+const logger = Logger.getInstance(env);
+
+// Log at different levels
+logger.debug("Processing request", { requestId: "123" });
+logger.info("Request completed", { requestId: "123", duration: 150 });
+logger.warn("Rate limit approaching", { requestsRemaining: 10 });
+
+try {
+  // Some operation that might fail
+  throw new Error("Something went wrong");
+} catch (error) {
+  // Log the error with the error object
+  logger.error("Failed to process request", error, { requestId: "123" });
+}
+
+// Log with duration tracking
+const startTime = Date.now();
+// ... perform operation
+const duration = Date.now() - startTime;
+logger.info("Operation completed", { result: "success" }, duration);
+```
+
+### Interfaces
+
+#### `LogEntry`
+
+Interface for structured log entries.
+
+**Properties:**
+- `id`: Unique identifier for the log entry
+- `timestamp`: ISO timestamp of when the log was created
+- `level`: The log level (DEBUG, INFO, WARN, ERROR)
+- `message`: The log message
+- `context?`: Optional additional context data
+- `error?`: Optional error information
+- `duration?`: Optional duration of the operation in milliseconds
 
 ### Enums
 
 #### `LogLevel`
 
 Log levels in order of increasing severity:
-- `DEBUG`
-- `INFO`
-- `WARN`
-- `ERROR`
+- `DEBUG`: Detailed information for debugging purposes
+- `INFO`: General information about system operation
+- `WARN`: Warning conditions that should be addressed
+- `ERROR`: Error conditions that prevent normal operation
 
 ## Address Store Utilities
 
