@@ -1,4 +1,4 @@
-# Contract Calls API Overview
+# Contract Calls API Design
 
 The Contract Calls API provides a caching layer for interacting with Stacks smart contracts. This document provides a comprehensive overview of how the API works, its key features, and best practices for integration.
 
@@ -9,6 +9,7 @@ The Contract Calls API provides a caching layer for interacting with Stacks smar
 All endpoints return responses in a consistent format:
 
 #### Success Response
+
 ```json
 {
   "success": true,
@@ -19,6 +20,7 @@ All endpoints return responses in a consistent format:
 ```
 
 #### Error Response
+
 ```json
 {
   "success": false,
@@ -73,7 +75,9 @@ The Contract Calls API uses a multi-layered approach:
 Always check the `success` field to determine if the request was successful:
 
 ```javascript
-const response = await fetch('https://cache.aibtc.dev/contract-calls/read-only/...');
+const response = await fetch(
+  "https://cache.aibtc.dev/contract-calls/read-only/..."
+);
 const result = await response.json();
 
 if (result.success) {
@@ -117,9 +121,9 @@ See the [Integration Examples](integration-examples.md) document for detailed co
 
 ## Available Endpoints
 
-| Endpoint | Description | Documentation |
-|----------|-------------|---------------|
-| Read-Only Function Calls | Make read-only calls to smart contract functions | [Read-Only Calls](read-only-calls.md) |
-| Contract ABI | Retrieve the ABI for a smart contract | [Contract ABI](contract-abi.md) |
-| Known Contracts | List all contracts accessed through the cache | [Known Contracts](known-contracts.md) |
-| Decode Clarity Value | Decode Clarity values into JavaScript/JSON | [Decode Clarity Value](decode-clarity-value.md) |
+| Endpoint                 | Description                                      | Documentation                                   |
+| ------------------------ | ------------------------------------------------ | ----------------------------------------------- |
+| Read-Only Function Calls | Make read-only calls to smart contract functions | [Read-Only Calls](read-only-calls.md)           |
+| Contract ABI             | Retrieve the ABI for a smart contract            | [Contract ABI](contract-abi.md)                 |
+| Known Contracts          | List all contracts accessed through the cache    | [Known Contracts](known-contracts.md)           |
+| Decode Clarity Value     | Decode Clarity values into JavaScript/JSON       | [Decode Clarity Value](decode-clarity-value.md) |
