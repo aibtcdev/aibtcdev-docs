@@ -4,7 +4,7 @@ description: User-Agent Smart Wallet for managing assets and DAO interactions
 
 # Smart Wallet
 
-The Smart Wallet contract (`aibtc-user-agent-smart-wallet`) provides a secure interface between a user and an agent for managing assets and interacting with DAOs. It enables deposits, withdrawals, and participation in DAO governance through a trusted agent relationship.
+The Smart Wallet contract (`aibtc-user-agent-smart-wallet`) provides a secure interface between a user and an agent for managing assets and interacting with DAOs. It enables key features to allow user self-custody and control and agent interaction with DAO proposals.
 
 ## Contract Overview
 
