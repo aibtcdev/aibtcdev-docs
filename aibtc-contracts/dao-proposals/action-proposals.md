@@ -17,28 +17,6 @@ Actions must be registered as an extension with the base dao contract before the
 - 66% approval threshold
 - 15% quorum requirement
 
-```mermaid
-%%{
-  init: {
-    'theme': 'base',
-    'themeVariables': {
-      'primaryColor': '#FFF',
-      'primaryTextColor': '#FF4F03',
-      'primaryBorderColor': '#000',
-      'lineColor': '#FF4F03'
-    }
-  }
-}%%
-
-timeline
-    section Action Proposal Timeline
-        Start: Proposal Created
-        Day 1: Voting Delay
-        Days 2-3: Voting Active
-        Day 4: Execution Delay
-        Days 5-6: Execution Allowed
-```
-
 {% hint style="info" %}
 Proposals expire and will not execute if not submitted in time. This prevents holding an early proposal and executing it later. The proposal must be executed within 1 voting period following the end block + the voting delay.
 {% endhint %}
