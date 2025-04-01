@@ -150,7 +150,9 @@ The smart wallet enables participation in DAO governance through:
 
 This allows the user to delegate certain DAO interactions to their agent while maintaining control over the assets.
 
-## Interaction Flow
+## Interaction Flows
+
+### DAO Proposal Interaction Flow
 
 ```mermaid
 sequenceDiagram
@@ -159,13 +161,9 @@ sequenceDiagram
     participant SmartWallet
     participant ActionProposals
     participant CoreProposals
-    participant DEX
     
     User->>SmartWallet: deposit-stx
     User->>SmartWallet: deposit-ft
-    User->>SmartWallet: approve-asset
-    User->>SmartWallet: approve-dex
-    User->>SmartWallet: set-agent-can-buy-sell(true)
     
     Agent->>SmartWallet: proxy-propose-action
     SmartWallet->>ActionProposals: propose-action
@@ -184,6 +182,22 @@ sequenceDiagram
     
     User->>SmartWallet: conclude-core-proposal
     SmartWallet->>CoreProposals: conclude-proposal
+```
+
+### DEX Trading Interaction Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Agent
+    participant SmartWallet
+    participant DEX
+    
+    User->>SmartWallet: deposit-stx
+    User->>SmartWallet: deposit-ft
+    User->>SmartWallet: approve-asset
+    User->>SmartWallet: approve-dex
+    User->>SmartWallet: set-agent-can-buy-sell(true)
     
     User->>SmartWallet: buy-asset
     SmartWallet->>DEX: buy
