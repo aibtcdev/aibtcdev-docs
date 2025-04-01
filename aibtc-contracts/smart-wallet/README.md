@@ -197,19 +197,28 @@ sequenceDiagram
     User->>SmartWallet: deposit-ft
     User->>SmartWallet: approve-asset
     User->>SmartWallet: approve-dex
+    
+    Note over User,SmartWallet: Agent cannot buy/sell until permitted
+    
     User->>SmartWallet: set-agent-can-buy-sell(true)
+    Note over User,Agent: Agent now has buy/sell permission
     
     User->>SmartWallet: buy-asset
     SmartWallet->>DEX: buy
     
     Agent->>SmartWallet: buy-asset
+    Note over Agent,SmartWallet: Checks if agent has permission
     SmartWallet->>DEX: buy
     
     User->>SmartWallet: sell-asset
     SmartWallet->>DEX: sell
     
     Agent->>SmartWallet: sell-asset
+    Note over Agent,SmartWallet: Checks if agent has permission
     SmartWallet->>DEX: sell
+    
+    User->>SmartWallet: set-agent-can-buy-sell(false)
+    Note over User,Agent: Agent permission revoked
     
     User->>SmartWallet: withdraw-stx
     User->>SmartWallet: withdraw-ft
@@ -220,7 +229,8 @@ sequenceDiagram
 The smart wallet enables trading on Faktory DEXes:
 
 - User can always buy and sell assets
-- Agent can buy and sell assets if explicitly permitted by the user
+- Agent can buy and sell assets only if explicitly permitted by the user via the set-agent-can-buy-sell function
+- The user can enable or disable agent trading permission at any time
 - Only approved DEXes can be used for trading
 - All trading activity is logged with detailed print events
 
