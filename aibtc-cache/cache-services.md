@@ -107,6 +107,56 @@ The `ApiRateLimiterService` provides rate-limited API fetching capabilities.
 - `getQueueLength(): number` - Returns the current length of the request queue
 - `getTokenCount(): number` - Returns the current number of available tokens
 - `getWindowRequestsCount(): number` - Returns the number of requests made in the current time window
+
+## Performance Tracking
+
+The AIBTC Cache includes comprehensive performance tracking to monitor and optimize the system:
+
+### Request Duration Tracking
+
+All requests are timed and logged with the following thresholds:
+
+- **Normal**: Under 1000ms (1 second)
+- **Slow**: 1000-2000ms (1-2 seconds)
+- **Very Slow**: Over 2000ms (2+ seconds)
+
+Slow and very slow requests are logged with additional context to help identify bottlenecks.
+
+### Queue Time Tracking
+
+For queued requests, the system tracks:
+
+- Time spent in queue before processing
+- Total time (queue time + execution time)
+- Queue position when the request was enqueued
+
+### Performance Logging
+
+Performance metrics are logged with the following information:
+
+- Request ID for correlation
+- Duration in milliseconds
+- Queue time (if applicable)
+- Cache hit/miss status
+- Endpoint or contract call details
+
+### Slow Request Handling
+
+When a request exceeds the slow threshold:
+
+1. A warning is logged with detailed context
+2. The request continues to be processed normally
+3. If the same endpoint consistently produces slow responses, it may indicate an issue with the upstream API
+
+### Performance Optimization Tips
+
+To get the best performance from the cache:
+
+1. Use consistent cache keys for the same data
+2. Batch related requests when possible
+3. Use appropriate TTL values based on data volatility
+4. Monitor for slow requests in your application logs
+5. Consider implementing client-side caching for frequently accessed data
 - `getPerformanceStats(): { avgResponseTime: number, slowestRequests: Array<{ endpoint: string, time: number }> }` - Returns performance statistics for API requests
 
 ## Stacks API Service

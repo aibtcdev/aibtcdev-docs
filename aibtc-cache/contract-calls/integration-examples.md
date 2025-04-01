@@ -269,76 +269,170 @@ if __name__ == "__main__":
 
 ## Error Handling Examples
 
-### JavaScript Error Handling
+### JavaScript Error Handling with Timeouts and Retries
 
 ```javascript
-async function callContract(contractAddress, contractName, functionName, args) {
+/**
+ * Call a contract function with comprehensive error handling, timeout handling, and retries
+ * 
+ * @param {string} contractAddress - The contract address
+ * @param {string} contractName - The contract name
+ * @param {string} functionName - The function to call
+ * @param {Array} args - The function arguments
+ * @param {Object} options - Additional options
+ * @param {string} options.network - The network to use (mainnet/testnet)
+ * @param {boolean} options.bustCache - Whether to bypass the cache
+ * @param {number} options.maxRetries - Maximum number of retries
+ * @param {number} options.initialRetryDelay - Initial delay between retries (ms)
+ * @returns {Promise<any>} The function result
+ */
+async function callContract(
+  contractAddress, 
+  contractName, 
+  functionName, 
+  args,
+  options = {}
+) {
+  const {
+    network = 'mainnet',
+    bustCache = false,
+    maxRetries = 3,
+    initialRetryDelay = 1000
+  } = options;
+  
+  let retries = 0;
+  let delay = initialRetryDelay;
+  
+  while (true) {
+    try {
+      const response = await fetch(
+        `https://cache.aibtc.dev/contract-calls/read-only/${contractAddress}/${contractName}/${functionName}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            functionArgs: args,
+            network,
+            cacheControl: {
+              bustCache: bustCache || retries > 0 // Bust cache on retries
+            }
+          })
+        }
+      );
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        return result.data;
+      } else {
+        // Determine if we should retry based on error type
+        const shouldRetry = 
+          (result.error.code === 'UPSTREAM_API_ERROR' && result.error.details?.retryable) ||
+          result.error.code === 'TIMEOUT' ||
+          result.error.code === 'RATE_LIMIT_EXCEEDED';
+        
+        if (shouldRetry && retries < maxRetries) {
+          retries++;
+          
+          // Get retry delay from response or use exponential backoff
+          let retryAfter = result.error.details?.retryAfter;
+          if (retryAfter) {
+            // Convert to milliseconds if it's a number of seconds
+            delay = retryAfter.endsWith('s') 
+              ? parseInt(retryAfter.slice(0, -1)) * 1000 
+              : parseInt(retryAfter);
+          } else {
+            // Exponential backoff with jitter
+            delay = delay * 2 * (0.8 + Math.random() * 0.4);
+          }
+          
+          console.log(`Retrying after error: ${result.error.code} (attempt ${retries}/${maxRetries} after ${delay}ms)`);
+          await new Promise(resolve => setTimeout(resolve, delay));
+          continue;
+        }
+        
+        // Handle specific error codes
+        switch (result.error.code) {
+          case 'INVALID_CONTRACT_ADDRESS':
+            console.error('The contract address is invalid:', result.error.details.address);
+            break;
+          case 'INVALID_FUNCTION':
+            console.error(`Function ${result.error.details.function} not found in contract`);
+            break;
+          case 'INVALID_ARGUMENTS':
+            console.error(`Invalid arguments: ${result.error.details.reason}`);
+            break;
+          case 'INVALID_NETWORK':
+            console.error(`Invalid network: ${result.error.details.network}`);
+            break;
+          case 'UPSTREAM_API_ERROR':
+            console.error('Error from Stacks API:', result.error.message);
+            break;
+          case 'RATE_LIMIT_EXCEEDED':
+            console.error('Rate limit exceeded. Try again later.');
+            console.log(`Retry after: ${result.error.details.retryAfter || '60s'}`);
+            break;
+          case 'TIMEOUT':
+            console.error(`The request timed out after ${result.error.details.timeoutMs || '?'}ms`);
+            break;
+          default:
+            console.error(`Error: ${result.error.code} - ${result.error.message}`);
+        }
+        
+        // Include error ID in the thrown error for tracking
+        const errorMessage = `API Error: ${result.error.code} - ${result.error.message}`;
+        const error = new Error(errorMessage);
+        error.code = result.error.code;
+        error.details = result.error.details;
+        error.id = result.error.id;
+        throw error;
+      }
+    } catch (error) {
+      // Handle network errors
+      if (!error.code && retries < maxRetries) {
+        retries++;
+        delay *= 2; // Exponential backoff
+        console.log(`Network error, retrying (attempt ${retries}/${maxRetries} after ${delay}ms)`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        continue;
+      }
+      throw error;
+    }
+  }
+}
+
+// Example usage
+async function getProposal(id) {
   try {
-    const response = await fetch(
-      `https://cache.aibtc.dev/contract-calls/read-only/${contractAddress}/${contractName}/${functionName}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          functionArgs: args
-        })
+    const result = await callContract(
+      'ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA',
+      'media3-action-proposals-v2',
+      'get-proposal',
+      [{ type: 'uint', value: id.toString() }],
+      { 
+        network: 'testnet',
+        maxRetries: 3
       }
     );
-    
-    const result = await response.json();
-    
-    if (result.success) {
-      return result.data;
-    } else {
-      // Handle specific error codes
-      switch (result.error.code) {
-        case 'INVALID_CONTRACT_ADDRESS':
-          console.error('The contract address is invalid:', result.error.details.address);
-          break;
-        case 'INVALID_FUNCTION':
-          console.error(`Function ${result.error.details.function} not found in contract`);
-          break;
-        case 'INVALID_ARGUMENTS':
-          console.error(`Invalid arguments: ${result.error.details.reason}`);
-          break;
-        case 'INVALID_NETWORK':
-          console.error(`Invalid network: ${result.error.details.network}`);
-          break;
-        case 'UPSTREAM_API_ERROR':
-          console.error('Error from Stacks API:', result.error.message);
-          // Check if we should retry based on the error
-          if (result.error.details.retryable) {
-            console.log(`This error is retryable. Retry after ${result.error.details.retryAfter || '1s'}`);
-          }
-          break;
-        case 'RATE_LIMIT_EXCEEDED':
-          console.error('Rate limit exceeded. Try again later.');
-          console.log(`Retry after: ${result.error.details.retryAfter || '60s'}`);
-          break;
-        case 'TIMEOUT':
-          console.error('The request timed out. The network might be congested.');
-          break;
-        default:
-          console.error(`Error: ${result.error.code} - ${result.error.message}`);
-      }
-      
-      throw new Error(`API Error: ${result.error.code} - ${result.error.message}`);
-    }
+    console.log('Proposal:', result);
+    return result;
   } catch (error) {
-    // Handle network errors or other exceptions
-    console.error('Failed to call contract:', error);
+    console.error('Failed to get proposal:', error);
+    // Rethrow or handle as needed
     throw error;
   }
 }
 ```
 
-### Python Error Handling
+### Python Error Handling with Timeouts and Retries
 
 ```python
 import requests
 import json
+import time
+import random
 
 class ApiError(Exception):
     def __init__(self, code, message, details=None, error_id=None):
@@ -348,15 +442,30 @@ class ApiError(Exception):
         self.error_id = error_id
         super().__init__(f"{code}: {message}")
 
-def call_contract(contract_address, contract_name, function_name, args):
+def call_contract(
+    contract_address, 
+    contract_name, 
+    function_name, 
+    args, 
+    network='mainnet',
+    bust_cache=False,
+    max_retries=3,
+    initial_retry_delay=1.0,
+    timeout=10.0
+):
     """
-    Call a read-only contract function with error handling
+    Call a read-only contract function with error handling, timeouts, and retries
     
     Args:
         contract_address (str): The contract address
         contract_name (str): The contract name
         function_name (str): The function to call
         args (list): The function arguments
+        network (str): The network to use (mainnet/testnet)
+        bust_cache (bool): Whether to bypass the cache
+        max_retries (int): Maximum number of retries
+        initial_retry_delay (float): Initial delay between retries in seconds
+        timeout (float): Request timeout in seconds
         
     Returns:
         The function result
@@ -367,57 +476,130 @@ def call_contract(contract_address, contract_name, function_name, args):
     """
     url = f'https://cache.aibtc.dev/contract-calls/read-only/{contract_address}/{contract_name}/{function_name}'
     
-    payload = {
-        "functionArgs": args
-    }
+    retries = 0
+    delay = initial_retry_delay
     
-    try:
-        response = requests.post(
-            url,
-            headers={'Content-Type': 'application/json'},
-            data=json.dumps(payload)
-        )
-        
-        # Raise HTTP errors
-        response.raise_for_status()
-        
-        result = response.json()
-        
-        if result.get('success'):
-            return result['data']
-        else:
-            error = result.get('error', {})
-            raise ApiError(
-                code=error.get('code', 'UNKNOWN_ERROR'),
-                message=error.get('message', 'Unknown error occurred'),
-                details=error.get('details'),
-                error_id=error.get('id')
+    while True:
+        try:
+            payload = {
+                "functionArgs": args,
+                "network": network,
+                "cacheControl": {
+                    "bustCache": bust_cache or retries > 0  # Bust cache on retries
+                }
+            }
+            
+            response = requests.post(
+                url,
+                headers={'Content-Type': 'application/json'},
+                data=json.dumps(payload),
+                timeout=timeout  # Set request timeout
             )
+            
+            # Raise HTTP errors
+            response.raise_for_status()
+            
+            result = response.json()
+            
+            if result.get('success'):
+                return result['data']
+            else:
+                error = result.get('error', {})
+                error_code = error.get('code', 'UNKNOWN_ERROR')
+                
+                # Determine if we should retry based on error type
+                should_retry = (
+                    error_code == 'UPSTREAM_API_ERROR' and error.get('details', {}).get('retryable', False) or
+                    error_code == 'TIMEOUT' or
+                    error_code == 'RATE_LIMIT_EXCEEDED'
+                )
+                
+                if should_retry and retries < max_retries:
+                    retries += 1
+                    
+                    # Get retry delay from response or use exponential backoff
+                    retry_after = error.get('details', {}).get('retryAfter')
+                    if retry_after:
+                        # Convert to seconds if it ends with 's'
+                        if isinstance(retry_after, str) and retry_after.endswith('s'):
+                            delay = float(retry_after[:-1])
+                        else:
+                            delay = float(retry_after)
+                    else:
+                        # Exponential backoff with jitter
+                        delay = delay * 2 * (0.8 + random.random() * 0.4)
+                    
+                    print(f"Retrying after error: {error_code} (attempt {retries}/{max_retries} after {delay:.2f}s)")
+                    time.sleep(delay)
+                    continue
+                
+                # If we're not retrying, raise the error
+                raise ApiError(
+                    code=error_code,
+                    message=error.get('message', 'Unknown error occurred'),
+                    details=error.get('details'),
+                    error_id=error.get('id')
+                )
+                
+        except requests.exceptions.Timeout:
+            if retries < max_retries:
+                retries += 1
+                delay *= 2  # Exponential backoff
+                print(f"Request timed out, retrying (attempt {retries}/{max_retries} after {delay:.2f}s)")
+                time.sleep(delay)
+                continue
+            raise ApiError(
+                code="TIMEOUT",
+                message=f"Request timed out after {timeout} seconds",
+                details={"timeoutSeconds": timeout}
+            )
+            
+        except requests.exceptions.RequestException as e:
+            if retries < max_retries:
+                retries += 1
+                delay *= 2  # Exponential backoff
+                print(f"Network error: {e}, retrying (attempt {retries}/{max_retries} after {delay:.2f}s)")
+                time.sleep(delay)
+                continue
+            print(f"Network error after {retries} retries: {e}")
+            raise
+        
+# Usage example with error handling
+def get_proposal(proposal_id, network='testnet'):
+    try:
+        result = call_contract(
+            "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA",
+            "media3-action-proposals-v2",
+            "get-proposal",
+            [{"type": "uint", "value": str(proposal_id)}],
+            network=network,
+            max_retries=3,
+            timeout=15.0  # Longer timeout for complex operations
+        )
+        print(f"Success: {json.dumps(result, indent=2)}")
+        return result
+        
+    except ApiError as e:
+        print(f"API Error ({e.code}): {e.message}")
+        if e.details:
+            print(f"Details: {json.dumps(e.details, indent=2)}")
+        if e.error_id:
+            print(f"Error ID: {e.error_id}")
+        raise
             
     except requests.exceptions.RequestException as e:
         print(f"Network error: {e}")
         raise
         
-# Usage example with error handling
-try:
-    result = call_contract(
-        "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA",
-        "media3-action-proposals-v2",
-        "get-proposal",
-        [{"type": "uint", "value": "3"}]
-    )
-    print(f"Success: {json.dumps(result, indent=2)}")
-    
-except ApiError as e:
-    print(f"API Error ({e.code}): {e.message}")
-    if e.details:
-        print(f"Details: {json.dumps(e.details, indent=2)}")
-    if e.error_id:
-        print(f"Error ID: {e.error_id}")
-        
-except requests.exceptions.RequestException as e:
-    print(f"Network error: {e}")
-    
-except Exception as e:
-    print(f"Unexpected error: {e}")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        raise
+
+# Example usage
+if __name__ == "__main__":
+    try:
+        proposal = get_proposal(3)
+        print(f"Proposal title: {proposal.get('title')}")
+    except Exception as e:
+        print(f"Failed to get proposal: {e}")
 ```

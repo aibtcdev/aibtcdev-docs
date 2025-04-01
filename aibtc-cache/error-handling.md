@@ -44,6 +44,57 @@ All error responses follow this format:
 - **UPSTREAM_API_ERROR**: An error occurred in an upstream API (e.g., Stacks API).
 - **REQUEST_FAILED**: The request to an external service failed.
 
+## Automatic Retry Behavior
+
+The AIBTC Cache implements automatic retries for certain types of errors:
+
+### Retryable Errors
+
+The following errors are automatically retried:
+
+- **UPSTREAM_API_ERROR**: When the Stacks API returns a 5xx error
+- **TIMEOUT**: When a request to the Stacks API times out
+- **RATE_LIMIT_EXCEEDED**: When rate limits are hit (with appropriate backoff)
+
+### Non-Retryable Errors
+
+The following errors are NOT automatically retried:
+
+- 4xx errors from upstream APIs (e.g., invalid contract address)
+- Validation errors (e.g., invalid arguments)
+- Authentication errors
+
+### Retry Strategy
+
+The cache uses an exponential backoff strategy for retries:
+
+1. Initial retry delay is configurable (default: 1000ms)
+2. Each subsequent retry doubles the delay time
+3. Maximum number of retries is configurable (default: 3)
+
+For example, with default settings, retries would occur at approximately:
+- 1st retry: 1 second after failure
+- 2nd retry: 2 seconds after 1st retry
+- 3rd retry: 4 seconds after 2nd retry
+
+### Retry Information in Responses
+
+When an error occurs after all retries have been exhausted, the error response includes:
+
+```json
+{
+  "success": false,
+  "error": {
+    "code": "UPSTREAM_API_ERROR",
+    "message": "API request failed after 3 retries",
+    "details": {
+      "retryCount": 3,
+      "lastError": "Gateway timeout"
+    }
+  }
+}
+```
+
 ### Validation Errors
 
 - **VALIDATION_ERROR**: General validation error.
@@ -62,6 +113,88 @@ All error responses follow this format:
 
 - **CONFIG_ERROR**: An error in the configuration.
 - **MISSING_CONFIG**: A required configuration value is missing.
+
+## Timeout Handling
+
+The AIBTC Cache implements timeouts for all external API calls to prevent hanging requests:
+
+### Default Timeout Values
+
+- **Stacks API Calls**: 5000ms (5 seconds)
+- **Contract Read-Only Calls**: 5000ms (5 seconds)
+- **Request Queue Processing**: 5000ms (5 seconds)
+
+These values are configurable in the application configuration.
+
+### Timeout Error Format
+
+When a request times out, you'll receive an error response like:
+
+```json
+{
+  "success": false,
+  "error": {
+    "id": "unique-error-id",
+    "code": "TIMEOUT",
+    "message": "The operation timed out after 5000ms",
+    "details": {
+      "operation": "Contract call",
+      "contract": "ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA.media3-action-proposals-v2",
+      "function": "get-proposal",
+      "timeoutMs": 5000
+    }
+  }
+}
+```
+
+### Handling Timeouts in Client Code
+
+When receiving a timeout error, clients should:
+
+1. Consider if the operation is idempotent (can be safely retried)
+2. Implement backoff before retrying (start with 1-2 seconds, increase with each retry)
+3. Limit the number of retries (3-5 is typically sufficient)
+4. Consider using a longer timeout for complex operations
+
+```javascript
+async function callWithRetry(url, body, maxRetries = 3) {
+  let retries = 0;
+  let delay = 2000; // Start with 2 seconds
+  
+  while (true) {
+    try {
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        return result.data;
+      } else if (result.error.code === 'TIMEOUT' && retries < maxRetries) {
+        retries++;
+        console.log(`Request timed out, retrying (${retries}/${maxRetries}) after ${delay}ms`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        delay *= 2; // Exponential backoff
+        continue;
+      } else {
+        throw new Error(`API Error: ${result.error.code} - ${result.error.message}`);
+      }
+    } catch (error) {
+      if (retries < maxRetries) {
+        retries++;
+        console.log(`Request failed, retrying (${retries}/${maxRetries}) after ${delay}ms`);
+        await new Promise(resolve => setTimeout(resolve, delay));
+        delay *= 2; // Exponential backoff
+        continue;
+      }
+      throw error;
+    }
+  }
+}
+```
 
 ## Error Handling Best Practices
 
