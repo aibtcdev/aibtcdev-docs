@@ -32,3 +32,41 @@ Expected response times vary by endpoint:
 - **Known Contracts**: < 100ms (processed locally)
 
 All endpoints have a maximum timeout of 5 seconds for upstream API calls.
+
+## Request Queuing
+
+The AIBTC Cache implements automatic request queuing to handle high traffic volumes while maintaining fair access to the Stacks API.
+
+### How Queuing Works
+
+1. When a request arrives, it's assigned a unique request ID
+2. If capacity is available, the request is processed immediately
+3. If capacity is not available, the request enters a queue
+4. Requests are processed in FIFO (First In, First Out) order
+5. Queue status is tracked and logged for monitoring
+
+### Queue Metrics
+
+The following metrics are tracked for each request:
+
+- Queue position when the request was enqueued
+- Time spent in queue before processing
+- Total request time (queue time + processing time)
+
+### Queue Behavior During High Load
+
+During periods of high load:
+
+- Requests are automatically queued
+- Each request is processed when capacity becomes available
+- Responses include the total processing time
+- No requests are dropped unless they time out
+
+### Client Recommendations
+
+For optimal performance during high load:
+
+- Implement client-side timeouts appropriate for your use case
+- Consider exponential backoff for retries
+- Use the cache control options to reduce unnecessary requests
+- Batch related requests when possible
