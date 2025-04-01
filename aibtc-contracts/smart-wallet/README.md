@@ -245,25 +245,28 @@ When deployed, the smart wallet is configured with:
 
 ## Contract Naming Convention
 
-Smart wallet contracts follow a specific naming convention:
+Smart wallet contracts follow a specific naming convention that incorporates both the owner and agent addresses:
 
 ```
-aibtc-smart-wallet-FIRST5-LAST5
+aibtc-smart-wallet-OWNER_FIRST5-OWNER_LAST5-AGENT_FIRST5-AGENT_LAST5
 ```
 
 Where:
 
-- `FIRST5` represents the first 5 characters of the user's Stacks address
-- `LAST5` represents the last 5 characters of the user's Stacks address
+- `OWNER_FIRST5` represents the first 5 characters of the owner's Stacks address
+- `OWNER_LAST5` represents the last 5 characters of the owner's Stacks address
+- `AGENT_FIRST5` represents the first 5 characters of the agent's Stacks address
+- `AGENT_LAST5` represents the last 5 characters of the agent's Stacks address
 
-For example, if an agent were to deploy a smart wallet for `ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM` it would be named:
+For example, if an agent with address `ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG` were to deploy a smart wallet for an owner with address `ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM`, it would be named:
 
 ```
-aibtc-smart-wallet-ST1PQ-PGZGM
+aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
 ```
 
 This naming convention ensures that:
 
-1. Each user can have only one smart wallet deployed by a specific agent
-2. Smart wallets are easily identifiable by their owner's address
-3. One agent can have multiple smart wallet relationships
+1. Each user-agent pair has a unique smart wallet
+2. Smart wallets are easily identifiable by both the owner's and agent's addresses
+3. One agent can deploy multiple smart wallets for different users
+4. Multiple agents can deploy different smart wallets for the same user
