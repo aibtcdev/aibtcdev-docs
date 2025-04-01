@@ -107,7 +107,7 @@ The Smart Wallet contract (`aibtc-user-agent-smart-wallet`) provides a secure in
 The smart wallet implements strict access control:
 - **User-only functions**: withdraw-stx, withdraw-ft, approve-asset, revoke-asset, approve-dex, revoke-dex, set-agent-can-buy-sell
 - **User and Agent functions**: proxy-propose-action, proxy-create-proposal, vote-on-action-proposal, vote-on-core-proposal, conclude-action-proposal, conclude-core-proposal
-- **Agent trading functions**: buy-asset, sell-asset (only when explicitly permitted by the user)
+- **Agent trading functions**: buy-asset, sell-asset (only when explicitly permitted by the user via set-agent-can-buy-sell)
 - **Public functions**: deposit-stx, deposit-ft (anyone can deposit assets to the smart wallet)
 
 ### Asset Protection
