@@ -100,6 +100,36 @@ The Smart Wallet contract (`aibtc-user-agent-smart-wallet`) provides a secure in
 - Pre-approved tokens and DEXes are configured at deployment
 - All actions are logged with detailed print events
 
+## Security Considerations
+
+### Access Control
+
+The smart wallet implements strict access control:
+- **User-only functions**: withdraw-stx, withdraw-ft, approve-asset, revoke-asset, approve-dex, revoke-dex, set-agent-can-buy-sell
+- **User and Agent functions**: proxy-propose-action, proxy-create-proposal, vote-on-action-proposal, vote-on-core-proposal, conclude-action-proposal, conclude-core-proposal
+- **Agent trading functions**: buy-asset, sell-asset (only when explicitly permitted by the user)
+- **Public functions**: deposit-stx, deposit-ft (anyone can deposit assets to the smart wallet)
+
+### Asset Protection
+
+Assets in the smart wallet are protected by:
+1. Requiring explicit approval of assets before they can be deposited or withdrawn
+2. Limiting withdrawal capability to the user only
+3. Requiring explicit approval of DEXes before they can be used for trading
+4. Requiring explicit permission for the agent to perform buy/sell operations
+
+### Transparency
+
+All actions are logged with detailed print events, providing:
+1. Complete audit trail of all interactions
+2. Visibility into who initiated each action
+3. Details of all asset movements
+
+### Immutability
+
+- The user and agent addresses cannot be changed after deployment
+- The contract cannot be upgraded after deployment
+
 ## Usage Scenarios
 
 ### Asset Management
@@ -119,6 +149,46 @@ The smart wallet enables participation in DAO governance through:
 - Concluding proposals
 
 This allows the user to delegate certain DAO interactions to their agent while maintaining control over the assets.
+
+## Interaction Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Agent
+    participant SmartWallet
+    participant ActionProposals
+    participant CoreProposals
+    participant DEX
+    
+    User->>SmartWallet: deposit-stx
+    User->>SmartWallet: deposit-ft
+    User->>SmartWallet: set-agent-can-buy-sell(true)
+    
+    Agent->>SmartWallet: proxy-propose-action
+    SmartWallet->>ActionProposals: propose-action
+    
+    Agent->>SmartWallet: vote-on-action-proposal
+    SmartWallet->>ActionProposals: vote-on-proposal
+    
+    Agent->>SmartWallet: conclude-action-proposal
+    SmartWallet->>ActionProposals: conclude-proposal
+    
+    User->>SmartWallet: proxy-create-proposal
+    SmartWallet->>CoreProposals: create-proposal
+    
+    Agent->>SmartWallet: vote-on-core-proposal
+    SmartWallet->>CoreProposals: vote-on-proposal
+    
+    User->>SmartWallet: conclude-core-proposal
+    SmartWallet->>CoreProposals: conclude-proposal
+    
+    Agent->>SmartWallet: buy-asset
+    SmartWallet->>DEX: buy
+    
+    User->>SmartWallet: withdraw-stx
+    User->>SmartWallet: withdraw-ft
+```
 
 ### DEX Trading
 
