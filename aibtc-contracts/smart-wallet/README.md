@@ -163,6 +163,8 @@ sequenceDiagram
     
     User->>SmartWallet: deposit-stx
     User->>SmartWallet: deposit-ft
+    User->>SmartWallet: approve-asset
+    User->>SmartWallet: approve-dex
     User->>SmartWallet: set-agent-can-buy-sell(true)
     
     Agent->>SmartWallet: proxy-propose-action
@@ -183,8 +185,17 @@ sequenceDiagram
     User->>SmartWallet: conclude-core-proposal
     SmartWallet->>CoreProposals: conclude-proposal
     
+    User->>SmartWallet: buy-asset
+    SmartWallet->>DEX: buy
+    
     Agent->>SmartWallet: buy-asset
     SmartWallet->>DEX: buy
+    
+    User->>SmartWallet: sell-asset
+    SmartWallet->>DEX: sell
+    
+    Agent->>SmartWallet: sell-asset
+    SmartWallet->>DEX: sell
     
     User->>SmartWallet: withdraw-stx
     User->>SmartWallet: withdraw-ft
