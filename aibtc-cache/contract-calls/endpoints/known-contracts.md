@@ -1,6 +1,6 @@
 # Known Contracts
 
-This endpoint lists all contracts that have been accessed through the cache and have their ABIs stored in the contract ABI cache. Contracts from both mainnet and testnet are included.
+This endpoint lists all contracts that have been accessed through the cache and have their ABIs stored in the contract ABI cache. Contracts from both mainnet and testnet are included. This endpoint is fast and doesn't require any external API calls as all data is stored locally.
 
 ## Endpoint
 

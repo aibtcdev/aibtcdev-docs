@@ -74,6 +74,8 @@ Or with a serialized string:
 
 ## Common Error Codes
 - `VALIDATION_ERROR` - The Clarity value format is invalid or unsupported
+- `INVALID_HEX_STRING` - The provided hex string is not a valid hexadecimal value
+- `DESERIALIZATION_ERROR` - Failed to deserialize the provided hex string into a Clarity value
 
 ## Example Requests
 
