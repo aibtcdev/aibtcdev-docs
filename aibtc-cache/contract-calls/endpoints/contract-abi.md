@@ -1,6 +1,6 @@
 # Contract ABI
 
-This endpoint retrieves the ABI (Application Binary Interface) for a smart contract. ABIs are cached indefinitely after the first request.
+This endpoint retrieves the ABI (Application Binary Interface) for a smart contract. ABIs are cached indefinitely after the first request since contract code never changes after deployment.
 
 ## Endpoint
 

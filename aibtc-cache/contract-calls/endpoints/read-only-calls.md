@@ -45,6 +45,19 @@ POST /contract-calls/read-only/{contractAddress}/{contractName}/{functionName}
   - `skipCache` (optional): If true, don't cache the result of this request (defaults to `false`)
   - `ttl` (optional): Custom time-to-live in seconds for this specific request (overrides default TTL)
 
+## Timeout and Retry Behavior
+
+The API implements automatic timeouts and retries for contract calls:
+
+- **Default Timeout**: 5 seconds for all Stacks API calls
+- **Automatic Retries**: Failed requests are automatically retried up to 3 times with exponential backoff
+- **Retryable Errors**: 
+  - Timeouts
+  - 5xx errors from the Stacks API
+  - Rate limit exceeded errors
+
+When all retries are exhausted, the API returns an appropriate error response with details about the failure.
+
 ## Response Format
 
 All responses follow a standardized format to make integration consistent and error handling predictable.
@@ -100,6 +113,8 @@ The error response includes:
 - `INVALID_ARGUMENTS` - The arguments don't match what the function expects
 - `UPSTREAM_API_ERROR` - Error from the Stacks API when calling the function
 - `VALIDATION_ERROR` - Error validating the request parameters
+- `TIMEOUT` - The request to the Stacks API timed out (default timeout: 5 seconds)
+- `RATE_LIMIT_EXCEEDED` - The rate limit for Stacks API requests has been exceeded
 
 ## Example Requests
 

@@ -1,5 +1,45 @@
 # Clarity Value Types
 
+The AIBTC Cache supports two ways to specify Clarity values:
+
+1. **Stacks.js Clarity Values**: Using the native Clarity value objects from the `@stacks/transactions` library
+2. **Simplified JSON Format**: A JSON-friendly format that's easier to use from non-TypeScript environments
+
+This document focuses on the simplified JSON format, which can be used when specifying function arguments or interpreting decoded values.
+
+## Simplified Format vs. Stacks.js Format
+
+**Stacks.js Format**:
+```javascript
+import { uintCV, stringAsciiCV, tupleCV } from '@stacks/transactions';
+
+// Create Clarity values using Stacks.js
+const args = [
+  uintCV(123),
+  stringAsciiCV("hello"),
+  tupleCV({
+    key1: uintCV(456),
+    key2: stringAsciiCV("world")
+  })
+];
+```
+
+**Simplified JSON Format**:
+```javascript
+// Equivalent values using the simplified format
+const args = [
+  { type: "uint", value: "123" },
+  { type: "string", value: "hello" },
+  { 
+    type: "tuple", 
+    value: {
+      key1: { type: "uint", value: "456" },
+      key2: { type: "string", value: "world" }
+    }
+  }
+];
+```
+
 When specifying function arguments or decoding values, you can use the following Clarity value types:
 
 ## Basic Types

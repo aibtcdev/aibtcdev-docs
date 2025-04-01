@@ -216,6 +216,46 @@ const simplifiedValue = {
 const clarityValue = convertToClarityValue(simplifiedValue);
 ```
 
+## Timeout Utility
+
+The `timeout-util.ts` module provides utilities for handling timeouts in asynchronous operations.
+
+### Functions
+
+#### `withTimeout<T>(promise: Promise<T>, timeoutMs: number, message?: string): Promise<T>`
+
+Wraps a promise with a timeout, rejecting if the operation takes too long.
+
+**Parameters:**
+
+- `promise`: The promise to wrap with a timeout
+- `timeoutMs`: Timeout in milliseconds
+- `message`: Optional custom error message
+
+**Returns:** A promise that resolves with the original promise's result or rejects with a timeout error
+
+**Example:**
+
+```typescript
+import { withTimeout } from '../utils/timeout-util';
+
+// Wrap an API call with a 5-second timeout
+try {
+  const result = await withTimeout(
+    fetch('https://api.example.com/data'),
+    5000,
+    'API call timed out after 5 seconds'
+  );
+  // Process result
+} catch (error) {
+  if (error.message.includes('timed out')) {
+    console.error('The operation timed out');
+  } else {
+    console.error('Operation failed:', error);
+  }
+}
+```
+
 ## Stacks Network Utilities
 
 The `stacks-network-util.ts` module provides utilities for working with Stacks networks.

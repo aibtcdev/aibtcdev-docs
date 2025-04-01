@@ -44,6 +44,55 @@ All endpoints return responses in a consistent format:
   - `skipCache`: Don't cache the result of this specific request
   - `ttl`: Set a custom TTL for this specific request
 
+#### Cache Control Details
+
+The cache control options can be specified in the request body:
+
+```json
+{
+  "functionArgs": [...],
+  "network": "mainnet",
+  "cacheControl": {
+    "bustCache": false,
+    "skipCache": false,
+    "ttl": 3600
+  }
+}
+```
+
+**bustCache**
+- When `true`, the cache is bypassed and a fresh request is made to the Stacks API
+- The result will still be cached (unless `skipCache` is also `true`)
+- Use this when you need the most up-to-date data
+- Default: `false`
+
+**skipCache**
+- When `true`, the result will not be stored in the cache
+- The cache is still checked first (unless `bustCache` is `true`)
+- Use this for one-time queries or highly volatile data
+- Default: `false`
+
+**ttl**
+- Time in seconds that the result should be cached
+- Set to `0` to cache indefinitely (useful for immutable data)
+- Higher values improve performance but may return stale data
+- Default values by data type:
+  - Contract ABIs: Indefinite (never expire)
+  - Read-only calls: 60 seconds
+  - Token balances: 30 seconds
+  - Blockchain status: 15 seconds
+
+#### Cache Key Generation
+
+Cache keys are generated deterministically based on:
+- Contract address
+- Contract name
+- Function name
+- Function arguments (hashed)
+- Network (mainnet/testnet)
+
+This ensures that identical calls from different clients use the same cache entry.
+
 ### Rate Limiting
 
 - Implements token bucket algorithm to prevent exceeding Stacks API rate limits
