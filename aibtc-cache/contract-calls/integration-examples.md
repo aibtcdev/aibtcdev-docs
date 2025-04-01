@@ -81,8 +81,9 @@ const responseWithCacheControl = await fetch('https://cache.aibtc.dev/contract-c
     ],
     network: 'mainnet',
     cacheControl: {
-      bustCache: true,  // Force a fresh request, bypassing the cache
-      ttl: 3600         // Cache this result for 1 hour (3600 seconds)
+      bustCache: true,   // Force a fresh request, bypassing the cache
+      skipCache: false,  // Whether to skip caching this result (default: false)
+      ttl: 3600          // Cache this result for 1 hour (3600 seconds)
     }
   })
 });
@@ -91,6 +92,30 @@ if (resultWithCacheControl.success) {
   console.log('Fresh data with custom TTL:', resultWithCacheControl.data);
 } else {
   console.error('Error:', resultWithCacheControl.error);
+}
+
+// Example with sender address specified
+const responseWithSender = await fetch('https://cache.aibtc.dev/contract-calls/read-only/ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA/media3-token/get-balance', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    functionArgs: [
+      {
+        type: 'principal',
+        value: 'ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA'
+      }
+    ],
+    network: 'mainnet',
+    senderAddress: 'ST252TFQ08T74ZZ6XK426TQNV4EXF1D4RMTTNCWFA' // Optional sender address for the contract call
+  })
+});
+const resultWithSender = await responseWithSender.json();
+if (resultWithSender.success) {
+  console.log('Balance data with custom sender:', resultWithSender.data);
+} else {
+  console.error('Error:', resultWithSender.error);
 }
 ```
 
@@ -145,7 +170,8 @@ def get_proposal(proposal_id, network='testnet', bust_cache=False):
         error = result.get('error', {})
         raise Exception(f"API Error: {error.get('code')} - {error.get('message')}")
 
-def get_token_balance(address, token_contract_address, token_contract_name, network='mainnet', custom_ttl=None):
+def get_token_balance(address, token_contract_address, token_contract_name, network='mainnet', 
+                     custom_ttl=None, bust_cache=False, skip_cache=False, sender_address=None):
     """
     Fetch a token balance for an address.
     
@@ -155,6 +181,9 @@ def get_token_balance(address, token_contract_address, token_contract_name, netw
         token_contract_name (str): The contract name of the token
         network (str): The Stacks network to use ('mainnet' or 'testnet')
         custom_ttl (int, optional): Custom cache TTL in seconds
+        bust_cache (bool): Whether to bypass the cache and force a fresh request
+        skip_cache (bool): Whether to skip caching this result
+        sender_address (str, optional): Optional sender address for the contract call
         
     Returns:
         dict: The balance data
@@ -172,11 +201,21 @@ def get_token_balance(address, token_contract_address, token_contract_name, netw
         "network": network
     }
     
-    # Add cache control options if a custom TTL is specified
+    # Add sender address if specified
+    if sender_address:
+        payload["senderAddress"] = sender_address
+    
+    # Add cache control options if any are specified
+    cache_control = {}
     if custom_ttl is not None:
-        payload["cacheControl"] = {
-            "ttl": custom_ttl
-        }
+        cache_control["ttl"] = custom_ttl
+    if bust_cache:
+        cache_control["bustCache"] = True
+    if skip_cache:
+        cache_control["skipCache"] = True
+        
+    if cache_control:
+        payload["cacheControl"] = cache_control
     
     response = requests.post(
         url,
@@ -264,8 +303,22 @@ async function callContract(contractAddress, contractName, functionName, args) {
         case 'INVALID_ARGUMENTS':
           console.error(`Invalid arguments: ${result.error.details.reason}`);
           break;
+        case 'INVALID_NETWORK':
+          console.error(`Invalid network: ${result.error.details.network}`);
+          break;
         case 'UPSTREAM_API_ERROR':
           console.error('Error from Stacks API:', result.error.message);
+          // Check if we should retry based on the error
+          if (result.error.details.retryable) {
+            console.log(`This error is retryable. Retry after ${result.error.details.retryAfter || '1s'}`);
+          }
+          break;
+        case 'RATE_LIMIT_EXCEEDED':
+          console.error('Rate limit exceeded. Try again later.');
+          console.log(`Retry after: ${result.error.details.retryAfter || '60s'}`);
+          break;
+        case 'TIMEOUT':
+          console.error('The request timed out. The network might be congested.');
           break;
         default:
           console.error(`Error: ${result.error.code} - ${result.error.message}`);

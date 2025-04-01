@@ -35,11 +35,14 @@ All error responses follow this format:
 - **NOT_FOUND**: The requested resource was not found.
 - **INVALID_REQUEST**: The request was malformed or invalid.
 - **UNAUTHORIZED**: The request lacks valid authentication.
+- **METHOD_NOT_ALLOWED**: The HTTP method is not allowed for this endpoint.
+- **TIMEOUT**: The operation timed out.
 
 ### API Specific Errors
 
 - **RATE_LIMIT_EXCEEDED**: The API rate limit has been exceeded.
 - **UPSTREAM_API_ERROR**: An error occurred in an upstream API (e.g., Stacks API).
+- **REQUEST_FAILED**: The request to an external service failed.
 
 ### Validation Errors
 
@@ -47,14 +50,18 @@ All error responses follow this format:
 - **INVALID_CONTRACT_ADDRESS**: The contract address is invalid.
 - **INVALID_FUNCTION**: The function doesn't exist in the contract.
 - **INVALID_ARGUMENTS**: The arguments don't match what the function expects.
+- **INVALID_NETWORK**: The specified network is invalid.
+- **INVALID_PARAMETER**: A parameter provided to the API is invalid.
 
 ### Cache Errors
 
 - **CACHE_ERROR**: An error occurred with the caching system.
+- **CACHE_MISS**: The requested item was not found in the cache.
 
 ### Configuration Errors
 
 - **CONFIG_ERROR**: An error in the configuration.
+- **MISSING_CONFIG**: A required configuration value is missing.
 
 ## Error Handling Best Practices
 
