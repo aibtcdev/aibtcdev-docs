@@ -10,7 +10,10 @@ The Smart Wallet contract (`aibtc-user-agent-smart-wallet`) provides a secure in
 
 - **Title**: aibtc-user-agent-smart-wallet
 - **Version**: 1.0.0
-- **Implements**: `aibtc-smart-wallet` trait
+- **Implements**: 
+  - `aibtc-smart-wallet-traits.aibtc-smart-wallet` trait
+  - `aibtc-smart-wallet-traits.aibtc-proposals-v2` trait
+  - `aibtc-smart-wallet-traits.faktory-buy-sell` trait
 
 ## Print Events
 
@@ -22,6 +25,11 @@ The Smart Wallet contract (`aibtc-user-agent-smart-wallet`) provides a secure in
 | `withdraw-ft`              | Emitted when a fungible token is withdrawn | Amount, asset contract, sender, caller, recipient      |
 | `approve-asset`            | Emitted when an asset is approved          | Asset, approved status, sender, caller                 |
 | `revoke-asset`             | Emitted when an asset approval is revoked  | Asset, approved status, sender, caller                 |
+| `approve-dex`              | Emitted when a DEX is approved             | DEX contract, approved status, sender, caller          |
+| `revoke-dex`               | Emitted when a DEX approval is revoked     | DEX contract, approved status, sender, caller          |
+| `set-agent-can-buy-sell`   | Emitted when agent buy/sell is toggled     | Can buy/sell status, sender, caller                    |
+| `buy-asset`                | Emitted when buying an asset               | DEX contract, asset, amount, sender, caller            |
+| `sell-asset`               | Emitted when selling an asset              | DEX contract, asset, amount, sender, caller            |
 | `proxy-propose-action`     | Emitted when proposing an action via proxy | Proposal contract, action, parameters, sender, caller  |
 | `proxy-create-proposal`    | Emitted when creating a proposal via proxy | Proposal contract, proposal, sender, caller            |
 | `vote-on-action-proposal`  | Emitted when voting on an action proposal  | Proposal contract, proposal ID, vote, sender, caller   |
@@ -54,28 +62,42 @@ The Smart Wallet contract (`aibtc-user-agent-smart-wallet`) provides a secure in
 | `conclude-action-proposal` | Conclude an action proposal          | `action-proposals`: action-proposals-trait, `proposalId`: uint, `action`: action-trait      |
 | `conclude-core-proposal`   | Conclude a core proposal             | `core-proposals`: core-proposals-trait, `proposal`: proposal-trait                          |
 
+### Faktory DEX Trading Functions
+
+| Function               | Description                                | Parameters                                                      |
+| ---------------------- | ------------------------------------------ | --------------------------------------------------------------- |
+| `buy-asset`            | Buy an asset from a Faktory DEX            | `faktory-dex`: dao-faktory-dex, `asset`: faktory-token, `amount`: uint |
+| `sell-asset`           | Sell an asset to a Faktory DEX             | `faktory-dex`: dao-faktory-dex, `asset`: faktory-token, `amount`: uint |
+| `approve-dex`          | Add a DEX to the approved list             | `faktory-dex`: dao-faktory-dex                                 |
+| `revoke-dex`           | Remove a DEX from the approved list        | `faktory-dex`: dao-faktory-dex                                 |
+| `set-agent-can-buy-sell` | Set whether the agent can buy/sell assets | `canBuySell`: bool                                             |
+
 ## Read-Only Functions
 
 | Function            | Description                             | Parameters         |
 | ------------------- | --------------------------------------- | ------------------ |
 | `is-approved-asset` | Check if an asset is approved           | `asset`: principal |
+| `is-approved-dex`   | Check if a DEX is approved              | `dex`: principal   |
 | `get-balance-stx`   | Get the STX balance of the smart wallet | None               |
 | `get-configuration` | Get the smart wallet configuration      | None               |
 
 ## Error Codes
 
-| Code  | Constant             | Description                       |
-| ----- | -------------------- | --------------------------------- |
-| u1000 | ERR_UNAUTHORIZED     | Caller is not authorized          |
-| u1001 | ERR_UNKNOWN_ASSET    | Asset is not in the approved list |
-| u1002 | ERR_OPERATION_FAILED | Operation failed                  |
+| Code  | Constant               | Description                       |
+| ----- | ---------------------- | --------------------------------- |
+| u9000 | ERR_UNAUTHORIZED       | Caller is not authorized          |
+| u9001 | ERR_UNKNOWN_ASSET      | Asset is not in the approved list |
+| u9002 | ERR_OPERATION_FAILED   | Operation failed                  |
+| u9003 | ERR_BUY_SELL_NOT_ALLOWED | Buy/sell operation not allowed for agent |
 
 ## Security Features
 
 - Only the user can withdraw assets
 - Only the user and agent can interact with DAOs
 - Assets must be explicitly approved before they can be deposited or withdrawn
-- Pre-approved tokens are configured at deployment
+- DEXes must be explicitly approved before they can be used for trading
+- Agent buy/sell permissions can be toggled by the user
+- Pre-approved tokens and DEXes are configured at deployment
 - All actions are logged with detailed print events
 
 ## Usage Scenarios
@@ -98,6 +120,15 @@ The smart wallet enables participation in DAO governance through:
 
 This allows the user to delegate certain DAO interactions to their agent while maintaining control over the assets.
 
+### DEX Trading
+
+The smart wallet enables trading on Faktory DEXes:
+
+- User can always buy and sell assets
+- Agent can buy and sell assets if explicitly permitted by the user
+- Only approved DEXes can be used for trading
+- All trading activity is logged with detailed print events
+
 ## Deployment Configuration
 
 When deployed, the smart wallet is configured with:
@@ -105,6 +136,7 @@ When deployed, the smart wallet is configured with:
 - User principal (wallet owner)
 - Agent principal (proposal voter)
 - Pre-approved tokens (sBTC and DAO token)
+- Pre-approved DEXes (DAO token DEX)
 
 ## Contract Naming Convention
 
