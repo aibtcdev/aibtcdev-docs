@@ -3,6 +3,16 @@
 - [AIBTC](README.md)
 - [Prompt2DAO](introduction/prompt2dao.md)
 
+## Templates
+
+- [Smart Contract Documentation](templates/smart-contract-documentation.md)
+- [Smart Contract Example](templates/smart-wallet-example.md)
+- [Cache Service Documentation](templates/cache-service-documentation.md)
+- [Cache Service Example](templates/cache-service-example.md)
+- [Agent Tool Documentation](templates/agent-tool-documentation.md)
+- [Agent Tool Example](templates/agent-tool-example.md)
+- [Prompting Documentation](templates/prompting-documentation.md)
+
 ## AIBTC Contracts
 
 - [DAO Base Layer](aibtc-contracts/dao-base-layer.md)
