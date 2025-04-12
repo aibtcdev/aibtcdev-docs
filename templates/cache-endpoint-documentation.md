@@ -14,6 +14,25 @@ Use this template when documenting individual endpoints of a cache service.
 
 **Method**: [HTTP Method]
 
+## Request Flow
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Cache as Cache Service
+    participant Backend as Backend API
+    
+    Client->>Cache: Request to [endpoint-name]
+    alt Cache Hit
+        Cache->>Client: Return cached response
+    else Cache Miss
+        Cache->>Backend: Forward request
+        Backend->>Cache: Response
+        Cache->>Cache: Store in cache
+        Cache->>Client: Return response
+    end
+```
+
 ## Request Format
 
 ### Path Parameters

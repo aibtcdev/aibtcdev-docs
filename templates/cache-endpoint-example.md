@@ -14,6 +14,42 @@ This is an example of how to apply the cache endpoint documentation template to 
 
 **Method**: POST
 
+## Request Flow
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant Cache as Contract Calls Service
+    participant DO as Durable Object
+    participant RL as Rate Limiter
+    participant Stacks as Stacks API
+    
+    Client->>Cache: POST /read-only/{contract}/{name}/{function}
+    Cache->>DO: Forward request
+    
+    alt Cache Hit
+        DO->>DO: Check cache
+        DO->>Cache: Return cached response
+        Cache->>Client: Return data with 200 OK
+    else Cache Miss
+        DO->>DO: Check cache
+        DO->>RL: Check rate limits
+        
+        alt Rate limit exceeded
+            RL->>DO: Rate limit error
+            DO->>Cache: Return error
+            Cache->>Client: 429 Too Many Requests
+        else Rate limit OK
+            RL->>Stacks: Forward request
+            Stacks->>RL: Response
+            RL->>DO: Response
+            DO->>DO: Store in cache
+            DO->>Cache: Return response
+            Cache->>Client: Return data with 200 OK
+        end
+    end
+```
+
 ## Request Format
 
 ### Path Parameters
