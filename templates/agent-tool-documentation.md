@@ -2,7 +2,7 @@
 description: Template for documenting agent tools
 ---
 
-## Agent Tool Documentation Template
+# Agent Tool Documentation Template
 
 Use this template when documenting agent tools to ensure consistency across all tool documentation.
 
@@ -14,7 +14,7 @@ description: [One-line description of the tool's purpose]
 ---
 ```
 
-# [Tool Category Name]
+## [Tool Category Name]
 
 [1-2 paragraph introduction explaining what this tool category does and why it matters]
 

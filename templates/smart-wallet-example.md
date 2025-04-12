@@ -2,13 +2,13 @@
 description: Example of how to use the smart contract documentation template
 ---
 
-## Smart Wallet Documentation Example
+# Smart Wallet Documentation Example
 
 This is an example of how to apply the smart contract documentation template to the Smart Wallet contract.
 
 ```yaml
 ---
-description: [User-Agent Smart Wallet for managing assets and DAO interactions]
+description: User-Agent Smart Wallet for managing assets and DAO interactions
 ---
 ```
 

@@ -2,7 +2,7 @@
 description: Template for documenting prompts for specific domains or tools
 ---
 
-## Prompting Documentation Template
+# Prompting Documentation Template
 
 Use this template when documenting prompts to ensure consistency across all prompting guides.
 
@@ -14,7 +14,7 @@ description: [One-line description of the prompting guide's purpose]
 ---
 ```
 
-# [Domain/Tool] Prompting Guide
+## [Domain/Tool] Prompting Guide
 
 [1-2 paragraph introduction explaining the purpose of these prompts and when to use them]
 

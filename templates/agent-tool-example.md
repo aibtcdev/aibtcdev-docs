@@ -2,7 +2,7 @@
 description: Example of how to use the agent tool documentation template
 ---
 
-## Smart Wallet Tools Documentation Example
+# Smart Wallet Tools Documentation Example
 
 This is an example of how to apply the agent tool documentation template to the Smart Wallet Tools category.
 

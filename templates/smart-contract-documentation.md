@@ -2,7 +2,7 @@
 description: Template for documenting smart contracts
 ---
 
-## Smart Contract Documentation Template
+# Smart Contract Documentation Template
 
 Use this template when documenting smart contracts to ensure consistency across all contract documentation.
 
@@ -14,7 +14,7 @@ description: [One-line description of the contract's purpose]
 ---
 ```
 
-## [Contract Name]
+# [Contract Name]
 
 [1-2 paragraph introduction explaining what the contract does and why it matters]
 

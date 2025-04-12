@@ -6,7 +6,7 @@ description: Template for documenting cache service endpoints
 
 Use this template when documenting individual endpoints of a cache service.
 
-## [Endpoint Name]
+# [Endpoint Name]
 
 **Purpose**: [What this endpoint does]
 
