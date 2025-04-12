@@ -88,11 +88,11 @@ The Contract Calls service uses a multi-layered approach:
 
 ## Caching Behavior
 
-- **Default TTL**: 60 seconds for read-only calls, indefinite for contract ABIs
+- **Default TTL**: Indefinite for all calls (cached permanently until explicitly removed)
 - **Cache Key Generation**: Based on contract address, contract name, function name, function arguments (hashed), and network
-- **Cache Busting**: Set `bustCache: true` in the cacheControl options to force a fresh request
-- **Custom TTL**: Set `ttl: seconds` in the cacheControl options to customize the cache duration
-- **Skip Caching**: Set `skipCache: true` in the cacheControl options to avoid caching the result
+- **Cache Busting**: Set `bustCache: true` in the cacheControl options to force a fresh request and update the cache
+- **Custom TTL**: Set `ttl: seconds` in the cacheControl options to set an expiration time for the cached value
+- **Skip Caching**: Set `skipCache: true` in the cacheControl options to bypass the cache entirely (fetch directly from API)
 
 ## Performance Considerations
 

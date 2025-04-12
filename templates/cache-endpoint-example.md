@@ -408,12 +408,13 @@ def call_contract(
 
 ## Caching Details
 
-- **Default TTL**: 60 seconds
+- **Default TTL**: Indefinite (cached permanently until explicitly removed)
 - **Cache Key Components**: Contract address, contract name, function name, function arguments (hashed), and network
 - **Recommended Cache Settings**:
-  - For frequently changing data: Use a short TTL (30 seconds or less)
-  - For stable data: Use a longer TTL (5-15 minutes)
-  - For immutable historical data: Set TTL to 0 (cache indefinitely)
+  - For frequently changing data: Set a custom TTL (30 seconds or less)
+  - For data that needs periodic refresh: Set a custom TTL (5-15 minutes)
+  - For on-demand refresh: Use cache busting when fresh data is needed
+  - For one-time queries: Use skipCache to bypass storage entirely
 
 ## Performance Notes
 
