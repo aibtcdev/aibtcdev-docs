@@ -50,7 +50,8 @@ flowchart TD
         CC["Governance Actions"]
     end
     
-    A -->|"Deploys"| C
+    A -->|"Instructs agent to deploy"| B
+    B -->|"Deploys"| C
     A -->|"Deposits assets"| CA
     A -->|"Configures permissions"| CB
     B -->|"Interacts with"| C
@@ -61,7 +62,7 @@ flowchart TD
     C -->|"Trades on"| E
 ```
 
-Smart Wallet tools facilitate the creation and management of programmable wallets that serve as secure intermediaries between users, agents, and blockchain services. The user maintains control over assets and configuration, while the agent can perform specific actions based on granted permissions.
+Smart Wallet tools facilitate the creation and management of programmable wallets that serve as secure intermediaries between users, agents, and blockchain services. The user instructs the agent to deploy the smart wallet and maintains control over assets and configuration, while the agent can perform specific actions based on granted permissions.
 
 ## Tool Details
 
@@ -91,21 +92,21 @@ Smart Wallet tools facilitate the creation and management of programmable wallet
 **Example Prompt**:
 
 ```
-Deploy a new smart wallet with the following details:
+I'd like you to deploy a new smart wallet for me with the following details:
 - owner_address: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
 - agent_address: ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG
 - dao_token_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
 - dao_token_dex_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token-dex
 ```
 
-This tool creates a new smart wallet contract with the specified owner and agent addresses. The wallet is automatically configured to work with the specified DAO token and DEX.
+This tool allows the agent to deploy a new smart wallet contract with the specified owner and agent addresses. The wallet is automatically configured to work with the specified DAO token and DEX.
 
 ## Workflow Examples
 
 ### Asset Management Workflow
 
 ```
-1. Deploy a new smart wallet with the following details:
+1. I'd like you to deploy a new smart wallet for me with the following details:
    - owner_address: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
    - agent_address: ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG
    - dao_token_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
@@ -120,7 +121,7 @@ This tool creates a new smart wallet contract with the specified owner and agent
    - asset_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
 ```
 
-This workflow demonstrates how to set up a smart wallet, fund it with STX, and approve a token for use with the wallet.
+This workflow demonstrates how to instruct an agent to set up a smart wallet, fund it with STX, and approve a token for use with the wallet.
 
 ### DAO Governance Workflow
 
