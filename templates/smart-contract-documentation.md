@@ -136,3 +136,31 @@ flowchart TD
 
 - **[Related Contract 1]**: [Brief description of relationship]
 - **[Related Contract 2]**: [Brief description of relationship]
+
+## Review Checklist
+
+Before submitting documentation:
+
+- [ ] Follows the appropriate template structure
+- [ ] Includes all required sections
+- [ ] Has exactly one H1 title
+- [ ] YAML frontmatter is at the top with description
+- [ ] Introduction follows immediately after title
+- [ ] Heading levels are used correctly (H1 → H2 → H3)
+- [ ] Code examples are complete and functional with language identifiers
+- [ ] Tables have clear headers and consistent formatting
+- [ ] Contract diagram has explanation
+- [ ] Links to related documentation are correct
+- [ ] No spelling or grammatical errors
+- [ ] Technical accuracy has been verified
+- [ ] Examples use realistic values
+- [ ] Security considerations are addressed comprehensively
+- [ ] Error codes and handling are documented
+- [ ] Content is accessible to the target audience
+
+## Versioning and Updates
+
+- Note when documentation was last updated
+- Indicate which version of the contract the documentation applies to
+- Highlight significant changes from previous versions
+- Maintain backward compatibility information where relevant

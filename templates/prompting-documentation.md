@@ -99,3 +99,30 @@ description: [One-line description of the prompting guide's purpose]
 
 - **[Related Resource 1]**: [Brief description]
 - **[Related Resource 2]**: [Brief description]
+
+## Review Checklist
+
+Before submitting documentation:
+
+- [ ] Follows the appropriate template structure
+- [ ] Includes all required sections
+- [ ] Has exactly one H1 title
+- [ ] YAML frontmatter is at the top with description
+- [ ] Introduction follows immediately after title
+- [ ] Heading levels are used correctly (H1 → H2 → H3)
+- [ ] Prompt examples are complete and functional
+- [ ] Parameters are clearly documented
+- [ ] Expected outputs are described
+- [ ] Workflows are documented with step-by-step instructions
+- [ ] No spelling or grammatical errors
+- [ ] Technical accuracy has been verified
+- [ ] Examples use realistic values
+- [ ] Troubleshooting section addresses common issues
+- [ ] Content is accessible to the target audience
+
+## Versioning and Updates
+
+- Note when documentation was last updated
+- Indicate which version of the tools/services the prompts apply to
+- Highlight significant changes from previous versions
+- Maintain backward compatibility information where relevant

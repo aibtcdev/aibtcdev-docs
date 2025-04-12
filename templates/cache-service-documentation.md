@@ -93,3 +93,30 @@ flowchart TD
 
 - **[Related Service 1]**: [Brief description of relationship]
 - **[Related Service 2]**: [Brief description of relationship]
+
+## Review Checklist
+
+Before submitting documentation:
+
+- [ ] Follows the appropriate template structure
+- [ ] Includes all required sections
+- [ ] Has exactly one H1 title
+- [ ] YAML frontmatter is at the top with description
+- [ ] Introduction follows immediately after title
+- [ ] Heading levels are used correctly (H1 → H2 → H3)
+- [ ] Service architecture diagram is clear with explanation
+- [ ] Tables have clear headers and consistent formatting
+- [ ] Request/response examples are accurate and complete
+- [ ] Links to related documentation are correct
+- [ ] No spelling or grammatical errors
+- [ ] Technical accuracy has been verified
+- [ ] Performance considerations are documented
+- [ ] Caching behavior is clearly explained
+- [ ] Content is accessible to the target audience
+
+## Versioning and Updates
+
+- Note when documentation was last updated
+- Indicate which version of the service the documentation applies to
+- Highlight significant changes from previous versions
+- Maintain backward compatibility information where relevant

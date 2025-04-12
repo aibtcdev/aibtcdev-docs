@@ -245,3 +245,23 @@ async function callWithRetry(param1, param2, maxRetries = 3) {
 - **Typical Response Time**: [Expected response time range]
 - **Rate Limit Impact**: [How this endpoint affects rate limits]
 - **Heavy Operation Warning**: [Any warnings about resource-intensive operations]
+
+## Review Checklist
+
+Before submitting documentation:
+
+- [ ] Follows the appropriate template structure
+- [ ] Includes all required sections
+- [ ] Has exactly one H1 title
+- [ ] YAML frontmatter is at the top with description
+- [ ] Introduction follows immediately after title
+- [ ] Heading levels are used correctly (H1 → H2 → H3)
+- [ ] Code examples are complete and functional with language identifiers
+- [ ] Tables have clear headers and consistent formatting
+- [ ] Request/response examples are accurate and complete
+- [ ] Links to related documentation are correct
+- [ ] No spelling or grammatical errors
+- [ ] Technical accuracy has been verified
+- [ ] Examples use realistic values
+- [ ] Error codes and handling are documented
+- [ ] Content is accessible to the target audience
