@@ -14,46 +14,63 @@ This style guide provides guidelines for maintaining consistency, readability, a
 - **Accessibility**: Make documentation approachable for all skill levels
 - **Maintainability**: Structure content to be easily updated
 
-## Structure and Organization
+## Document Structure Standards
 
-### Document Structure
+### Required Elements
 
-1. **YAML Frontmatter**: Always include a description at the top
+1. **YAML Frontmatter**: Always include at the very top of every document
    ```yaml
    ---
    description: Concise one-line description of the document's purpose
    ---
    ```
 
-2. **Title and Introduction**: Start with a clear title (H1) and 1-2 paragraph introduction
-   - Title should match the document's purpose
-   - Introduction should explain what, why, and for whom
+2. **Title (H1)**: Every document must have exactly one H1 title
+   - Must be the first content after the frontmatter
+   - Should clearly describe the document's purpose
 
-3. **Key Features**: List 3-5 most important features with brief explanations
+3. **Introduction**: 1-2 paragraphs immediately following the title
+   - Explain what the document covers and why it matters
+   - Identify the target audience
+
+4. **Heading Hierarchy**:
+   - **H1 (#)**: Document title only (only one per document)
+   - **H2 (##)**: Major sections
+   - **H3 (###)**: Subsections
+   - **H4 (####)**: Minor subsections (use sparingly)
+
+### Standard Sections
+
+Most documentation should include these sections in this order:
+
+1. **Key Features**: List 3-5 most important features with brief explanations
    - Use bold for feature names
    - Keep explanations to one line each
 
-4. **Visual Diagrams**: Include Mermaid diagrams for complex workflows
-   - Keep diagrams focused on key interactions
-   - Include a brief explanation below the diagram
+2. **Overview Table**: When applicable, provide a summary table of components
+   - Use consistent column headers across similar documents
+   - Align text left, numbers center
 
-5. **Details Section**: Organize detailed information in logical sections
+3. **Visual Diagrams**: Include Mermaid diagrams for complex workflows
+   - Keep diagrams focused on key interactions
+   - Always include an explanation paragraph below each diagram
+   - Different diagram types are acceptable based on content needs
+
+4. **Details Section**: Organize detailed information in logical sections
    - Use consistent heading levels (H2 for major sections, H3 for subsections)
    - Group related information together
 
-6. **Examples**: Provide practical, real-world examples
+5. **Examples**: Provide practical, real-world examples
    - Include complete code snippets that can be copied and used
    - Explain what the example demonstrates
+   - Use consistent formatting within code blocks
+
+6. **Error Handling/Troubleshooting**: Document common errors and solutions
+   - Use tables for error codes and resolutions
+   - Include practical troubleshooting steps
 
 7. **Related Resources**: End with links to related documentation
    - Briefly explain the relationship to the current document
-
-### Tables
-
-- Use tables for structured information (parameters, errors, etc.)
-- Include clear column headers
-- Align column content consistently
-- Sort rows logically (alphabetically, by importance, etc.)
 
 ## Writing Style
 
@@ -120,15 +137,26 @@ This style guide provides guidelines for maintaining consistency, readability, a
 - Provide troubleshooting for common issues
 - Show complete workflows with multiple prompts
 
-## Automation Considerations
+## Table Formatting Standards
 
-When updating documentation for automation:
+- Every table must have headers
+- Use consistent column headers across similar tables
+- Left-align text columns
+- Center-align numeric columns
+- Use title case for column headers
+- Sort rows logically (alphabetically, by importance, etc.)
+- Keep table width reasonable (avoid too many columns)
 
-- Use consistent parameter naming across related documents
-- Include machine-readable sections where appropriate
-- Maintain consistent structure for easier parsing
-- Use predictable patterns for code examples
-- Keep formatting simple and standard
+## Mermaid Diagram Standards
+
+- Choose appropriate diagram type for the content:
+  - Flowchart: For processes and decision trees
+  - Sequence: For API interactions and time-based flows
+  - Class: For object relationships
+- Include clear labels for all components
+- Use consistent naming conventions
+- Add a paragraph explanation after every diagram
+- Keep diagrams focused on key interactions (avoid excessive detail)
 
 ## Review Checklist
 
@@ -136,10 +164,15 @@ Before submitting documentation:
 
 - [ ] Follows the appropriate template structure
 - [ ] Includes all required sections
+- [ ] Has exactly one H1 title
+- [ ] YAML frontmatter is at the top with description
+- [ ] Introduction follows immediately after title
+- [ ] Heading levels are used correctly (H1 → H2 → H3)
 - [ ] Code examples are complete and functional
+- [ ] Tables have clear headers and consistent formatting
+- [ ] Mermaid diagrams have explanations
 - [ ] Links to related documentation are correct
 - [ ] No spelling or grammatical errors
-- [ ] Formatting is consistent
 - [ ] Technical accuracy has been verified
 - [ ] Examples use realistic values
 - [ ] Security considerations are addressed
