@@ -37,10 +37,23 @@ description: [One-line description of the contract's purpose]
 
 ```mermaid
 flowchart TD
-    A[Actor 1] -->|Action| B[Contract]
-    C[Actor 2] -->|Action| B
-    B -->|Result 1| D[Outcome 1]
-    B -->|Result 2| E[Outcome 2]
+    A["Actor 1"]
+    B["Contract"]
+    C["Actor 2"]
+    D["Outcome 1"]
+    E["Outcome 2"]
+    
+    subgraph Contract Functions
+        BA["Function 1"]
+        BB["Function 2"]
+    end
+    
+    A -->|"Action"| B
+    C -->|"Action"| B
+    B --> BA
+    B --> BB
+    BA -->|"Result 1"| D
+    BB -->|"Result 2"| E
 ```
 
 [Brief explanation of the workflow]

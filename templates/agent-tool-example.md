@@ -38,12 +38,27 @@ Smart Wallet tools provide functionality for deploying, managing, and interactin
 
 ```mermaid
 flowchart TD
-    User[User] -->|Deploys| SW[Smart Wallet]
-    User -->|Deposits assets| SW
-    User -->|Configures permissions| SW
-    Agent[Agent] -->|Interacts with| SW
-    SW -->|Interacts with| DAO[DAO Contracts]
-    SW -->|Trades on| DEX[Approved DEXes]
+    A["User"]
+    B["Agent"]
+    C["Smart Wallet"]
+    D["DAO Contracts"]
+    E["Approved DEXes"]
+    
+    subgraph Wallet Operations
+        CA["Asset Management"]
+        CB["Permission Control"]
+        CC["Governance Actions"]
+    end
+    
+    A -->|"Deploys"| C
+    A -->|"Deposits assets"| CA
+    A -->|"Configures permissions"| CB
+    B -->|"Interacts with"| C
+    CA --> C
+    CB --> C
+    CC --> C
+    C -->|"Interacts with"| D
+    C -->|"Trades on"| E
 ```
 
 Smart Wallet tools facilitate the creation and management of programmable wallets that serve as secure intermediaries between users, agents, and blockchain services. The user maintains control over assets and configuration, while the agent can perform specific actions based on granted permissions.

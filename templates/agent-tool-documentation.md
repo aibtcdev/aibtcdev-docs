@@ -36,10 +36,21 @@ description: [One-line description of the tool's purpose]
 
 ```mermaid
 flowchart TD
-    A[User/Agent] -->|Request| B[Tool]
-    B -->|Process| C[Blockchain/Service]
-    C -->|Response| B
-    B -->|Result| A
+    A["User/Agent"]
+    B["Tool"]
+    C["Blockchain/Service"]
+    
+    subgraph Process
+        BA["Request Processing"]
+        BB["Response Handling"]
+    end
+    
+    A -->|"Request"| B
+    B --> BA
+    BA -->|"Process"| C
+    C -->|"Response"| BB
+    BB --> B
+    B -->|"Result"| A
 ```
 
 [Brief explanation of the workflow]

@@ -37,15 +37,37 @@ The Smart Wallet provides a secure interface between users and their agents, ena
 
 ```mermaid
 flowchart TD
-    User[User] -->|Deposits assets| SW[Smart Wallet]
-    User -->|Withdraws assets| SW
-    User -->|Approves assets/DEXes| SW
-    User -->|Controls agent permissions| SW
-    Agent[Agent] -->|Proposes actions| SW
-    Agent -->|Votes on proposals| SW
-    Agent -->|Trades assets if permitted| SW
-    SW -->|Interacts with| DAO[DAO Contracts]
-    SW -->|Trades on| DEX[Approved DEXes]
+    A["User"]
+    B["Agent"]
+    C["Smart Wallet"]
+    D["DAO Contracts"]
+    E["Approved DEXes"]
+    
+    subgraph User Operations
+        CA["Asset Management"]
+        CB["Permission Control"]
+    end
+    
+    subgraph Agent Operations
+        CC["Governance Actions"]
+        CD["Trading Operations"]
+    end
+    
+    A -->|"Deposits assets"| CA
+    A -->|"Withdraws assets"| CA
+    A -->|"Approves assets/DEXes"| CB
+    A -->|"Controls agent permissions"| CB
+    B -->|"Proposes actions"| CC
+    B -->|"Votes on proposals"| CC
+    B -->|"Trades assets if permitted"| CD
+    
+    CA --> C
+    CB --> C
+    CC --> C
+    CD --> C
+    
+    C -->|"Interacts with"| D
+    C -->|"Trades on"| E
 ```
 
 The Smart Wallet acts as a secure intermediary, with different permission levels for users and agents. Users maintain full control over assets and configuration, while agents can perform governance actions and (when permitted) trading operations.
