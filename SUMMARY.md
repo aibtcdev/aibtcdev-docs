@@ -9,6 +9,8 @@
 - [Smart Contract Example](templates/smart-wallet-example.md)
 - [Cache Service Documentation](templates/cache-service-documentation.md)
 - [Cache Service Example](templates/cache-service-example.md)
+- [Cache Endpoint Documentation](templates/cache-endpoint-documentation.md)
+- [Cache Endpoint Example](templates/cache-endpoint-example.md)
 - [Agent Tool Documentation](templates/agent-tool-documentation.md)
 - [Agent Tool Example](templates/agent-tool-example.md)
 - [Prompting Documentation](templates/prompting-documentation.md)
