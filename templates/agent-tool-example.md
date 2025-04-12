@@ -2,15 +2,17 @@
 description: Example of how to use the agent tool documentation template
 ---
 
-# Smart Wallet Tools Documentation Example
+## Smart Wallet Tools Documentation Example
 
 This is an example of how to apply the agent tool documentation template to the Smart Wallet Tools category.
 
+```yaml
 ---
-description: Tools for interacting with Smart Wallets
+description: [One-line description of the tool's purpose]
 ---
+```
 
-# Smart Wallet Tools
+## Smart Wallet Tools
 
 Smart Wallet tools provide functionality for deploying, managing, and interacting with Smart Wallets, which are programmable wallets that can hold assets and interact with various contracts on the Stacks blockchain. These tools enable users and agents to perform operations like depositing/withdrawing assets, approving tokens and DEXes, and participating in DAO governance.
 
@@ -24,13 +26,13 @@ Smart Wallet tools provide functionality for deploying, managing, and interactin
 
 ## Tool Overview
 
-| Tool Name | Description | Key Features |
-|-----------|-------------|--------------|
-| `smartwallet_deploy_smart_wallet` | Deploy a new smart wallet | Owner assignment, DAO token linking |
-| `smartwallet_deposit_stx` | Deposit STX to a smart wallet | Transaction creation, balance update |
-| `smartwallet_withdraw_stx` | Withdraw STX from a smart wallet | Transaction creation, balance update |
-| `smartwallet_approve_asset` | Approve an asset for use with the smart wallet | Asset authorization |
-| `smartwallet_vote_on_action_proposal` | Vote on an action proposal | Governance participation |
+| Tool Name                             | Description                                    | Key Features                         |
+| ------------------------------------- | ---------------------------------------------- | ------------------------------------ |
+| `smartwallet_deploy_smart_wallet`     | Deploy a new smart wallet                      | Owner assignment, DAO token linking  |
+| `smartwallet_deposit_stx`             | Deposit STX to a smart wallet                  | Transaction creation, balance update |
+| `smartwallet_withdraw_stx`            | Withdraw STX from a smart wallet               | Transaction creation, balance update |
+| `smartwallet_approve_asset`           | Approve an asset for use with the smart wallet | Asset authorization                  |
+| `smartwallet_vote_on_action_proposal` | Vote on an action proposal                     | Governance participation             |
 
 ## How It Works
 
@@ -53,12 +55,14 @@ Smart Wallet tools facilitate the creation and management of programmable wallet
 **Purpose**: Deploys a new smart wallet for a user.
 
 **Input Parameters**:
+
 - `owner_address`: string - Stacks address of the wallet owner
 - `agent_address`: string - Stacks address of the agent
 - `dao_token_contract`: string - Contract principal of the DAO token
 - `dao_token_dex_contract` (optional): string - Contract principal of the DAO token DEX
 
 **Output**:
+
 ```json
 {
   "success": true,
@@ -70,6 +74,7 @@ Smart Wallet tools facilitate the creation and management of programmable wallet
 ```
 
 **Example Prompt**:
+
 ```
 Deploy a new smart wallet with the following details:
 - owner_address: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
@@ -122,12 +127,12 @@ This workflow demonstrates how to participate in DAO governance by voting on and
 
 ## Error Handling
 
-| Error Code | Description | Resolution |
-|------------|-------------|------------|
-| 9000 | Unauthorized access | Ensure you're calling from the correct principal (user or agent) |
-| 9001 | Unknown asset | Call approve-asset first to add the asset to the approved list |
-| 9002 | Operation failed | Check parameters and try again |
-| 9003 | Buy/sell not allowed | User must call set-agent-can-buy-sell to enable trading |
+| Error Code | Description          | Resolution                                                       |
+| ---------- | -------------------- | ---------------------------------------------------------------- |
+| 9000       | Unauthorized access  | Ensure you're calling from the correct principal (user or agent) |
+| 9001       | Unknown asset        | Call approve-asset first to add the asset to the approved list   |
+| 9002       | Operation failed     | Check parameters and try again                                   |
+| 9003       | Buy/sell not allowed | User must call set-agent-can-buy-sell to enable trading          |
 
 ## Security Considerations
 

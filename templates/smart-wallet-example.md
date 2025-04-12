@@ -2,13 +2,15 @@
 description: Example of how to use the smart contract documentation template
 ---
 
-# Smart Wallet Documentation Example
+## Smart Wallet Documentation Example
 
 This is an example of how to apply the smart contract documentation template to the Smart Wallet contract.
 
+```yaml
 ---
-description: User-Agent Smart Wallet for managing assets and DAO interactions
+description: [User-Agent Smart Wallet for managing assets and DAO interactions]
 ---
+```
 
 # Smart Wallet
 
@@ -24,11 +26,11 @@ The Smart Wallet provides a secure interface between users and their agents, ena
 
 ## Quick Reference
 
-| Property | Value |
-|----------|-------|
-| Contract Name | `aibtc-user-agent-smart-wallet` |
-| Version | 1.0.0 |
-| Implements | `aibtc-smart-wallet`, `aibtc-proposals-v2`, `faktory-buy-sell` |
+| Property          | Value                                                                          |
+| ----------------- | ------------------------------------------------------------------------------ |
+| Contract Name     | `aibtc-user-agent-smart-wallet`                                                |
+| Version           | 1.0.0                                                                          |
+| Implements        | `aibtc-smart-wallet`, `aibtc-proposals-v2`, `faktory-buy-sell`                 |
 | Naming Convention | `aibtc-smart-wallet-[OWNER_FIRST5]-[OWNER_LAST5]-[AGENT_FIRST5]-[AGENT_LAST5]` |
 
 ## How It Works
@@ -57,11 +59,13 @@ The Smart Wallet acts as a secure intermediary, with different permission levels
 **Purpose**: Deposits STX into the smart wallet
 
 **Parameters**:
+
 - `amount`: uint - Amount of STX to deposit
 
 **Returns**: (response bool uint) - Success or error code
 
 **Example**:
+
 ```clarity
 (contract-call? .aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG deposit-stx u1000000)
 ```
@@ -71,11 +75,13 @@ The Smart Wallet acts as a secure intermediary, with different permission levels
 **Purpose**: Withdraws STX from the smart wallet (user only)
 
 **Parameters**:
+
 - `amount`: uint - Amount of STX to withdraw
 
 **Returns**: (response bool uint) - Success or error code
 
 **Example**:
+
 ```clarity
 (contract-call? .aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG withdraw-stx u500000)
 ```
@@ -85,6 +91,7 @@ The Smart Wallet acts as a secure intermediary, with different permission levels
 **Purpose**: Votes on an action proposal (user or agent)
 
 **Parameters**:
+
 - `action-proposals`: action-proposals-trait - The action proposals contract
 - `proposalId`: uint - The proposal ID
 - `vote`: bool - True for yes, false for no
@@ -92,6 +99,7 @@ The Smart Wallet acts as a secure intermediary, with different permission levels
 **Returns**: (response bool uint) - Success or error code
 
 **Example**:
+
 ```clarity
 (contract-call? .aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG vote-on-action-proposal .aibtc-action-proposals-v2 u5 true)
 ```
@@ -107,6 +115,7 @@ The Smart Wallet acts as a secure intermediary, with different permission levels
 **Returns**: uint - Current STX balance
 
 **Example**:
+
 ```clarity
 (contract-call? .aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG get-balance-stx)
 ```
@@ -120,16 +129,17 @@ The Smart Wallet acts as a secure intermediary, with different permission levels
 **Returns**: Tuple with user, agent, and other configuration details
 
 **Example**:
+
 ```clarity
 (contract-call? .aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG get-configuration)
 ```
 
 ## Print Events
 
-| Event | Description | Data |
-|-------|-------------|------|
-| `deposit-stx` | Emitted when STX is deposited | Amount, sender, caller, recipient |
-| `withdraw-stx` | Emitted when STX is withdrawn | Amount, sender, caller, recipient |
+| Event                     | Description                               | Data                                                 |
+| ------------------------- | ----------------------------------------- | ---------------------------------------------------- |
+| `deposit-stx`             | Emitted when STX is deposited             | Amount, sender, caller, recipient                    |
+| `withdraw-stx`            | Emitted when STX is withdrawn             | Amount, sender, caller, recipient                    |
 | `vote-on-action-proposal` | Emitted when voting on an action proposal | Proposal contract, proposal ID, vote, sender, caller |
 
 ## Integration Examples
@@ -158,12 +168,12 @@ The Smart Wallet acts as a secure intermediary, with different permission levels
 
 ## Error Handling
 
-| Error Code | Constant | Description | Resolution |
-|------------|----------|-------------|------------|
-| u9000 | ERR_UNAUTHORIZED | Caller is not authorized | Ensure you're calling from the correct principal (user or agent) |
-| u9001 | ERR_UNKNOWN_ASSET | Asset is not in the approved list | Call approve-asset first to add the asset to the approved list |
-| u9002 | ERR_OPERATION_FAILED | Operation failed | Check parameters and try again |
-| u9003 | ERR_BUY_SELL_NOT_ALLOWED | Buy/sell operation not allowed for agent | User must call set-agent-can-buy-sell to enable trading |
+| Error Code | Constant                 | Description                              | Resolution                                                       |
+| ---------- | ------------------------ | ---------------------------------------- | ---------------------------------------------------------------- |
+| u9000      | ERR_UNAUTHORIZED         | Caller is not authorized                 | Ensure you're calling from the correct principal (user or agent) |
+| u9001      | ERR_UNKNOWN_ASSET        | Asset is not in the approved list        | Call approve-asset first to add the asset to the approved list   |
+| u9002      | ERR_OPERATION_FAILED     | Operation failed                         | Check parameters and try again                                   |
+| u9003      | ERR_BUY_SELL_NOT_ALLOWED | Buy/sell operation not allowed for agent | User must call set-agent-can-buy-sell to enable trading          |
 
 ## Security Considerations
 

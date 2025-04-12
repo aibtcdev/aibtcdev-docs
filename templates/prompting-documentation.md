@@ -2,15 +2,17 @@
 description: Template for documenting prompts for specific domains or tools
 ---
 
-# Prompting Documentation Template
+## Prompting Documentation Template
 
 Use this template when documenting prompts to ensure consistency across all prompting guides.
 
 ## High-Level Overview
 
+```yaml
 ---
 description: [One-line description of the prompting guide's purpose]
 ---
+```
 
 # [Domain/Tool] Prompting Guide
 
@@ -25,6 +27,7 @@ description: [One-line description of the prompting guide's purpose]
 ```
 
 **Parameters**:
+
 - `[param1]`: [description and format]
 - `[param2]`: [description and format]
 
@@ -37,6 +40,7 @@ description: [One-line description of the prompting guide's purpose]
 ```
 
 **Parameters**:
+
 - `[param1]`: [description and format]
 - `[param2]`: [description and format]
 
@@ -51,6 +55,7 @@ description: [One-line description of the prompting guide's purpose]
 ```
 
 **Parameters**:
+
 - `[param1]`: [description and format]
 - `[param2]`: [description and format]
 
@@ -63,11 +68,13 @@ description: [One-line description of the prompting guide's purpose]
 [Brief description of the workflow]
 
 1. **[Step 1]**
+
    ```
    [Prompt for step 1]
    ```
 
 2. **[Step 2]**
+
    ```
    [Prompt for step 2]
    ```
@@ -83,8 +90,8 @@ description: [One-line description of the prompting guide's purpose]
 
 ### Common Issues
 
-| Issue | Solution |
-|-------|----------|
+| Issue     | Solution     |
+| --------- | ------------ |
 | [Issue 1] | [Solution 1] |
 | [Issue 2] | [Solution 2] |
 

@@ -2,17 +2,19 @@
 description: Template for documenting smart contracts
 ---
 
-# Smart Contract Documentation Template
+## Smart Contract Documentation Template
 
 Use this template when documenting smart contracts to ensure consistency across all contract documentation.
 
 ## High-Level Overview
 
+```yaml
 ---
 description: [One-line description of the contract's purpose]
 ---
+```
 
-# [Contract Name]
+## [Contract Name]
 
 [1-2 paragraph introduction explaining what the contract does and why it matters]
 
@@ -24,11 +26,11 @@ description: [One-line description of the contract's purpose]
 
 ## Quick Reference
 
-| Property | Value |
-|----------|-------|
-| Contract Name | `[contract-name]` |
-| Version | [version number] |
-| Implements | [traits implemented] |
+| Property       | Value                           |
+| -------------- | ------------------------------- |
+| Contract Name  | `[contract-name]`               |
+| Version        | [version number]                |
+| Implements     | [traits implemented]            |
 | Key Parameters | [important configurable values] |
 
 ## How It Works
@@ -52,12 +54,14 @@ flowchart TD
 **Purpose**: [What this function does]
 
 **Parameters**:
+
 - `[param1]`: [type] - [description]
 - `[param2]`: [type] - [description]
 
 **Returns**: [return type] - [description]
 
 **Example**:
+
 ```clarity
 (contract-call? .[contract-name] [function-name] [example-params])
 ```
@@ -71,20 +75,22 @@ flowchart TD
 **Purpose**: [What this function does]
 
 **Parameters**:
+
 - `[param1]`: [type] - [description]
 - `[param2]`: [type] - [description]
 
 **Returns**: [return type] - [description]
 
 **Example**:
+
 ```clarity
 (contract-call? .[contract-name] [function-name] [example-params])
 ```
 
 ## Print Events
 
-| Event | Description | Data |
-|-------|-------------|------|
+| Event          | Description                | Data                         |
+| -------------- | -------------------------- | ---------------------------- |
 | `[event-name]` | [What triggers this event] | [Data included in the event] |
 
 ## Integration Examples
@@ -105,9 +111,9 @@ flowchart TD
 
 ## Error Handling
 
-| Error Code | Constant | Description | Resolution |
-|------------|----------|-------------|------------|
-| u[code] | [ERROR_NAME] | [What causes this error] | [How to resolve or avoid] |
+| Error Code | Constant     | Description              | Resolution                |
+| ---------- | ------------ | ------------------------ | ------------------------- |
+| u[code]    | [ERROR_NAME] | [What causes this error] | [How to resolve or avoid] |
 
 ## Security Considerations
 

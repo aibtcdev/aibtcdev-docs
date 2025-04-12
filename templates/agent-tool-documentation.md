@@ -2,15 +2,17 @@
 description: Template for documenting agent tools
 ---
 
-# Agent Tool Documentation Template
+## Agent Tool Documentation Template
 
 Use this template when documenting agent tools to ensure consistency across all tool documentation.
 
 ## High-Level Overview
 
+```yaml
 ---
 description: [One-line description of the tool's purpose]
 ---
+```
 
 # [Tool Category Name]
 
@@ -24,8 +26,8 @@ description: [One-line description of the tool's purpose]
 
 ## Tool Overview
 
-| Tool Name | Description | Key Features |
-|-----------|-------------|--------------|
+| Tool Name       | Description         | Key Features             |
+| --------------- | ------------------- | ------------------------ |
 | `[tool_name_1]` | [Brief description] | [Key feature highlights] |
 | `[tool_name_2]` | [Brief description] | [Key feature highlights] |
 | `[tool_name_3]` | [Brief description] | [Key feature highlights] |
@@ -49,10 +51,12 @@ flowchart TD
 **Purpose**: [What this tool does]
 
 **Input Parameters**:
+
 - `[param1]`: [type] - [description]
 - `[param2]`: [type] - [description]
 
 **Output**:
+
 ```json
 {
   "key1": "value1",
@@ -61,6 +65,7 @@ flowchart TD
 ```
 
 **Example Prompt**:
+
 ```
 [Example of how to prompt the agent to use this tool]
 ```
@@ -95,9 +100,9 @@ flowchart TD
 
 ## Error Handling
 
-| Error Code | Description | Resolution |
-|------------|-------------|------------|
-| [code] | [What causes this error] | [How to resolve or avoid] |
+| Error Code | Description              | Resolution                |
+| ---------- | ------------------------ | ------------------------- |
+| [code]     | [What causes this error] | [How to resolve or avoid] |
 
 ## Security Considerations
 
