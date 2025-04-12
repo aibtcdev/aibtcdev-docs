@@ -125,22 +125,9 @@ This workflow demonstrates how to set up a smart wallet, fund it with STX, and a
 
 This workflow demonstrates how to participate in DAO governance by voting on and concluding action proposals.
 
-## Error Handling
+## Error Handling & Security
 
-| Error Code | Description          | Resolution                                                       |
-| ---------- | -------------------- | ---------------------------------------------------------------- |
-| 9000       | Unauthorized access  | Ensure you're calling from the correct principal (user or agent) |
-| 9001       | Unknown asset        | Call approve-asset first to add the asset to the approved list   |
-| 9002       | Operation failed     | Check parameters and try again                                   |
-| 9003       | Buy/sell not allowed | User must call set-agent-can-buy-sell to enable trading          |
-
-## Security Considerations
-
-- **Principal Separation**: User and agent addresses are separate and have different permissions
-- **Asset Approval**: Assets must be explicitly approved before they can be used
-- **Withdrawal Restrictions**: Only the user can withdraw assets
-- **Trading Controls**: Agent trading can be enabled/disabled by the user
-- **Immutable Configuration**: User and agent addresses cannot be changed after deployment
+For detailed information about error codes, security considerations, and best practices when working with Smart Wallets, please refer to the [Smart Wallet Contract Documentation](../aibtc-contracts/smart-wallet/README.md).
 
 ## Related Tools
 
