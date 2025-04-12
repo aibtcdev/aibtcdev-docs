@@ -50,11 +50,9 @@ flowchart TD
 
 The Smart Wallet acts as a secure intermediary, with different permission levels for users and agents. Users maintain full control over assets and configuration, while agents can perform governance actions and (when permitted) trading operations.
 
-## Contract Details
+## Public Functions
 
-### Public Functions
-
-#### `deposit-stx`
+### `deposit-stx`
 
 **Purpose**: Deposits STX into the smart wallet
 
@@ -70,7 +68,7 @@ The Smart Wallet acts as a secure intermediary, with different permission levels
 (contract-call? .aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG deposit-stx u1000000)
 ```
 
-#### `withdraw-stx`
+### `withdraw-stx`
 
 **Purpose**: Withdraws STX from the smart wallet (user only)
 
@@ -86,7 +84,7 @@ The Smart Wallet acts as a secure intermediary, with different permission levels
 (contract-call? .aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG withdraw-stx u500000)
 ```
 
-#### `vote-on-action-proposal`
+### `vote-on-action-proposal`
 
 **Purpose**: Votes on an action proposal (user or agent)
 
@@ -104,9 +102,9 @@ The Smart Wallet acts as a secure intermediary, with different permission levels
 (contract-call? .aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG vote-on-action-proposal .aibtc-action-proposals-v2 u5 true)
 ```
 
-### Read-Only Functions
+## Read-Only Functions
 
-#### `get-balance-stx`
+### `get-balance-stx`
 
 **Purpose**: Gets the current STX balance of the smart wallet
 

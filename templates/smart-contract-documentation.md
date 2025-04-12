@@ -45,11 +45,9 @@ flowchart TD
 
 [Brief explanation of the workflow]
 
-## Contract Details
+## Public Functions
 
-### Public Functions
-
-#### `[function-name]`
+### `[function-name]`
 
 **Purpose**: [What this function does]
 
@@ -68,9 +66,9 @@ flowchart TD
 
 [Additional notes about usage, security considerations, etc.]
 
-### Read-Only Functions
+## Read-Only Functions
 
-#### `[function-name]`
+### `[function-name]`
 
 **Purpose**: [What this function does]
 
