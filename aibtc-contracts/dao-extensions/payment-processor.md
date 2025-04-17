@@ -159,7 +159,7 @@ All variants share the same functionality and interface, with the only differenc
 
 **Example**:
 ```clarity
-;; For DAO token or sBTC
+;; For DAO token or BTC
 (contract-call? .aibtc-payment-processor-dao pay-invoice u1 none)
 
 ;; For STX
