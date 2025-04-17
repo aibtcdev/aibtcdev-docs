@@ -1,19 +1,20 @@
 ---
-description: User-Agent Smart Wallet for managing assets and DAO interactions
+description: User-Agent Account for managing assets and DAO interactions
 ---
 
-# Smart Wallet
+# Agent Account
 
-The Smart Wallet contract (`aibtc-user-agent-smart-wallet`) provides a secure interface between a user and an agent for managing assets and interacting with DAOs. It enables key features to allow user self-custody and control and agent interaction with DAO proposals.
+The Agent Account contract (`aibtc-user-agent-account`) provides a secure interface between a user and an agent for managing assets and interacting with DAOs. It enables key features to allow user self-custody and control and agent interaction with DAO proposals.
 
 ## Contract Overview
 
-- **Title**: aibtc-user-agent-smart-wallet
+- **Title**: aibtc-user-agent-account
 - **Version**: 1.0.0
 - **Implements**: 
-  - `aibtc-smart-wallet-traits.aibtc-smart-wallet` trait
-  - `aibtc-smart-wallet-traits.aibtc-proposals-v2` trait
-  - `aibtc-smart-wallet-traits.faktory-buy-sell` trait
+  - `aibtc-user-agent-account-traits.aibtc-account` trait
+  - `aibtc-user-agent-account-traits.aibtc-proposals-v3` trait
+  - `aibtc-user-agent-account-traits.faktory-dex-approval` trait
+  - `aibtc-user-agent-account-traits.faktory-buy-sell` trait
 
 ## Print Events
 
@@ -25,38 +26,38 @@ The Smart Wallet contract (`aibtc-user-agent-smart-wallet`) provides a secure in
 | `withdraw-ft`              | Emitted when a fungible token is withdrawn | Amount, asset contract, sender, caller, recipient      |
 | `approve-asset`            | Emitted when an asset is approved          | Asset, approved status, sender, caller                 |
 | `revoke-asset`             | Emitted when an asset approval is revoked  | Asset, approved status, sender, caller                 |
-| `approve-dex`              | Emitted when a DEX is approved             | DEX contract, approved status, sender, caller          |
-| `revoke-dex`               | Emitted when a DEX approval is revoked     | DEX contract, approved status, sender, caller          |
+| `acct-approve-dex`         | Emitted when a DEX is approved             | DEX contract, approved status, sender, caller          |
+| `acct-revoke-dex`          | Emitted when a DEX approval is revoked     | DEX contract, approved status, sender, caller          |
 | `set-agent-can-buy-sell`   | Emitted when agent buy/sell is toggled     | Can buy/sell status, sender, caller                    |
-| `buy-asset`                | Emitted when buying an asset               | DEX contract, asset, amount, sender, caller            |
-| `sell-asset`               | Emitted when selling an asset              | DEX contract, asset, amount, sender, caller            |
-| `proxy-propose-action`     | Emitted when proposing an action via proxy | Proposal contract, action, parameters, sender, caller  |
-| `proxy-create-proposal`    | Emitted when creating a proposal via proxy | Proposal contract, proposal, sender, caller            |
+| `acct-buy-asset`           | Emitted when buying an asset               | DEX contract, asset, amount, sender, caller            |
+| `acct-sell-asset`          | Emitted when selling an asset              | DEX contract, asset, amount, sender, caller            |
+| `acct-propose-action`      | Emitted when proposing an action           | Proposal contract, action, parameters, sender, caller  |
+| `acct-create-proposal`     | Emitted when creating a proposal           | Proposal contract, proposal, sender, caller            |
 | `vote-on-action-proposal`  | Emitted when voting on an action proposal  | Proposal contract, proposal ID, vote, sender, caller   |
 | `vote-on-core-proposal`    | Emitted when voting on a core proposal     | Proposal contract, proposal, vote, sender, caller      |
 | `conclude-action-proposal` | Emitted when concluding an action proposal | Proposal contract, proposal ID, action, sender, caller |
 | `conclude-core-proposal`   | Emitted when concluding a core proposal    | Proposal contract, proposal, sender, caller            |
-| `smart-wallet-created`     | Emitted when the smart wallet is created   | Configuration details                                  |
+| `user-agent-account-created` | Emitted when the agent account is created | Configuration details                                  |
 
 ## Public Functions
 
 ### Asset Management Functions
 
-| Function        | Description                                    | Parameters                     |
-| --------------- | ---------------------------------------------- | ------------------------------ |
-| `deposit-stx`   | Deposit STX to the smart wallet                | `amount`: uint                 |
-| `deposit-ft`    | Deposit fungible tokens to the smart wallet    | `ft`: ft-trait, `amount`: uint |
-| `withdraw-stx`  | Withdraw STX from the smart wallet             | `amount`: uint                 |
-| `withdraw-ft`   | Withdraw fungible tokens from the smart wallet | `ft`: ft-trait, `amount`: uint |
-| `approve-asset` | Add an asset to the approved list              | `asset`: principal             |
-| `revoke-asset`  | Remove an asset from the approved list         | `asset`: principal             |
+| Function        | Description                                   | Parameters                     |
+| --------------- | --------------------------------------------- | ------------------------------ |
+| `deposit-stx`   | Deposit STX to the agent account              | `amount`: uint                 |
+| `deposit-ft`    | Deposit fungible tokens to the agent account  | `ft`: ft-trait, `amount`: uint |
+| `withdraw-stx`  | Withdraw STX from the agent account           | `amount`: uint                 |
+| `withdraw-ft`   | Withdraw fungible tokens from the agent account | `ft`: ft-trait, `amount`: uint |
+| `approve-asset` | Add an asset to the approved list             | `asset`: principal             |
+| `revoke-asset`  | Remove an asset from the approved list        | `asset`: principal             |
 
 ### DAO Interaction Functions
 
 | Function                   | Description                          | Parameters                                                                                  |
 | -------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------- |
-| `proxy-propose-action`     | Propose an action to a DAO via proxy | `action-proposals`: action-proposals-trait, `action`: action-trait, `parameters`: buff 2048 |
-| `proxy-create-proposal`    | Create a proposal in a DAO via proxy | `core-proposals`: core-proposals-trait, `proposal`: proposal-trait                          |
+| `acct-propose-action`      | Propose an action to a DAO           | `action-proposals`: action-proposals-trait, `action`: action-trait, `parameters`: buff 2048, `memo`: optional string-ascii 1024 |
+| `acct-create-proposal`     | Create a proposal in a DAO           | `core-proposals`: core-proposals-trait, `proposal`: proposal-trait, `memo`: optional string-ascii 1024 |
 | `vote-on-action-proposal`  | Vote on an action proposal           | `action-proposals`: action-proposals-trait, `proposalId`: uint, `vote`: bool                |
 | `vote-on-core-proposal`    | Vote on a core proposal              | `core-proposals`: core-proposals-trait, `proposal`: proposal-trait, `vote`: bool            |
 | `conclude-action-proposal` | Conclude an action proposal          | `action-proposals`: action-proposals-trait, `proposalId`: uint, `action`: action-trait      |
@@ -64,13 +65,13 @@ The Smart Wallet contract (`aibtc-user-agent-smart-wallet`) provides a secure in
 
 ### Faktory DEX Trading Functions
 
-| Function               | Description                                | Parameters                                                      |
-| ---------------------- | ------------------------------------------ | --------------------------------------------------------------- |
-| `buy-asset`            | Buy an asset from a Faktory DEX            | `faktory-dex`: dao-faktory-dex, `asset`: faktory-token, `amount`: uint |
-| `sell-asset`           | Sell an asset to a Faktory DEX             | `faktory-dex`: dao-faktory-dex, `asset`: faktory-token, `amount`: uint |
-| `approve-dex`          | Add a DEX to the approved list             | `faktory-dex`: dao-faktory-dex                                 |
-| `revoke-dex`           | Remove a DEX from the approved list        | `faktory-dex`: dao-faktory-dex                                 |
-| `set-agent-can-buy-sell` | Set whether the agent can buy/sell assets | `canBuySell`: bool                                             |
+| Function                 | Description                                | Parameters                                                      |
+| ------------------------ | ------------------------------------------ | --------------------------------------------------------------- |
+| `acct-buy-asset`         | Buy an asset from a Faktory DEX            | `faktory-dex`: dao-faktory-dex, `asset`: faktory-token, `amount`: uint |
+| `acct-sell-asset`        | Sell an asset to a Faktory DEX             | `faktory-dex`: dao-faktory-dex, `asset`: faktory-token, `amount`: uint |
+| `acct-approve-dex`       | Add a DEX to the approved list             | `faktory-dex`: dao-faktory-dex                                 |
+| `acct-revoke-dex`        | Remove a DEX from the approved list        | `faktory-dex`: dao-faktory-dex                                 |
+| `set-agent-can-buy-sell` | Set whether the agent can buy/sell assets  | `canBuySell`: bool                                             |
 
 ## Read-Only Functions
 
@@ -78,8 +79,8 @@ The Smart Wallet contract (`aibtc-user-agent-smart-wallet`) provides a secure in
 | ------------------- | --------------------------------------- | ------------------ |
 | `is-approved-asset` | Check if an asset is approved           | `asset`: principal |
 | `is-approved-dex`   | Check if a DEX is approved              | `dex`: principal   |
-| `get-balance-stx`   | Get the STX balance of the smart wallet | None               |
-| `get-configuration` | Get the smart wallet configuration      | None               |
+| `get-balance-stx`   | Get the STX balance of the agent account | None               |
+| `get-configuration` | Get the agent account configuration      | None               |
 
 ## Error Codes
 
@@ -104,15 +105,15 @@ The Smart Wallet contract (`aibtc-user-agent-smart-wallet`) provides a secure in
 
 ### Access Control
 
-The smart wallet implements strict access control:
-- **User-only functions**: withdraw-stx, withdraw-ft, approve-asset, revoke-asset, approve-dex, revoke-dex, set-agent-can-buy-sell
-- **User and Agent functions**: proxy-propose-action, proxy-create-proposal, vote-on-action-proposal, vote-on-core-proposal, conclude-action-proposal, conclude-core-proposal
-- **Agent trading functions**: buy-asset, sell-asset (only when explicitly permitted by the user via set-agent-can-buy-sell)
-- **Public functions**: deposit-stx, deposit-ft (anyone can deposit assets to the smart wallet)
+The agent account implements strict access control:
+- **User-only functions**: withdraw-stx, withdraw-ft, approve-asset, revoke-asset, acct-approve-dex, acct-revoke-dex, set-agent-can-buy-sell
+- **User and Agent functions**: acct-propose-action, acct-create-proposal, vote-on-action-proposal, vote-on-core-proposal, conclude-action-proposal, conclude-core-proposal
+- **Agent trading functions**: acct-buy-asset, acct-sell-asset (only when explicitly permitted by the user via set-agent-can-buy-sell)
+- **Public functions**: deposit-stx, deposit-ft (anyone can deposit assets to the agent account)
 
 ### Asset Protection
 
-Assets in the smart wallet are protected by:
+Assets in the agent account are protected by:
 1. Requiring explicit approval of assets before they can be deposited or withdrawn
 2. Limiting withdrawal capability to the user only
 3. Requiring explicit approval of DEXes before they can be used for trading
@@ -134,7 +135,7 @@ All actions are logged with detailed print events, providing:
 
 ### Asset Management
 
-The smart wallet allows users to securely store and manage their assets (STX and fungible tokens) with the following benefits:
+The agent account allows users to securely store and manage their assets (STX and fungible tokens) with the following benefits:
 
 - Secure storage with controlled access
 - Ability to approve/revoke specific tokens
@@ -142,9 +143,9 @@ The smart wallet allows users to securely store and manage their assets (STX and
 
 ### DAO Participation
 
-The smart wallet enables participation in DAO governance through:
+The agent account enables participation in DAO governance through:
 
-- Proposal creation via proxy
+- Proposal creation
 - Voting on proposals
 - Concluding proposals
 
@@ -158,30 +159,30 @@ This allows the user to delegate certain DAO interactions to their agent while m
 sequenceDiagram
     participant User
     participant Agent
-    participant SmartWallet
+    participant AgentAccount
     participant ActionProposals
     participant CoreProposals
     
-    User->>SmartWallet: deposit-stx
-    User->>SmartWallet: deposit-ft
+    User->>AgentAccount: deposit-stx
+    User->>AgentAccount: deposit-ft
     
-    Agent->>SmartWallet: proxy-propose-action
-    SmartWallet->>ActionProposals: propose-action
+    Agent->>AgentAccount: acct-propose-action
+    AgentAccount->>ActionProposals: propose-action
     
-    Agent->>SmartWallet: vote-on-action-proposal
-    SmartWallet->>ActionProposals: vote-on-proposal
+    Agent->>AgentAccount: vote-on-action-proposal
+    AgentAccount->>ActionProposals: vote-on-proposal
     
-    Agent->>SmartWallet: conclude-action-proposal
-    SmartWallet->>ActionProposals: conclude-proposal
+    Agent->>AgentAccount: conclude-action-proposal
+    AgentAccount->>ActionProposals: conclude-proposal
     
-    User->>SmartWallet: proxy-create-proposal
-    SmartWallet->>CoreProposals: create-proposal
+    User->>AgentAccount: acct-create-proposal
+    AgentAccount->>CoreProposals: create-proposal
     
-    Agent->>SmartWallet: vote-on-core-proposal
-    SmartWallet->>CoreProposals: vote-on-proposal
+    Agent->>AgentAccount: vote-on-core-proposal
+    AgentAccount->>CoreProposals: vote-on-proposal
     
-    User->>SmartWallet: conclude-core-proposal
-    SmartWallet->>CoreProposals: conclude-proposal
+    User->>AgentAccount: conclude-core-proposal
+    AgentAccount->>CoreProposals: conclude-proposal
 ```
 
 ### DEX Trading Interaction Flow
@@ -190,43 +191,43 @@ sequenceDiagram
 sequenceDiagram
     participant User
     participant Agent
-    participant SmartWallet
+    participant AgentAccount
     participant DEX
     
-    User->>SmartWallet: deposit-stx
-    User->>SmartWallet: deposit-ft
-    User->>SmartWallet: approve-asset
-    User->>SmartWallet: approve-dex
+    User->>AgentAccount: deposit-stx
+    User->>AgentAccount: deposit-ft
+    User->>AgentAccount: approve-asset
+    User->>AgentAccount: acct-approve-dex
     
-    Note over User,SmartWallet: Agent cannot buy/sell until permitted
+    Note over User,AgentAccount: Agent cannot buy/sell until permitted
     
-    User->>SmartWallet: set-agent-can-buy-sell(true)
+    User->>AgentAccount: set-agent-can-buy-sell(true)
     Note over User,Agent: Agent now has buy/sell permission
     
-    User->>SmartWallet: buy-asset
-    SmartWallet->>DEX: buy
+    User->>AgentAccount: acct-buy-asset
+    AgentAccount->>DEX: buy
     
-    Agent->>SmartWallet: buy-asset
-    Note over Agent,SmartWallet: Checks if agent has permission
-    SmartWallet->>DEX: buy
+    Agent->>AgentAccount: acct-buy-asset
+    Note over Agent,AgentAccount: Checks if agent has permission
+    AgentAccount->>DEX: buy
     
-    User->>SmartWallet: sell-asset
-    SmartWallet->>DEX: sell
+    User->>AgentAccount: acct-sell-asset
+    AgentAccount->>DEX: sell
     
-    Agent->>SmartWallet: sell-asset
-    Note over Agent,SmartWallet: Checks if agent has permission
-    SmartWallet->>DEX: sell
+    Agent->>AgentAccount: acct-sell-asset
+    Note over Agent,AgentAccount: Checks if agent has permission
+    AgentAccount->>DEX: sell
     
-    User->>SmartWallet: set-agent-can-buy-sell(false)
+    User->>AgentAccount: set-agent-can-buy-sell(false)
     Note over User,Agent: Agent permission revoked
     
-    User->>SmartWallet: withdraw-stx
-    User->>SmartWallet: withdraw-ft
+    User->>AgentAccount: withdraw-stx
+    User->>AgentAccount: withdraw-ft
 ```
 
 ### DEX Trading
 
-The smart wallet enables trading on Faktory DEXes:
+The agent account enables trading on Faktory DEXes:
 
 - User can always buy and sell assets
 - Agent can buy and sell assets only if explicitly permitted by the user via the set-agent-can-buy-sell function
@@ -236,19 +237,19 @@ The smart wallet enables trading on Faktory DEXes:
 
 ## Deployment Configuration
 
-When deployed, the smart wallet is configured with:
+When deployed, the agent account is configured with:
 
-- User principal (wallet owner)
+- User principal (account owner)
 - Agent principal (proposal voter)
 - Pre-approved tokens (sBTC and DAO token)
 - Pre-approved DEXes (DAO token DEX)
 
 ## Contract Naming Convention
 
-Smart wallet contracts follow a specific naming convention that incorporates both the owner and agent addresses:
+Agent account contracts follow a specific naming convention that incorporates both the owner and agent addresses:
 
 ```
-aibtc-smart-wallet-OWNER_FIRST5-OWNER_LAST5-AGENT_FIRST5-AGENT_LAST5
+aibtc-user-agent-account-OWNER_FIRST5-OWNER_LAST5-AGENT_FIRST5-AGENT_LAST5
 ```
 
 Where:
@@ -258,15 +259,15 @@ Where:
 - `AGENT_FIRST5` represents the first 5 characters of the agent's Stacks address
 - `AGENT_LAST5` represents the last 5 characters of the agent's Stacks address
 
-For example, if an agent with address `ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG` were to deploy a smart wallet for an owner with address `ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM`, it would be named:
+For example, if an agent with address `ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG` were to deploy an agent account for an owner with address `ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM`, it would be named:
 
 ```
-aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
+aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG
 ```
 
 This naming convention ensures that:
 
-1. Each user-agent pair has a unique smart wallet
-2. Smart wallets are easily identifiable by both the owner's and agent's addresses
-3. One agent can deploy multiple smart wallets for different users
-4. Multiple agents can deploy different smart wallets for the same user
+1. Each user-agent pair has a unique agent account
+2. Agent accounts are easily identifiable by both the owner's and agent's addresses
+3. One agent can deploy multiple agent accounts for different users
+4. Multiple agents can deploy different agent accounts for the same user

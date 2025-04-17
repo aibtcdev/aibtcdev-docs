@@ -2,19 +2,19 @@
 description: Example of how to use the smart contract documentation template
 ---
 
-# Smart Wallet Documentation Example
+# Agent Account Documentation Example
 
-This is an example of how to apply the smart contract documentation template to the Smart Wallet contract.
+This is an example of how to apply the smart contract documentation template to the Agent Account contract.
 
 ```yaml
 ---
-description: User-Agent Smart Wallet for managing assets and DAO interactions
+description: User-Agent Account for managing assets and DAO interactions
 ---
 ```
 
-# Smart Wallet
+# Agent Account
 
-The Smart Wallet provides a secure interface between users and their agents, enabling controlled asset management and DAO participation. It creates a permission structure where users maintain full control of their assets while allowing agents to perform specific actions on their behalf.
+The Agent Account provides a secure interface between users and their agents, enabling controlled asset management and DAO participation. It creates a permission structure where users maintain full control of their assets while allowing agents to perform specific actions on their behalf.
 
 ## Key Features
 
@@ -28,10 +28,10 @@ The Smart Wallet provides a secure interface between users and their agents, ena
 
 | Property          | Value                                                                          |
 | ----------------- | ------------------------------------------------------------------------------ |
-| Contract Name     | `aibtc-user-agent-smart-wallet`                                                |
+| Contract Name     | `aibtc-user-agent-account`                                                     |
 | Version           | 1.0.0                                                                          |
-| Implements        | `aibtc-smart-wallet`, `aibtc-proposals-v2`, `faktory-buy-sell`                 |
-| Naming Convention | `aibtc-smart-wallet-[OWNER_FIRST5]-[OWNER_LAST5]-[AGENT_FIRST5]-[AGENT_LAST5]` |
+| Implements        | `aibtc-account`, `aibtc-proposals-v3`, `faktory-dex-approval`, `faktory-buy-sell` |
+| Naming Convention | `aibtc-user-agent-account-[OWNER_FIRST5]-[OWNER_LAST5]-[AGENT_FIRST5]-[AGENT_LAST5]` |
 
 ## How It Works
 
@@ -39,7 +39,7 @@ The Smart Wallet provides a secure interface between users and their agents, ena
 flowchart TD
     A["User"]
     B["Agent"]
-    C["Smart Wallet"]
+    C["Agent Account"]
     D["DAO Contracts"]
     E["Approved DEXes"]
     
@@ -70,13 +70,13 @@ flowchart TD
     C -->|"Trades on"| E
 ```
 
-The Smart Wallet acts as a secure intermediary, with different permission levels for users and agents. Users maintain full control over assets and configuration, while agents can perform governance actions and (when permitted) trading operations.
+The Agent Account acts as a secure intermediary, with different permission levels for users and agents. Users maintain full control over assets and configuration, while agents can perform governance actions and (when permitted) trading operations.
 
 ## Public Functions
 
 ### `deposit-stx`
 
-**Purpose**: Deposits STX into the smart wallet
+**Purpose**: Deposits STX into the agent account
 
 **Parameters**:
 
@@ -87,12 +87,12 @@ The Smart Wallet acts as a secure intermediary, with different permission levels
 **Example**:
 
 ```clarity
-(contract-call? .aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG deposit-stx u1000000)
+(contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG deposit-stx u1000000)
 ```
 
 ### `withdraw-stx`
 
-**Purpose**: Withdraws STX from the smart wallet (user only)
+**Purpose**: Withdraws STX from the agent account (user only)
 
 **Parameters**:
 
@@ -103,7 +103,7 @@ The Smart Wallet acts as a secure intermediary, with different permission levels
 **Example**:
 
 ```clarity
-(contract-call? .aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG withdraw-stx u500000)
+(contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG withdraw-stx u500000)
 ```
 
 ### `vote-on-action-proposal`
@@ -121,14 +121,14 @@ The Smart Wallet acts as a secure intermediary, with different permission levels
 **Example**:
 
 ```clarity
-(contract-call? .aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG vote-on-action-proposal .aibtc-action-proposals-v2 u5 true)
+(contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG vote-on-action-proposal .aibtc-action-proposals-v3 u5 true)
 ```
 
 ## Read-Only Functions
 
 ### `get-balance-stx`
 
-**Purpose**: Gets the current STX balance of the smart wallet
+**Purpose**: Gets the current STX balance of the agent account
 
 **Parameters**: None
 
@@ -137,12 +137,12 @@ The Smart Wallet acts as a secure intermediary, with different permission levels
 **Example**:
 
 ```clarity
-(contract-call? .aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG get-balance-stx)
+(contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG get-balance-stx)
 ```
 
 #### `get-configuration`
 
-**Purpose**: Gets the smart wallet configuration
+**Purpose**: Gets the agent account configuration
 
 **Parameters**: None
 
@@ -151,7 +151,7 @@ The Smart Wallet acts as a secure intermediary, with different permission levels
 **Example**:
 
 ```clarity
-(contract-call? .aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG get-configuration)
+(contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG get-configuration)
 ```
 
 ## Print Events
@@ -167,11 +167,11 @@ The Smart Wallet acts as a secure intermediary, with different permission levels
 ### Depositing STX and Voting on a Proposal
 
 ```clarity
-;; Deposit STX to the smart wallet
-(contract-call? .aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG deposit-stx u1000000)
+;; Deposit STX to the agent account
+(contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG deposit-stx u1000000)
 
 ;; Vote on an action proposal
-(contract-call? .aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG vote-on-action-proposal .aibtc-action-proposals-v2 u5 true)
+(contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG vote-on-action-proposal .aibtc-action-proposals-v3 u5 true)
 ```
 
 ### Agent Trading with Permission
@@ -179,11 +179,11 @@ The Smart Wallet acts as a secure intermediary, with different permission levels
 ```clarity
 ;; User enables agent trading
 (as-contract
-  (contract-call? .aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG set-agent-can-buy-sell true)
+  (contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG set-agent-can-buy-sell true)
 )
 
 ;; Agent buys tokens
-(contract-call? .aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG buy-asset .aibtc-token-dex .aibtc-token u100000000)
+(contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG acct-buy-asset .aibtc-token-dex .aibtc-token u100000000)
 ```
 
 ## Error Handling
@@ -205,6 +205,6 @@ The Smart Wallet acts as a secure intermediary, with different permission levels
 
 ## Related Contracts
 
-- **DAO Action Proposals**: The smart wallet can interact with action proposals for voting
-- **DAO Core Proposals**: The smart wallet can interact with core proposals for voting
-- **Faktory DEX**: The smart wallet can trade on approved DEXes
+- **DAO Action Proposals**: The agent account can interact with action proposals for voting
+- **DAO Core Proposals**: The agent account can interact with core proposals for voting
+- **Faktory DEX**: The agent account can trade on approved DEXes
