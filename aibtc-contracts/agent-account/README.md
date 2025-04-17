@@ -15,6 +15,16 @@ The Agent Account contract (`aibtc-user-agent-account`) provides a secure interf
   - `aibtc-user-agent-account-traits.aibtc-proposals-v3` trait
   - `aibtc-user-agent-account-traits.faktory-dex-approval` trait
   - `aibtc-user-agent-account-traits.faktory-buy-sell` trait
+- **Constants**:
+  - `DEPLOYED_BURN_BLOCK`: Bitcoin block height at deployment
+  - `DEPLOYED_STACKS_BLOCK`: Stacks block height at deployment
+  - `SELF`: Contract's own principal
+  - `ACCOUNT_OWNER`: Owner principal
+  - `ACCOUNT_AGENT`: Agent principal
+  - `SBTC_TOKEN`: sBTC token contract
+  - `DAO_TOKEN`: DAO token contract
+  - `DAO_TOKEN_DEX`: DAO token DEX contract
+  - Error constants: `ERR_UNAUTHORIZED`, `ERR_UNKNOWN_ASSET`, `ERR_OPERATION_FAILED`, `ERR_BUY_SELL_NOT_ALLOWED`
 
 ## Print Events
 
@@ -82,6 +92,15 @@ The Agent Account contract (`aibtc-user-agent-account`) provides a secure interf
 | `get-balance-stx`   | Get the STX balance of the agent account | None               |
 | `get-configuration` | Get the agent account configuration      | None               |
 
+## Private Functions
+
+| Function           | Description                                       | Parameters |
+| ------------------ | ------------------------------------------------- | ---------- |
+| `is-authorized`    | Check if caller is either the owner or the agent  | None       |
+| `is-owner`         | Check if caller is the owner                      | None       |
+| `is-agent`         | Check if caller is the agent                      | None       |
+| `buy-sell-allowed` | Check if buy/sell operations are allowed for caller | None     |
+
 ## Error Codes
 
 | Code  | Constant               | Description                       |
@@ -93,13 +112,14 @@ The Agent Account contract (`aibtc-user-agent-account`) provides a secure interf
 
 ## Security Features
 
-- Only the user can withdraw assets
-- Only the user and agent can interact with DAOs
+- Only the owner can withdraw assets
+- Only the owner and agent can interact with DAOs
 - Assets must be explicitly approved before they can be deposited or withdrawn
 - DEXes must be explicitly approved before they can be used for trading
-- Agent buy/sell permissions can be toggled by the user
+- Agent buy/sell permissions can be toggled by the owner
 - Pre-approved tokens and DEXes are configured at deployment
 - All actions are logged with detailed print events
+- Permission checks are performed via private functions (`is-authorized`, `is-owner`, `is-agent`, `buy-sell-allowed`)
 
 ## Security Considerations
 
@@ -260,7 +280,16 @@ The agent account enables trading on Faktory DEXes:
 - Only approved DEXes can be used for trading
 - All trading activity is logged with detailed print events
 
-## Deployment Configuration
+## Deployment and Initialization
+
+### Deployment Information
+
+The contract stores deployment information as constants:
+- `DEPLOYED_BURN_BLOCK`: The Bitcoin block height at deployment
+- `DEPLOYED_STACKS_BLOCK`: The Stacks block height at deployment
+- `SELF`: The contract's own principal (used for as-contract calls)
+
+### Configuration
 
 When deployed, the agent account is configured with:
 
@@ -268,6 +297,27 @@ When deployed, the agent account is configured with:
 - Agent principal (limited access, can vote on proposals and trade if permitted)
 - Pre-approved tokens (sBTC and DAO token)
 - Pre-approved DEXes (DAO token DEX)
+
+### Initialization
+
+The contract automatically initializes on deployment with:
+1. Setting up approved assets (sBTC and DAO token)
+2. Setting up approved DEXes (DAO token DEX)
+3. Setting agent trading permission to false by default
+4. Emitting a creation event with the configuration details
+
+```clarity
+;; initialize approved contracts
+(map-set ApprovedAssets SBTC_TOKEN true)
+(map-set ApprovedAssets DAO_TOKEN true)
+(map-set ApprovedDexes DAO_TOKEN_DEX true)
+
+;; print creation event
+(print {
+  notification: "user-agent-account-created",
+  payload: (get-configuration)
+})
+```
 
 ## Contract Naming Convention
 
