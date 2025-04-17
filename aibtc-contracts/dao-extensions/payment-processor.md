@@ -442,10 +442,10 @@ All variants share the same functionality and interface, with the only differenc
 )
 ```
 
-### Paying for a Resource with sBTC
+### Paying for a Resource with BTC
 
 ```clarity
-;; User paying for a resource with sBTC
+;; User paying for a resource with BTC
 (contract-call? .aibtc-payment-processor-sbtc pay-invoice-by-resource-name 
   "api-access" 
   (some 0x68656c6c6f776f726c64) ;; Optional memo "helloworld"
