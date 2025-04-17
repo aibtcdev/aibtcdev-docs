@@ -22,7 +22,7 @@ The Payment Processor extension provides a payment processing system for DAO ser
 | Contract Names | `aibtc-payment-processor-dao`<br>`aibtc-payment-processor-sbtc`<br>`aibtc-payment-processor-stx` |
 | Version        | 1.0.0                           |
 | Implements     | extension, invoices, resources  |
-| Payment Tokens | DAO token, sBTC, STX            |
+| Payment Tokens | DAO token, BTC, STX            |
 | Default Treasury | `.aibtc-treasury`             |
 
 ## How It Works
