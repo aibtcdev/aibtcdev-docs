@@ -24,7 +24,7 @@ The Core Proposals extension (`aibtc-core-proposals-v2`) enables DAO members to 
 | Voting Period  | 432 blocks (~3 days)                |
 | Voting Quorum  | 25% of liquid supply                |
 | Voting Threshold | 90% of votes                      |
-| Proposal Bond  | 1000 DAO tokens (default)           |
+| Proposal Bond  | 250,000 DAO tokens                  |
 
 ## How It Works
 
@@ -239,10 +239,21 @@ The core proposal process begins when a DAO member submits a proposal contract i
 | u3014 | ERR_DAO_NOT_ACTIVATED | DAO not activated | Wait for DAO activation |
 | u3015 | ERR_INVALID_BOND_AMOUNT | Invalid bond amount | Bond amount must be greater than zero |
 
+## Proposal Bond
+
+The Core Proposals extension requires a substantial bond of **250,000 DAO tokens** to create a proposal. This high bond amount reflects the critical nature of core proposals, which can execute arbitrary code in the context of the DAO. The bond serves several crucial purposes:
+
+1. **High Security Barrier**: The significant bond amount ensures only serious proposals with broad support are submitted
+2. **Prevent Governance Attacks**: The high cost deters potential attackers from attempting to manipulate governance
+3. **Ensure Thorough Vetting**: Proposers are strongly incentivized to ensure their proposals are well-designed and likely to pass
+4. **Community Alignment**: The bond is returned if the proposal passes, aligning proposer incentives with the DAO
+
+The bond amount can be adjusted through governance if needed. If a proposal passes, the bond is returned to the proposer. If a proposal fails, the bond is sent to the treasury.
+
 ## Security Considerations
 
 - **High Thresholds**: 90% approval with 25% quorum ensures broad consensus for critical changes
-- **Proposal Bond**: Requires a bond to prevent spam proposals
+- **Substantial Proposal Bond**: Requires a large bond (250,000 tokens) to prevent spam and governance attacks
 - **Voting Power Snapshot**: Voting power is determined at proposal creation time to prevent manipulation
 - **Extended Timelock**: Longer voting delay and period allow thorough review of proposed code
 - **First Voting Period Check**: Prevents proposals immediately after deployment

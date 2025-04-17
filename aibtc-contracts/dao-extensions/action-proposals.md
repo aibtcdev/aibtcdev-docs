@@ -24,7 +24,7 @@ The Action Proposals extension (`aibtc-action-proposals-v2`) enables DAO members
 | Voting Period  | 288 blocks (~2 days)                |
 | Voting Quorum  | 15% of liquid supply                |
 | Voting Threshold | 66% of votes                      |
-| Proposal Bond  | 1000 DAO tokens (default)           |
+| Proposal Bond  | 2,500 DAO tokens                    |
 
 ## How It Works
 
@@ -247,10 +247,20 @@ The action proposal process begins when a DAO member submits a proposal specifyi
 | u1014 | ERR_DAO_NOT_ACTIVATED | DAO not activated | Wait for DAO activation |
 | u1015 | ERR_INVALID_BOND_AMOUNT | Invalid bond amount | Bond amount must be greater than zero |
 
+## Proposal Bond
+
+The Action Proposals extension requires a bond of **2,500 DAO tokens** to create a proposal. This bond serves several important purposes:
+
+1. **Prevent Spam**: The bond creates a financial barrier to submitting frivolous proposals
+2. **Ensure Quality**: Proposers are incentivized to create well-thought-out proposals
+3. **Align Incentives**: The bond is returned if the proposal passes, aligning proposer incentives with the DAO
+
+The bond amount can be adjusted through governance if needed. If a proposal passes, the bond is returned to the proposer. If a proposal fails, the bond is sent to the treasury.
+
 ## Security Considerations
 
 - **Action Validation**: Only pre-approved action contracts can be executed, preventing arbitrary code execution
-- **Proposal Bond**: Requires a bond to prevent spam proposals
+- **Proposal Bond**: Requires a significant bond (2,500 tokens) to prevent spam proposals
 - **Voting Power Snapshot**: Voting power is determined at proposal creation time to prevent manipulation
 - **Timelock Periods**: Voting delay and execution delay prevent rushed decisions
 - **Quorum Requirements**: Ensures sufficient participation for valid governance
