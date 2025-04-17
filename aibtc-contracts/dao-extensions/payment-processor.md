@@ -4,7 +4,7 @@ description: Handles payment processing for DAO services using various tokens
 
 # Payment Processor Extension
 
-The Payment Processor extension provides a payment processing system for DAO services. It allows the DAO to define resources with prices, track user payments, and manage access to services. The extension is available in three variants to support different payment tokens: DAO token, sBTC, and STX.
+The Payment Processor extension provides a payment processing system for DAO services. It allows the DAO to define resources with prices, track user payments, and manage access to services. The extension is available in three variants to support different payment tokens: DAO token, BTC, and STX.
 
 ## Key Features
 
@@ -60,7 +60,7 @@ The extension is available in three variants, each using a different payment tok
 | Variant | Contract Name | Payment Token | Transfer Mechanism |
 |---------|---------------|---------------|-------------------|
 | DAO Token | `aibtc-payment-processor-dao` | `.aibtc-token` | `contract-call? .aibtc-token transfer` |
-| sBTC | `aibtc-payment-processor-sbtc` | `'STV9K21TBFAK4KNRJXF5DFP8N7W46G4V9RJ5XDY2.sbtc-token` | `contract-call? 'STV9K21TBFAK4KNRJXF5DFP8N7W46G4V9RJ5XDY2.sbtc-token transfer` |
+| BTC | `aibtc-payment-processor-sbtc` | `'STV9K21TBFAK4KNRJXF5DFP8N7W46G4V9RJ5XDY2.sbtc-token` | `contract-call? 'STV9K21TBFAK4KNRJXF5DFP8N7W46G4V9RJ5XDY2.sbtc-token transfer` |
 | STX | `aibtc-payment-processor-stx` | Native STX | `stx-transfer?` or `stx-transfer-memo?` |
 
 All variants share the same functionality and interface, with the only difference being the token used for payment.
@@ -501,7 +501,7 @@ All variants share the same functionality and interface, with the only differenc
 - **Payment Tracking**: All payments are tracked with detailed metadata
 - **Token Security**: Different token implementations have different security considerations:
   - DAO token: Requires approval for transfers
-  - sBTC: Requires proper Bitcoin transaction verification
+  - BTC: Requires proper Bitcoin transaction verification
   - STX: Uses native Stacks token transfer mechanisms
 - **Data Integrity**: All data is stored in maps with proper validation
 
@@ -511,7 +511,7 @@ All variants share the same functionality and interface, with the only differenc
 - **aibtc-dao-traits-v3**: Defines the extension, invoices, and resources traits
 - **aibtc-treasury**: Default recipient for payments
 - **aibtc-token**: DAO token used for payments in the DAO token variant
-- **sbtc-token**: sBTC token used for payments in the sBTC variant
+- **sbtc-token**: sBTC token used for payments in the BTC variant
 
 ## Resource Management
 
