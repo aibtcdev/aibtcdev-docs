@@ -6,6 +6,7 @@
 ## Templates
 
 ### Documentation Templates
+
 - [Smart Contract Documentation](templates/smart-contract-documentation.md)
 - [Cache Service Documentation](templates/cache-service-documentation.md)
 - [Cache Endpoint Documentation](templates/cache-endpoint-documentation.md)
@@ -13,6 +14,7 @@
 - [Prompting Documentation](templates/prompting-documentation.md)
 
 ### Example Implementations
+
 - [Smart Contract Example](templates/smart-wallet-example.md)
 - [Cache Service Example](templates/cache-service-example.md)
 - [Cache Endpoint Example](templates/cache-endpoint-example.md)
@@ -33,7 +35,7 @@
 - [DAO Proposals](aibtc-contracts/dao-proposals/README.md)
   - [Action Proposals](aibtc-contracts/dao-proposals/action-proposals.md)
   - [Core Proposals](aibtc-contracts/dao-proposals/core-proposals.md)
-- [Smart Wallet](aibtc-contracts/smart-wallet/README.md)
+- [Agent Account](aibtc-contracts/agent-account/README.md)
 
 ## Agent Tools
 
