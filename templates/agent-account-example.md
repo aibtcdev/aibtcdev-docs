@@ -37,13 +37,13 @@ The Agent Account provides a secure interface between users and their agents, en
 
 ```mermaid
 flowchart TD
-    A["User"]
+    A["Owner (User)"]
     B["Agent"]
     C["Agent Account"]
     D["DAO Contracts"]
     E["Approved DEXes"]
     
-    subgraph User Operations
+    subgraph Owner Operations
         CA["Asset Management"]
         CB["Permission Control"]
     end
@@ -57,9 +57,12 @@ flowchart TD
     A -->|"Withdraws assets"| CA
     A -->|"Approves assets/DEXes"| CB
     A -->|"Controls agent permissions"| CB
+    A -->|"Proposes actions"| CC
+    A -->|"Votes on proposals"| CC
+    A -->|"Trades assets"| CD
     B -->|"Proposes actions"| CC
     B -->|"Votes on proposals"| CC
-    B -->|"Trades assets if permitted"| CD
+    B -->|"Trades assets ONLY if permitted"| CD
     
     CA --> C
     CB --> C
@@ -70,7 +73,7 @@ flowchart TD
     C -->|"Trades on"| E
 ```
 
-The Agent Account acts as a secure intermediary, with different permission levels for users and agents. Users maintain full control over assets and configuration, while agents can perform governance actions and (when permitted) trading operations.
+The Agent Account acts as a secure intermediary, with different permission levels for owners and agents. The owner (user who created the account) maintains full control over assets and configuration, while agents can perform governance actions and (only when explicitly permitted by the owner) trading operations. The owner has exclusive withdrawal rights.
 
 ## Public Functions
 
@@ -177,12 +180,10 @@ The Agent Account acts as a secure intermediary, with different permission level
 ### Agent Trading with Permission
 
 ```clarity
-;; User enables agent trading
-(as-contract
-  (contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG set-agent-can-buy-sell true)
-)
+;; Owner enables agent trading (must be called by the owner)
+(contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG set-agent-can-buy-sell true)
 
-;; Agent buys tokens
+;; Agent buys tokens (will only succeed if agent trading is enabled)
 (contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG acct-buy-asset .aibtc-token-dex .aibtc-token u100000000)
 ```
 
