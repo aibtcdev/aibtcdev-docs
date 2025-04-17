@@ -11,7 +11,7 @@
   - [Core Proposal Voting](aibtc-contracts/dao-extensions/core-proposals.md)
   - [DAO Charter](aibtc-contracts/dao-extensions/dao-charter.md)
   - [Onchain Messaging](aibtc-contracts/dao-extensions/onchain-messaging.md)
-  - [Payments/Invoices](aibtc-contracts/dao-extensions/payments-invoices.md)
+  - [Payment Processor](aibtc-contracts/dao-extensions/payment-processor.md)
   - [Timed Vault](aibtc-contracts/dao-extensions/timed-vault.md)
   - [Token Owner](aibtc-contracts/dao-extensions/token-owner.md)
   - [Treasury](aibtc-contracts/dao-extensions/treasury.md)
