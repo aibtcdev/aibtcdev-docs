@@ -8,23 +8,19 @@
 - [DAO Base Layer](aibtc-contracts/dao-base-layer.md)
 - [DAO Extensions](aibtc-contracts/dao-extensions/README.md)
   - [Action Proposal Voting](aibtc-contracts/dao-extensions/action-proposals.md)
-  - [Core Proposal Voting](aibtc-contracts/dao-extensions/core-proposals.md)
   - [DAO Charter](aibtc-contracts/dao-extensions/dao-charter.md)
   - [Onchain Messaging](aibtc-contracts/dao-extensions/onchain-messaging.md)
-  - [Payment Processor](aibtc-contracts/dao-extensions/payment-processor.md)
-  - [Timed Vault](aibtc-contracts/dao-extensions/timed-vault.md)
   - [Token Owner](aibtc-contracts/dao-extensions/token-owner.md)
   - [Treasury](aibtc-contracts/dao-extensions/treasury.md)
 - [DAO Proposals](aibtc-contracts/dao-proposals/README.md)
   - [Action Proposals](aibtc-contracts/dao-proposals/action-proposals.md)
-  - [Core Proposals](aibtc-contracts/dao-proposals/core-proposals.md)
 - [Agent Account](aibtc-contracts/agent-account/README.md)
 
 ## Agent Tools
 
 - [Overview](agent-tools/README.md)
 - [Available Tools](agent-tools/available-tools/README.md)
-  - [Smart Wallet Tools](agent-tools/available-tools/smartwallet-tools.md)
+  - [Agent Account Tools](agent-tools/available-tools/agentaccount-tools.md)
   - [Agent Wallet Tools](agent-tools/available-tools/wallet-tools.md)
   - [DAO Tools](agent-tools/available-tools/dao-tools.md)
   - [Database Tools](agent-tools/available-tools/database-tools.md)
@@ -49,7 +45,7 @@
 ## Prompting
 
 - [Action Proposal Prompts](prompting/action-proposal-prompts.md)
-- [Smart Wallet Prompts](prompting/smart-wallet-prompts.md)
+- [Agent Account Prompts](prompting/agent-account-prompts.md)
 
 ## Links
 
