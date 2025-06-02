@@ -41,23 +41,25 @@ Extensions are modular components that provide specific functionality to the DAO
 - Interacts with the DAO through a standardized interface
 
 Available extensions include:
-- Action Proposals: Lower-threshold governance for predefined actions
-- Core Proposals: High-threshold governance for arbitrary code execution
-- Treasury: FT Asset management
-- Timed Vault: Operational fund management with periodic withdrawals
-- Onchain Messaging: Verified DAO communication
-- Payments/Invoices: Revenue generation and service payments
-- Token Owner: Token management and URI updates
-- DAO Charter: On-chain organizational constitution
+- Action Proposals: Predefined actions, faster voting, veto, rewards
+- DAO Charter: Mission and values / On-chain organizational constitution
+- DAO Epoch: Bitcoin block-based epochs, configurable length
+- DAO Users: User registration, reputation tracking
+- Onchain Messaging: Verified DAO/user messages, permanent records via print events
+- Rewards Account: Securely holds and transfers SIP-010 token rewards
+- Token Owner: DAO Token URI updates, ownership controls
+- Treasury: Fungible token (SIP-010) support, controlled access
 
 ## Proposal System
 
-The DAO is governed entirely by token holders through proposals:
+The DAO is governed entirely by token holders through proposals. Currently, this is primarily facilitated through Action Proposals.
 
-1. **Action Proposals**: Predefined operations with lower voting thresholds (66% approval, 15% quorum)
-2. **Core Proposals**: Arbitrary code execution with higher thresholds (90% approval, 25% quorum)
+**Action Proposals**:
+- Used for predefined operations, such as sending on-chain messages.
+- Feature lower voting thresholds (e.g., 66% approval, 15% quorum).
+- Follow a lifecycle of creation, voting, conclusion, and execution.
 
-All proposals follow a lifecycle of creation, voting, conclusion, and execution.
+These proposals are designed for routine DAO operations within set parameters.
 
 ## Tools and Interaction
 
