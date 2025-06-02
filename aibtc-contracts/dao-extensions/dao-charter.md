@@ -168,16 +168,18 @@ The DAO Charter extension works by storing the organization's mission and values
 
 ## Related Contracts
 
-- **aibtc-base-dao**: The main DAO contract that authorizes charter updates
-- **aibtc-dao-traits-v3**: Defines the extension and charter traits
-- **aibtc-onchain-messaging**: Can be used alongside the charter for DAO communications
+- **`.aibtc-base-dao`**: The main DAO contract that authorizes charter updates.
+- **`.aibtc-dao-traits.extension`**: Trait implemented by this extension.
+- **`.aibtc-dao-traits.dao-charter`**: Trait implemented by this extension.
+- **`.aibtc-onchain-messaging`**: Can be used alongside the charter for DAO communications.
 
 ## Charter Versioning
 
-The contract maintains a history of all charter versions, including:
-- Charter text (up to 4096 ASCII characters)
-- Creation timestamp (block height)
-- Creator information
-- Optional inscription ID for blockchain permanence
+The contract maintains a history of all charter versions. Each version record includes:
+- `charter`: The charter text (up to 4096 ASCII characters).
+- `burnHeight`: The Bitcoin block height at the time of creation.
+- `createdAt`: The Stacks block height at the time of creation.
+- `caller`: The `contract-caller` (e.g., the DAO contract or an authorized extension).
+- `sender`: The `tx-sender` who initiated the transaction.
 
 Each update creates a new version while preserving the complete history of previous versions.
