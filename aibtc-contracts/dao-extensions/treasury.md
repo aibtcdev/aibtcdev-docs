@@ -240,25 +240,6 @@ This function can only be called by the DAO or an authorized extension. It trans
 - **`.aibtc-dao-traits.treasury`**: Trait implemented by this extension.
 - **SIP-010 Compliant FT Contracts**: Various fungible token contracts that the treasury can manage (e.g., `.aibtc-faktory`, `.usda-token`).
 
-## Review Checklist
-
-- [x] Follows the appropriate template structure
-- [x] Includes all required sections
-- [x] Has exactly one H1 title
-- [x] YAML frontmatter is at the top with description
-- [x] Introduction follows immediately after title
-- [x] Heading levels are used correctly (H1 → H2 → H3)
-- [x] Code examples are complete and functional with language identifiers
-- [x] Tables have clear headers and consistent formatting
-- [x] Contract diagram has explanation
-- [x] Links to related documentation are correct
-- [x] No spelling or grammatical errors
-- [x] Technical accuracy has been verified
-- [x] Examples use realistic values
-- [x] Security considerations are addressed comprehensively
-- [x] Error codes and handling are documented
-- [x] Content is accessible to the target audience
-
 ## Versioning and Updates
 
 - **Last Updated**: June 2025
