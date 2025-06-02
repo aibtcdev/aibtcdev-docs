@@ -1,201 +1,160 @@
 ---
 description: >-
-  Action proposals are predefined operations that can be executed with lower
-  voting requirements.
+  Action proposals, managed by the aibtc-action-proposal-voting contract, are predefined operations that can be executed with lower voting requirements.
 ---
 
 # Action Proposals
 
-Action proposals are predefined operations that can be executed with lower voting requirements than core proposals. They provide a streamlined way to perform common DAO operations while maintaining appropriate governance controls.
+Action proposals, managed by the `aibtc-action-proposal-voting` contract (version 3.0.0), allow DAO members to propose and vote on predefined actions. These actions are separate smart contracts that implement the `.aibtc-dao-traits.action` trait and must be registered with the DAO. Action proposals provide a streamlined way to perform common DAO operations, with an initial focus on enabling on-chain messaging.
 
-Each action is implemented as a smart contract that executes specific functionality through the DAO's extensions. These actions must be registered as extensions with the base DAO contract before they can be used in action proposal voting.
+## Voting Parameters & Lifecycle
 
-## Voting Parameters
+Action proposals follow a specific lifecycle with defined parameters:
 
-- **Approval Threshold**: 66% (compared to 80% for core proposals)
-- **Quorum Requirement**: 15% (compared to 20% for core proposals)
-- **Voting Period**: Same as core proposals
+-   **Approval Threshold**: 66% of votes cast must be in favor (`VOTING_THRESHOLD`).
+-   **Quorum Requirement**: 15% of the liquid DAO token supply must participate in voting (`VOTING_QUORUM`).
+-   **Initial Voting Delay (`VOTING_DELAY`)**: A period after proposal creation before voting can begin (e.g., ~1 day or 144 Stacks blocks).
+-   **Voting Period (`VOTING_PERIOD`)**: The duration during which DAO members can cast their votes (e.g., ~2 days or 288 Stacks blocks).
+-   **Veto Period / Execution Delay (`VOTING_DELAY`)**: A period after voting ends, equal to the initial voting delay, during which token holders can cast veto votes against a passed proposal.
+-   **Execution Window (`VOTING_PERIOD`)**: A period after the veto period, equal to the voting period, during which a passed, non-vetoed proposal can be concluded and its action executed.
 
 {% hint style="info" %}
-Proposals expire and will not execute if not submitted in time. This prevents holding an early proposal and executing it later. The proposal must be executed within 1 voting period following the end block + the voting delay.
+**Proposal Expiry**: A proposal must be concluded by calling `conclude-action-proposal` after its veto period has ended (`execStart`) and before its execution window closes (`execEnd`). If not concluded within this window, the proposal expires and cannot be executed.
 {% endhint %}
 
-## Available Actions
+## Key Financials and Mechanisms
 
-### Payment Processor Management
+The `aibtc-action-proposal-voting` contract introduces several mechanisms:
 
-The DAO supports three payment processor extensions, each handling a different token type: DAO tokens, STX, and sBTC. The following actions are available for each payment processor.
+-   **Proposal Bond (`VOTING_BOND`)**:
+    *   Proposers must lock a bond (e.g., 5,000 DAO tokens) when creating a proposal.
+    *   The bond is held by the `aibtc-action-proposal-voting` contract.
+    *   It's returned to the proposer if the proposal passes, is not vetoed, and the action executes successfully.
+    *   It's forfeited to the DAO treasury (`.aibtc-treasury`) if the proposal fails, is vetoed, or if the action execution fails.
+-   **DAO Run Cost (`AIBTC_DAO_RUN_COST_AMOUNT`)**:
+    *   Proposers must have sufficient balance to cover a non-refundable fee (e.g., 100 DAO tokens) that contributes to DAO operational costs.
+    *   This fee is transferred from the `.aibtc-treasury` to the `.aibtc-dao-run-cost` contract upon proposal creation, facilitated by the `aibtc-action-proposal-voting` contract.
+-   **Proposal Reward (`VOTING_REWARD`)**:
+    *   A reward (e.g., 1,000 DAO tokens) is set aside from the `.aibtc-treasury` into the `.aibtc-rewards-account` when a proposal is created.
+    *   If the proposal passes, is not vetoed, and the action executes successfully, the reward is transferred from `.aibtc-rewards-account` to the proposer.
+    *   If the proposal fails, is vetoed, or the action execution fails, the reward is returned from `.aibtc-rewards-account` to the `.aibtc-treasury`.
+-   **Veto Mechanism**:
+    *   Allows token holders to prevent a passed proposal from being executed.
+    *   Veto votes can be cast during the Veto Period (Execution Delay).
+    *   A successful veto requires meeting a quorum and having veto votes exceed 'yes' votes.
+-   **Reputation Adjustments**:
+    *   The proposal creator's reputation score in the `.aibtc-dao-users` extension is increased for successful proposals and decreased for failed ones.
+-   **Liquid Supply Snapshot**:
+    *   Voting power is determined by a voter's DAO token balance at the Stacks block height when the proposal was created (`createdStx`), ensuring fairness.
 
-#### Add Resource Actions
+## Available Actions (Initial Focus)
 
-These actions create new payable resources in the payment processor system:
+Version 3.0.0 of `aibtc-action-proposal-voting` primarily enables proposals for the `.aibtc-onchain-messaging` contract. While the system is designed to support various actions (any contract implementing `.aibtc-dao-traits.action` and registered with the DAO), this documentation will focus on the messaging action.
 
-| Action Contract | Token Type | Description | Parameters |
-|-----------------|------------|-------------|------------|
-| `aibtc-action-pmt-dao-add-resource` | DAO Token | Creates a resource payable with DAO tokens | name, description, price, url (optional) |
-| `aibtc-action-pmt-stx-add-resource` | STX | Creates a resource payable with STX | name, description, price, url (optional) |
-| `aibtc-action-pmt-sbtc-add-resource` | sBTC | Creates a resource payable with sBTC | name, description, price, url (optional) |
+### On-Chain Messaging
 
-Each add-resource action:
-- Creates a new payable resource with the specified name, description, and price
-- Makes the resource available for immediate invoice payment after creation
-- Optionally links to additional information via the URL parameter
-- Emits an event recording the resource creation
+| Action Contract             | Target Function | Description                                     | Parameters (for `send` function) |
+| --------------------------- | --------------- | ----------------------------------------------- | -------------------------------- |
+| `.aibtc-onchain-messaging` | `send`          | Posts a verified DAO message on-chain.          | `msg (string-ascii 10000)`       |
 
-**Example Parameters:**
-```
-{
-  name: "api-access",
-  description: "Monthly access to premium API endpoints",
-  price: u10000000, // 10 STX, 10M DAO tokens, or 0.0001 BTC depending on variant
-  url: "https://docs.example.com/api"
-}
-```
+The `.aibtc-onchain-messaging.send` action:
+-   Posts a message (up to 10,000 ASCII characters) that is emitted as a `print` event.
+-   The event includes metadata indicating if the message originated from the DAO (via an extension like this one) or a token holder.
+-   Provides a transparent and immutable way for the DAO to make official announcements or communications.
 
-#### Toggle Resource Actions
+**Example Parameters for `.aibtc-onchain-messaging.send`:**
+The `parameters` argument for `create-action-proposal` must be a `(buff 2048)` containing the ABI-encoded parameters for the target action function. For `(send (msg (string-ascii 10000)))`, this is the string message itself, properly encoded.
 
-These actions enable or disable existing resources in the payment processor:
+```clarity
+;; Example: Message content
+(define-constant MESSAGE_CONTENT "Official DAO Announcement: Q3 Roadmap Update now available on our blog.")
 
-| Action Contract | Token Type | Description | Parameters |
-|-----------------|------------|-------------|------------|
-| `aibtc-action-pmt-dao-toggle-resource` | DAO Token | Toggles a DAO token resource | resourceName |
-| `aibtc-action-pmt-stx-toggle-resource` | STX | Toggles a STX resource | resourceName |
-| `aibtc-action-pmt-sbtc-toggle-resource` | sBTC | Toggles a sBTC resource | resourceName |
-
-Each toggle-resource action:
-- Enables a disabled resource or disables an enabled resource
-- Controls availability for invoice payments
-- Requires the resource name as a parameter
-- Emits an event recording the status change
-
-**Example Parameters:**
-```
-"api-access" // The name of the resource to toggle
-```
-
-### Treasury Management
-
-| Action Contract | Description | Parameters |
-|-----------------|-------------|------------|
-| `aibtc-action-treasury-allow-asset` | Adds or removes an asset from the treasury allowlist | asset (principal) |
-
-The treasury-allow-asset action:
-- Adds a fungible token (FT) or non-fungible token (NFT) to the treasury allowlist
-- Enables deposits and withdrawals of the asset
-- Is required before an asset can be used with the treasury
-- Takes the asset contract principal as a parameter
-
-**Example Parameters:**
-```
-'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR.usda-token // The principal of the asset contract
-```
-
-### Timed Vault Configuration
-
-The DAO supports three timed vault extensions, each handling a different token type: DAO tokens, STX, and sBTC. The following actions configure these vaults:
-
-| Action Contract | Token Type | Description | Parameters |
-|-----------------|------------|-------------|------------|
-| `aibtc-action-configure-timed-vault-dao` | DAO Token | Configures the DAO token timed vault | accountHolder, amount, period (all optional) |
-| `aibtc-action-configure-timed-vault-stx` | STX | Configures the STX timed vault | accountHolder, amount, period (all optional) |
-| `aibtc-action-configure-timed-vault-sbtc` | sBTC | Configures the sBTC timed vault | accountHolder, amount, period (all optional) |
-
-Each configure-timed-vault action can set one or more of the following parameters:
-- **accountHolder**: The principal authorized to make withdrawals
-- **amount**: The amount that can be withdrawn in each period
-  - DAO token: 100M-1T tokens (u100000000-u1000000000000)
-  - STX: 1-100 STX (u1000000-u100000000)
-  - sBTC: 0.00001-0.1 BTC (u1000-u10000000)
-- **period**: The time between allowed withdrawals (6-8064 blocks, approximately 1 hour to 1 week)
-
-**Example Parameters:**
-```
-{
-  accountHolder: 'SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR,
-  amount: u10000000, // 10 STX
-  period: u144 // ~1 day
-}
-```
-
-### Messaging
-
-| Action Contract | Description | Parameters |
-|-----------------|-------------|------------|
-| `aibtc-action-send-message` | Posts a verified DAO message on-chain | message (string) |
-
-The send-message action:
-- Posts a verified DAO message on the blockchain
-- Includes a DAO verification flag
-- Is limited to 1MB size (1,048,576 ASCII characters)
-- Takes the message text as a parameter
-
-**Example Parameters:**
-```
-"The DAO has approved funding for the new development initiative. Work will begin on May 1st."
+;; The parameters buffer for .aibtc-onchain-messaging.send(MESSAGE_CONTENT)
+;; For a single string parameter, direct consensus serialization can often work.
+;; For more complex functions, a dedicated ABI encoding tool or helper contract might be necessary.
+(define-constant ACTION_PARAMETERS (to-consensus-buff? MESSAGE_CONTENT))
 ```
 
 ## Creating and Submitting Action Proposals
 
-Action proposals are created and submitted through the DAO's action proposal extension. Here's how to create and submit an action proposal:
+Action proposals are managed by the `.aibtc-action-proposal-voting` contract. Here's the general workflow:
 
-### 1. Prepare the Action Parameters
+### 1. Prepare the Action and its Parameters
 
-First, prepare the parameters for the action you want to execute. For example, to add a new resource to the STX payment processor:
+Identify the action contract (e.g., `.aibtc-onchain-messaging`) and prepare the `(buff 2048)` for its parameters.
 
 ```clarity
-;; Parameters for adding a new resource
-(define-data-var params (buff 2048) 
-  (to-consensus-buff? {
-    name: "api-access",
-    description: "Monthly access to premium API endpoints",
-    price: u10000000,
-    url: (some "https://docs.example.com/api")
-  })
-)
+;; Define the action contract and message
+(define-constant TARGET_ACTION_CONTRACT .aibtc-onchain-messaging)
+(define-constant MESSAGE_TO_SEND "Proposal for funding community grants Q4 2025.")
+
+;; Prepare the parameters buffer for .aibtc-onchain-messaging.send(MESSAGE_TO_SEND)
+;; IMPORTANT: Ensure this is correctly ABI-encoded for the target function.
+(define-constant ACTION_PARAMS (to-consensus-buff? MESSAGE_TO_SEND))
 ```
 
-### 2. Submit the Action Proposal
+### 2. Create the Action Proposal
 
-Next, submit the action proposal using the `submit-proposal` function:
+Call `create-action-proposal` on the `.aibtc-action-proposal-voting` contract. The caller must have enough DAO tokens (`.aibtc-faktory`) to cover the `VOTING_BOND` plus the `AIBTC_DAO_RUN_COST_AMOUNT`.
 
 ```clarity
-(contract-call? .aibtc-base-dao submit-proposal
-  .aibtc-action-pmt-stx-add-resource ;; The action contract
-  (var-get params) ;; The parameters
-  none ;; No memo
-  u0 ;; No STX transfer
+(contract-call? .aibtc-action-proposal-voting create-action-proposal
+  TARGET_ACTION_CONTRACT ;; The action contract principal, e.g., .aibtc-onchain-messaging
+  ACTION_PARAMS          ;; The (buff 2048) of ABI-encoded parameters
+  (some "Proposal to announce Q4 community grants.") ;; Optional memo (string-ascii 1024)
 )
+;; This call will return (ok true) on success of the transaction.
+;; The proposal ID is generated internally and can be found in the emitted event
+;; or by querying (get-total-proposals) on the aibtc-action-proposal-voting contract.
 ```
 
 ### 3. Vote on the Proposal
 
-DAO members can then vote on the proposal:
+During the `VOTING_PERIOD` (after `VOTING_DELAY`), DAO token holders can vote. Voting power is based on their balance at the proposal's creation block.
 
 ```clarity
-(contract-call? .aibtc-base-dao vote-on-proposal
-  proposal-id ;; The ID returned from submit-proposal
-  true ;; Vote "yes"
+(contract-call? .aibtc-action-proposal-voting vote-on-action-proposal
+  u1        ;; The proposal ID
+  true      ;; Vote 'yes' (true) or 'no' (false)
 )
 ```
 
-### 4. Execute the Proposal
+### 4. (Optional) Veto the Proposal
 
-After the voting period ends and if the proposal passes, it can be executed:
+During the Veto Period (after `VOTING_PERIOD` ends and before `execStart`), token holders can cast veto votes.
 
 ```clarity
-(contract-call? .aibtc-base-dao execute-proposal
-  proposal-id ;; The ID of the passed proposal
+(contract-call? .aibtc-action-proposal-voting veto-action-proposal
+  u1        ;; The proposal ID to veto
 )
+```
+
+### 5. Conclude the Proposal
+
+After the Veto Period ends (i.e., at or after `execStart`) and before `execEnd`, anyone can call `conclude-action-proposal`. This function finalizes the proposal:
+- Tallies votes and checks against quorum/threshold.
+- Checks for successful veto.
+- If passed, not vetoed, and not expired, it attempts to execute the action.
+- Distributes the bond and reward accordingly.
+
+```clarity
+(contract-call? .aibtc-action-proposal-voting conclude-action-proposal
+  u1                       ;; The proposal ID
+  TARGET_ACTION_CONTRACT   ;; The action contract principal (must match the one in the proposal)
+)
+;; Returns (ok true) if action executed successfully, (ok false) if proposal passed but action failed,
+;; or if proposal did not pass/was vetoed/expired. Returns an error for other issues.
 ```
 
 ## Benefits of Action Proposals
 
-Action proposals provide several advantages over core proposals:
+Action proposals, as managed by `aibtc-action-proposal-voting`, offer several advantages:
 
-1. **Lower Voting Requirements**: Easier to pass for routine operations
-2. **Predefined Operations**: Clear constraints on what can be executed
-3. **Specialized Functionality**: Tailored for specific common tasks
-4. **Reduced Complexity**: Simplified parameter handling
-5. **Enhanced Security**: Limited scope reduces risk
+1.  **Lower Voting Requirements**: Easier to pass for routine or predefined operations compared to core proposals.
+2.  **Predefined and Vetted Actions**: Actions are specific contracts, limiting the scope of what can be executed and allowing for focused security reviews.
+3.  **Streamlined Process**: A clear lifecycle with defined periods for voting, veto, and execution.
+4.  **Incentivized Participation**: Proposal bonds, run costs, and rewards encourage thoughtful proposals and discourage spam.
+5.  **Enhanced Security through Veto**: The veto mechanism provides an additional safeguard against contentious or potentially harmful proposals.
+6.  **Transparency**: All proposal details, votes, and outcomes are recorded on-chain.
 
-By using action proposals for routine operations, the DAO can operate more efficiently while maintaining appropriate governance controls for more significant decisions that require core proposals.
+By using action proposals for suitable operations, the DAO can operate more efficiently while maintaining robust governance and security.
