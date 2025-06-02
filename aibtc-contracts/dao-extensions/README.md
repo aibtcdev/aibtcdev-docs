@@ -29,7 +29,10 @@ Extensions follow a consistent pattern:
 |-----------|---------|--------------|
 | [Action Proposals](action-proposal-voting.md) | Lower-threshold governance | Predefined actions, faster voting, veto, rewards |
 | [DAO Charter](dao-charter.md) | Mission and values | On-chain organizational constitution |
+| [DAO Epoch](dao-epoch.md) | Time tracking | Bitcoin block-based epochs, configurable length |
+| [DAO Users](dao-users.md) | User management | User registration, reputation tracking |
 | [Onchain Messaging](onchain-messaging.md) | Communication | Verified DAO/user messages, permanent records via print events |
+| [Rewards Account](rewards-account.md) | Reward disbursement | Securely holds and transfers SIP-010 token rewards |
 | [Token Owner](token-owner.md) | Token management | DAO Token URI updates, ownership controls |
 | [Treasury](treasury.md) | FT Asset management | Fungible token (SIP-010) support, controlled access |
 
