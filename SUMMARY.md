@@ -58,6 +58,8 @@
 
 ## Templates
 
+- [Template Style Guide](template-style-guide.md)
+
 ### Documentation Templates
 
 - [Smart Contract Documentation](templates/smart-contract-documentation.md)
@@ -68,7 +70,7 @@
 
 ### Example Implementations
 
-- [Smart Contract Example](templates/smart-wallet-example.md)
+- [Agent Account Example](templates/agent-account-example.md)
 - [Cache Service Example](templates/cache-service-example.md)
 - [Cache Endpoint Example](templates/cache-endpoint-example.md)
 - [Agent Tool Example](templates/agent-tool-example.md)
