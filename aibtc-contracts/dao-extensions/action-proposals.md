@@ -1,282 +1,403 @@
 ---
-description: Manages voting on predefined actions with lower thresholds
+description: Manages voting on predefined actions, including a veto mechanism and rewards, with an initial focus on enabling on-chain messaging proposals via the aibtc-onchain-messaging contract.
 ---
 
-# Action Proposals Extension
+# Action Proposal Voting Extension
 
-The Action Proposals extension (`aibtc-action-proposals-v2`) enables DAO members to vote on predefined actions with lower thresholds than core proposals. This allows for more routine operations to be executed without the high barriers required for fundamental changes to the DAO.
+The Action Proposal Voting extension (`aibtc-action-proposal-voting`) allows DAO members to propose and vote on predefined actions. It features a multi-stage process including a voting period, a veto period, and mechanisms for proposal bonds, DAO run costs, and proposer rewards. Version 3.0.0 of this contract initially focuses on enabling proposals to send on-chain messages using the `.aibtc-onchain-messaging` contract as the primary action. This allows for routine, transparent communication and decision-making without the higher thresholds of core DAO proposals.
 
 ## Key Features
 
-- **Predefined Actions**: Only executes pre-approved action contracts registered with the DAO
-- **Lower Thresholds**: Requires 66% approval with 15% quorum (vs 90%/25% for core proposals)
-- **Proposal Bond**: Requires a bond that is returned to the proposer if the proposal passes
-- **Shorter Timeframes**: Shorter voting delay and period compared to core proposals
+- **Predefined Actions**: Executes action contracts registered with the DAO. The primary initial action is sending messages via `.aibtc-onchain-messaging`.
+- **Configurable Voting Parameters**: Utilizes specific voting delay (`VOTING_DELAY`), period (`VOTING_PERIOD`), quorum (`VOTING_QUORUM`), and threshold (`VOTING_THRESHOLD`).
+- **Proposal Bond**: Requires a `VOTING_BOND` from the proposer, returned on successful execution or forfeited on failure/veto.
+- **Proposal Reward**: Successful and executed proposals earn a `VOTING_REWARD` for the creator, funded by the treasury.
+- **DAO Run Cost**: Proposers contribute an `AIBTC_DAO_RUN_COST_AMOUNT` fee towards DAO operational costs, paid to `.aibtc-dao-run-cost`.
+- **Veto Mechanism**: Allows token holders to veto a proposal during a specific window after voting ends but before execution can begin.
+- **Reputation Adjustments**: Proposal creators gain or lose reputation via `.aibtc-dao-users` based on the outcome.
+- **Liquid Supply Snapshot**: Uses token balances at the proposal creation block for fair voting power calculation.
 
 ## Quick Reference
 
-| Property       | Value                                |
-| -------------- | ------------------------------------ |
-| Contract Name  | `aibtc-action-proposals-v2`         |
-| Version        | 2.0.0                               |
-| Implements     | extension, action-proposals traits   |
-| Voting Delay   | 144 blocks (~1 day)                 |
-| Voting Period  | 288 blocks (~2 days)                |
-| Voting Quorum  | 15% of liquid supply                |
-| Voting Threshold | 66% of votes                      |
-| Proposal Bond  | 2,500 DAO tokens                    |
+| Property                | Value                                                                 |
+| ----------------------- | --------------------------------------------------------------------- |
+| Contract Name           | `aibtc-action-proposal-voting`                                        |
+| Version                 | 3.0.0                                                                 |
+| Implements              | `.aibtc-dao-traits.extension`, `.aibtc-dao-traits.action-proposal-voting` |
+| Voting Delay            | `VOTING_DELAY` (e.g., 144 blocks, ~1 day)                             |
+| Voting Period           | `VOTING_PERIOD` (e.g., 288 blocks, ~2 days)                             |
+| Execution Delay         | `VOTING_DELAY` (e.g., 144 blocks, ~1 day, also acts as veto period)    |
+| Execution Window        | `VOTING_PERIOD` (e.g., 288 blocks, ~2 days)                             |
+| Voting Quorum           | `VOTING_QUORUM` (e.g., 15% of liquid supply)                          |
+| Voting Threshold        | `VOTING_THRESHOLD` (e.g., 66% of votes)                               |
+| Proposal Bond           | `VOTING_BOND` (e.g., 5,000 DAO tokens with 8 decimals)                |
+| Proposal Reward         | `VOTING_REWARD` (e.g., 1,000 DAO tokens with 8 decimals)               |
+| DAO Run Cost            | `AIBTC_DAO_RUN_COST_AMOUNT` (e.g., 100 DAO tokens with 8 decimals)    |
+| DAO Token Contract      | `.aibtc-faktory`                                                      |
+| Treasury Contract       | `.aibtc-treasury` (for bond forfeiture, rewards source)               |
+| DAO Run Cost Contract   | `.aibtc-dao-run-cost`                                                 |
+| DAO Rewards Account     | `.aibtc-rewards-account`                                              |
 
 ## How It Works
 
 ```mermaid
 flowchart TD
-    A["DAO Member"] -->|"propose-action"| B["Action Proposals Contract"]
-    A -->|"vote-on-proposal"| B
-    A -->|"conclude-proposal"| B
+    subgraph Initialization
+        Treasury[".aibtc-treasury"] --"Funds VOTING_REWARD"--> RewardsAccount[".aibtc-rewards-account"]
+    end
+
+    Proposer["DAO Member (Proposer)"] --"1. create-action-proposal(action, params, memo)"--> APV["aibtc-action-proposal-voting"]
+    Proposer --"Pays VOTING_BOND"--> APV
+    Proposer --"Pays AIBTC_DAO_RUN_COST_AMOUNT"--> DaoRunCost[".aibtc-dao-run-cost"]
     
-    subgraph Proposal Lifecycle
-        B -->|"If passed"| C["Execute Action"]
-        B -->|"If failed"| D["No Action"]
+    APV --"Records Proposal"--> ProposalState["Proposal State (Details, Blocks, Records)"]
+    
+    subgraph Voting & Veto Phase
+        Voter["DAO Member (Voter)"] --"2. vote-on-action-proposal(proposalId, vote)"--> APV
+        Vetoer["DAO Member (Vetoer)"] --"3. veto-action-proposal(proposalId)"--> APV
+    end
+
+    APV --"Updates Votes/Vetoes"--> ProposalState
+
+    subgraph Conclusion Phase
+        Anyone["Any User"] --"4. conclude-action-proposal(proposalId, action)"--> APV
+    end
+
+    subgraph Outcome: Passed & Executed
+        APV --"Passed, Not Vetoed, Executable"--> ExecuteAction["Calls action.run(params)"]
+        ExecuteAction --"Success"--> APV
+        APV --"Returns VOTING_BOND"--> Proposer
+        RewardsAccount --"Transfers VOTING_REWARD"--> Proposer
+        APV --"Updates Reputation (Increase)"--> DaoUsers[".aibtc-dao-users"]
+    end
+
+    subgraph Outcome: Failed, Vetoed, or Execution Failed
+        APV --"Failed Vote / Vetoed / Action Execution Fails"--> Treasury
+        APV --"Forfeits VOTING_BOND"--> Treasury
+        RewardsAccount --"Transfers VOTING_REWARD (if action failed)"--> Treasury
+        APV --"Updates Reputation (Decrease)"--> DaoUsers
     end
     
-    C -->|"Return bond to proposer"| E["Proposer"]
-    D -->|"Send bond to treasury"| F["Treasury"]
+    ActionContract[".aibtc-onchain-messaging (initially)"]
+    ExecuteAction --> ActionContract
 ```
 
-The action proposal process begins when a DAO member submits a proposal specifying an action contract and parameters. After the voting delay period, other members can vote for or against the proposal. Once the voting period ends, any member can conclude the proposal. If it passes (meets quorum and threshold), the action is executed and the bond is returned to the proposer. If it fails, the bond is sent to the treasury.
+The action proposal lifecycle involves several steps:
+1.  **Proposal Creation (`create-action-proposal`)**: A DAO member proposes an action (e.g., sending a message via `.aibtc-onchain-messaging`). They must provide the action contract, parameters, an optional memo, the `VOTING_BOND` (transferred to this extension), and the `AIBTC_DAO_RUN_COST_AMOUNT` (transferred to `.aibtc-dao-run-cost`). Upon creation, `VOTING_REWARD` is transferred from `.aibtc-treasury` to `.aibtc-rewards-account`.
+2.  **Voting (`vote-on-action-proposal`)**: After a `VOTING_DELAY`, DAO members can cast votes using their token balance snapshotted at the proposal's creation block. Voting lasts for `VOTING_PERIOD`.
+3.  **Veto (`veto-action-proposal`)**: After the `VOTING_PERIOD` ends, there's an execution delay (equal to `VOTING_DELAY`) during which token holders can cast veto votes.
+4.  **Conclusion (`conclude-action-proposal`)**: After the veto period (execution delay) ends, anyone can call this function. The contract checks:
+    *   If the proposal met the `VOTING_QUORUM` and `VOTING_THRESHOLD`.
+    *   If a veto attempt met quorum and veto votes exceeded 'yes' votes.
+    *   If the proposal is not expired (within `execEnd` block).
+5.  **Outcome**:
+    *   **Passed & Executed**: If the proposal passes, is not vetoed, and the action executes successfully:
+        *   The `VOTING_BOND` is returned to the proposer.
+        *   The `VOTING_REWARD` is transferred from `.aibtc-rewards-account` to the proposer.
+        *   The proposer's reputation is increased via `.aibtc-dao-users`.
+    *   **Failed, Vetoed, or Execution Failed**: If the proposal fails to pass, is successfully vetoed, or the action execution fails:
+        *   The `VOTING_BOND` is transferred to `.aibtc-treasury`.
+        *   If action execution failed (but vote passed), the `VOTING_REWARD` is transferred from `.aibtc-rewards-account` to `.aibtc-treasury`.
+        *   The proposer's reputation is decreased via `.aibtc-dao-users`.
+The initial and primary action available for proposals is to call the `send` function of the `.aibtc-onchain-messaging` contract.
 
 ## Public Functions
 
-### `set-proposal-bond`
+### `create-action-proposal`
 
-**Purpose**: Sets the required bond amount for creating proposals
+**Purpose**: Creates a new action proposal. The caller pays a bond and a DAO run cost. A reward is set aside from the treasury.
 
 **Parameters**:
-- `amount`: uint - The new bond amount in DAO tokens (8 decimals)
+- `action`: `<action-trait>` - The action contract to be executed if the proposal passes (e.g., `.aibtc-onchain-messaging`).
+- `parameters`: `(buff 2048)` - Parameters to pass to the action contract (e.g., ABI-encoded message for `.aibtc-onchain-messaging.send`).
+- `memo`: `(optional (string-ascii 1024))` - Optional description of the proposal.
 
-**Returns**: (response bool err-code) - Success or failure
+**Returns**: `(response uint err-code)` - The new proposal ID if successful, otherwise an error.
 
 **Example**:
 ```clarity
-(contract-call? .aibtc-action-proposals-v2 set-proposal-bond u100000000000)
+;; Example: Proposing to send a message via aibtc-onchain-messaging
+(define-constant MESSAGE_TO_SEND "Hello from the DAO via action proposal!")
+(define-constant ACTION_CONTRACT .aibtc-onchain-messaging)
+(define-constant ACTION_PARAMETERS (to-consensus-buff? (tuple (msg MESSAGE_TO_SEND)))) ;; Simplified, actual ABI encoding needed for .send(msg (string-ascii 10000))
+
+(contract-call? .aibtc-action-proposal-voting create-action-proposal ACTION_CONTRACT ACTION_PARAMETERS (some "Proposal to send an official DAO message."))
+```
+*Note: The caller must have enough DAO tokens for `VOTING_BOND` + `AIBTC_DAO_RUN_COST_AMOUNT`.*
+
+### `vote-on-action-proposal`
+
+**Purpose**: Casts a vote on an active proposal. Voting power is based on the voter's token balance at the proposal's creation block.
+
+**Parameters**:
+- `proposalId`: `uint` - The ID of the proposal to vote on.
+- `vote`: `bool` - `true` for a 'yes' vote, `false` for a 'no' vote.
+
+**Returns**: `(response bool err-code)` - `(ok true)` on success, otherwise an error.
+
+**Example**:
+```clarity
+(contract-call? .aibtc-action-proposal-voting vote-on-action-proposal u1 true)
 ```
 
-*Note: This function can only be called by the DAO or an extension.*
+### `veto-action-proposal`
 
-### `propose-action`
-
-**Purpose**: Creates a new action proposal
+**Purpose**: Casts a veto vote on a proposal that has finished its voting period but is not yet in its execution window.
 
 **Parameters**:
-- `action`: action-trait - The action contract to be executed if proposal passes
-- `parameters`: (buff 2048) - Parameters to pass to the action contract
-- `memo`: (optional (string-ascii 1024)) - Optional description of the proposal
+- `proposalId`: `uint` - The ID of the proposal to veto.
 
-**Returns**: (response uint err-code) - The proposal ID if successful
+**Returns**: `(response bool err-code)` - `(ok true)` on success, otherwise an error.
 
 **Example**:
 ```clarity
-(contract-call? .aibtc-action-proposals-v2 propose-action .my-action-contract 0x0123456789 "This is a proposal to do X")
+(contract-call? .aibtc-action-proposal-voting veto-action-proposal u1)
 ```
 
-### `vote-on-proposal`
+### `conclude-action-proposal`
 
-**Purpose**: Casts a vote on an existing proposal
+**Purpose**: Concludes a proposal after its voting and veto periods have ended. If passed, not vetoed, and not expired, it attempts to execute the action. Handles bond and reward distribution.
 
 **Parameters**:
-- `proposalId`: uint - The ID of the proposal to vote on
-- `vote`: bool - True for yes, false for no
+- `proposalId`: `uint` - The ID of the proposal to conclude.
+- `action`: `<action-trait>` - The action contract (must match the one in the proposal, e.g., `.aibtc-onchain-messaging`).
 
-**Returns**: (response bool err-code) - Success or failure
+**Returns**: `(response bool err-code)` - `(ok true)` if the action was successfully executed, `(ok false)` if the proposal passed but action failed or proposal did not pass/was vetoed/expired. Returns an error for other issues.
 
 **Example**:
 ```clarity
-(contract-call? .aibtc-action-proposals-v2 vote-on-proposal u1 true)
-```
-
-### `conclude-proposal`
-
-**Purpose**: Concludes a proposal after the voting period
-
-**Parameters**:
-- `proposalId`: uint - The ID of the proposal to conclude
-- `action`: action-trait - The action contract (must match the one in the proposal)
-
-**Returns**: (response bool err-code) - Success or failure, with true indicating the action was executed
-
-**Example**:
-```clarity
-(contract-call? .aibtc-action-proposals-v2 conclude-proposal u1 .my-action-contract)
+(contract-call? .aibtc-action-proposal-voting conclude-action-proposal u1 .aibtc-onchain-messaging)
 ```
 
 ### `callback`
 
-**Purpose**: Standard extension callback function
+**Purpose**: Standard extension callback function, typically used by the DAO to interact with the extension.
 
 **Parameters**:
-- `sender`: principal - The sender of the callback
-- `memo`: (buff 34) - Memo data
+- `sender`: `principal` - The principal that triggered the callback.
+- `memo`: `(buff 34)` - Optional memo data.
 
-**Returns**: (response bool err-code) - Always returns ok true
+**Returns**: `(response bool err-code)` - Always returns `(ok true)`.
+
+**Example**:
+```clarity
+(contract-call? .aibtc-action-proposal-voting callback tx-sender 0x00)
+```
 
 ## Read-Only Functions
 
 ### `get-voting-power`
 
-**Purpose**: Gets the voting power of an address for a specific proposal
+**Purpose**: Gets the voting power (DAO token balance) of a voter for a specific proposal, determined at the proposal's creation block.
 
 **Parameters**:
-- `who`: principal - The address to check
-- `proposalId`: uint - The proposal ID
+- `proposalId`: `uint` - The ID of the proposal.
+- `voter`: `principal` - The address of the voter.
 
-**Returns**: (optional uint) - The voting power (token balance) at proposal creation
+**Returns**: `(response uint err-code)` - The voting power, or an error if data cannot be fetched.
 
 ### `get-proposal`
 
-**Purpose**: Gets the details of a proposal
+**Purpose**: Retrieves all data associated with a specific proposal.
 
 **Parameters**:
-- `proposalId`: uint - The ID of the proposal
+- `proposalId`: `uint` - The ID of the proposal.
 
-**Returns**: (optional {proposal-data}) - The proposal details or none if not found
-
-### `get-proposal-bond`
-
-**Purpose**: Gets the current proposal bond amount
-
-**Parameters**: None
-
-**Returns**: uint - The current bond amount
+**Returns**: `(optional {action: principal, bond: uint, caller: principal, parameters: (buff 2048), memo: (optional (string-ascii 1024)), creator: principal, creatorUserId: uint, liquidTokens: uint, createdBtc: uint, createdStx: uint, voteStart: uint, voteEnd: uint, execStart: uint, execEnd: uint, votesFor: uint, votesAgainst: uint, vetoVotes: uint, concluded: bool, metQuorum: bool, metThreshold: bool, passed: bool, executed: bool, expired: bool, vetoMetQuorum: bool, vetoExceedsYes: bool, vetoed: bool})` - A tuple containing all proposal details, block information, and current records, or `none` if not found.
 
 ### `get-vote-record`
 
-**Purpose**: Gets the vote record for a specific voter on a proposal
+**Purpose**: Gets the vote record for a specific voter on a proposal.
 
 **Parameters**:
-- `proposalId`: uint - The ID of the proposal
-- `voter`: principal - The voter address
+- `proposalId`: `uint` - The ID of the proposal.
+- `voter`: `principal` - The voter's address.
 
-**Returns**: uint - The amount of tokens used for voting (0 if no vote)
+**Returns**: `(optional {vote: bool, amount: uint})` - The vote details (`vote`: true for yes, false for no; `amount`: voting power used) or `none` if no vote found.
+
+### `get-veto-vote-record`
+
+**Purpose**: Gets the veto vote record (amount voted) for a specific voter on a proposal.
+
+**Parameters**:
+- `proposalId`: `uint` - The ID of the proposal.
+- `voter`: `principal` - The voter's address.
+
+**Returns**: `(optional uint)` - The amount of tokens used for the veto vote, or `none` if no veto vote found.
+
+### `get-vote-records`
+
+**Purpose**: Retrieves both the regular vote and veto vote records for a voter on a proposal.
+
+**Parameters**:
+- `proposalId`: `uint` - The ID of the proposal.
+- `voter`: `principal` - The voter's address.
+
+**Returns**: `{voteRecord: (optional {vote: bool, amount: uint}), vetoVoteRecord: (optional uint)}`
 
 ### `get-total-proposals`
 
-**Purpose**: Gets the total number of proposals
+**Purpose**: Gets aggregate counts and block information about proposals.
 
 **Parameters**: None
 
-**Returns**: {total: uint, concluded: uint, executed: uint} - Counts of proposals
-
-### `get-last-proposal-created`
-
-**Purpose**: Gets the block height of the last created proposal
-
-**Parameters**: None
-
-**Returns**: uint - The block height
+**Returns**: `{proposalCount: uint, concludedProposalCount: uint, executedProposalCount: uint, lastProposalStacksBlock: uint, lastProposalBitcoinBlock: uint}`
 
 ### `get-voting-configuration`
 
-**Purpose**: Gets the voting configuration details
+**Purpose**: Retrieves the current voting configuration parameters of the contract.
 
 **Parameters**: None
 
-**Returns**: {configuration-data} - All voting parameters and contract references
+**Returns**: `{self: principal, deployedBitcoinBlock: uint, deployedStacksBlock: uint, delay: uint, period: uint, quorum: uint, threshold: uint, treasury: principal, proposalBond: uint, proposalReward: uint}`
+*Note: This also includes references to `AIBTC_DAO_RUN_COST_CONTRACT` and `DAO_REWARDS_ACCOUNT` implicitly through the contract's constants, though not directly returned here.*
 
 ### `get-liquid-supply`
 
-**Purpose**: Calculates the liquid supply of the DAO token at a specific block
+**Purpose**: Calculates the liquid supply of the DAO token (`.aibtc-faktory`) at a specific Stacks block height, excluding the balance of the `VOTING_TREASURY`.
 
 **Parameters**:
-- `blockHeight`: uint - The block height to check
+- `blockHeight`: `uint` - The Stacks block height at which to calculate the liquid supply.
 
-**Returns**: (response uint err-code) - The liquid supply amount
+**Returns**: `(response uint err-code)` - The liquid supply amount or an error.
 
 ## Print Events
 
-| Event | Description | Data |
-|-------|-------------|------|
-| `set-proposal-bond` | Emitted when proposal bond is changed | Amount, caller, sender |
-| `propose-action` | Emitted when a new action proposal is created | Proposal ID, action contract, parameters, creator, bond, start/end blocks, liquid tokens |
-| `vote-on-proposal` | Emitted when a vote is cast on a proposal | Proposal ID, voter, vote amount |
-| `conclude-proposal` | Emitted when a proposal is concluded | Proposal ID, vote results, execution status |
+| Event                                  | Description                                       | Key Data Points in Payload                                                                                                                                                                                                                            |
+| -------------------------------------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `create-action-proposal`               | Emitted when a new action proposal is created.    | `proposalId`, `action`, `parameters`, `bond`, `creator`, `liquidTokens`, `createdBtc`, `createdStx`, `voteStart`, `voteEnd`, `execStart`, `execEnd`, `votingPeriod`, `votingQuorum`, `votingThreshold`, `votingDelay`, `votingReward`.                 |
+| `vote-on-action-proposal`              | Emitted when a vote is cast on a proposal.        | `proposalId`, `voter`, `voterUserId`, `amount` (voting power), `vote` (true/false).                                                                                                                                                                   |
+| `veto-action-proposal`                 | Emitted when a veto vote is cast on a proposal.   | `proposalId`, `vetoer`, `vetoerUserId`, `amount` (veto power).                                                                                                                                                                                        |
+| `conclude-action-proposal`             | Emitted when a proposal is concluded.             | `proposalId`, `action`, `parameters`, `bond`, `creator`, `liquidTokens`, `votesFor`, `votesAgainst`, `vetoVotes`, `metQuorum`, `metThreshold`, `vetoMetQuorum`, `vetoExceedsYes`, `vetoed`, `passed`, `expired`, `executed`, `executionError` (optional). |
 
 ## Integration Examples
 
-### Creating a Proposal to Update Treasury Parameters
+### Creating a Proposal to Send an On-chain Message
+
+This example demonstrates creating a proposal to send a message using the `.aibtc-onchain-messaging` contract. The `parameters` field must be the ABI-encoded representation of the arguments for the target function (in this case, the `send` function of `.aibtc-onchain-messaging` which takes `(msg (string-ascii 10000))`).
 
 ```clarity
-;; Define the parameters for the treasury update
-(define-constant PARAMETERS 
-  (concat 
-    (to-consensus-buff? u10000000000) ;; New withdrawal limit
-    (to-consensus-buff? u5) ;; New required approvals
-  ))
+;; Define the action contract and message
+(define-constant TARGET_ACTION_CONTRACT .aibtc-onchain-messaging)
+(define-constant MESSAGE_CONTENT "This is an official DAO announcement sent via an action proposal.")
+
+;; Manually prepare the parameters buffer for .aibtc-onchain-messaging.send(MESSAGE_CONTENT)
+;; For a function like `(send (msg (string-ascii 10000)))`, the parameter is a single string.
+;; Clarity's `(to-consensus-buff? (string-ascii MESSAGE_CONTENT))` might not be sufficient for complex ABI encoding.
+;; A helper contract or tool might be needed for robust ABI encoding of parameters.
+;; For simplicity, assuming a direct buffer representation or a helper:
+(define-constant ACTION_PARAMETERS (to-consensus-buff? MESSAGE_CONTENT)) ;; Placeholder for actual ABI encoding
 
 ;; Create the proposal
-(contract-call? .aibtc-action-proposals-v2 propose-action .treasury-update-action PARAMETERS (some "Update treasury withdrawal limits"))
+(contract-call? .aibtc-action-proposal-voting create-action-proposal 
+  TARGET_ACTION_CONTRACT 
+  ACTION_PARAMETERS 
+  (some "Proposal to broadcast an official DAO announcement.")
+)
 ```
+*Note: Proper ABI encoding of `parameters` is crucial and depends on the signature of the target action function.*
 
 ### Voting on an Active Proposal
 
 ```clarity
-;; Vote in favor of proposal #5
-(contract-call? .aibtc-action-proposals-v2 vote-on-proposal u5 true)
+;; Vote in favor of proposal #1
+(contract-call? .aibtc-action-proposal-voting vote-on-action-proposal u1 true)
 
-;; Vote against proposal #6
-(contract-call? .aibtc-action-proposals-v2 vote-on-proposal u6 false)
+;; Vote against proposal #2
+(contract-call? .aibtc-action-proposal-voting vote-on-action-proposal u2 false)
+```
+
+### Concluding a Proposal
+
+```clarity
+;; Conclude proposal #1, assuming it targeted .aibtc-onchain-messaging
+(contract-call? .aibtc-action-proposal-voting conclude-action-proposal u1 .aibtc-onchain-messaging)
 ```
 
 ## Error Handling
 
-| Error Code | Constant | Description | Resolution |
-|------------|----------|-------------|------------|
-| u1000 | ERR_NOT_DAO_OR_EXTENSION | Caller is not the DAO or an extension | Ensure you're calling from the DAO or an approved extension |
-| u1001 | ERR_FETCHING_TOKEN_DATA | Error fetching token data | Check token contract is accessible |
-| u1002 | ERR_INSUFFICIENT_BALANCE | Caller has insufficient token balance | Ensure you have enough tokens for the bond or voting |
-| u1003 | ERR_PROPOSAL_NOT_FOUND | Proposal not found | Verify the proposal ID exists |
-| u1004 | ERR_PROPOSAL_VOTING_ACTIVE | Proposal voting is still active | Wait until the voting period ends |
-| u1005 | ERR_PROPOSAL_EXECUTION_DELAY | Proposal is in execution delay period | Wait until the execution delay ends |
-| u1006 | ERR_ALREADY_PROPOSAL_AT_BLOCK | Already a proposal at this block | Wait for the next block to create a proposal |
-| u1007 | ERR_SAVING_PROPOSAL | Error saving proposal | Check for data format issues |
-| u1008 | ERR_PROPOSAL_ALREADY_CONCLUDED | Proposal already concluded | Cannot conclude a proposal twice |
-| u1009 | ERR_RETRIEVING_START_BLOCK_HASH | Error retrieving start block hash | Block data may be unavailable |
-| u1010 | ERR_VOTE_TOO_SOON | Vote attempted before voting period started | Wait until the voting delay period ends |
-| u1011 | ERR_VOTE_TOO_LATE | Vote attempted after voting period ended | Cannot vote after the voting period |
-| u1012 | ERR_ALREADY_VOTED | User already voted on this proposal | Cannot vote twice on the same proposal |
-| u1013 | ERR_INVALID_ACTION | Invalid action contract | Action must be registered with the DAO |
-| u1014 | ERR_DAO_NOT_ACTIVATED | DAO not activated | Wait for DAO activation |
-| u1015 | ERR_INVALID_BOND_AMOUNT | Invalid bond amount | Bond amount must be greater than zero |
+| Error Code | Constant                        | Description                                       | Resolution Suggestion                                     |
+| ---------- | ------------------------------- | ------------------------------------------------- | --------------------------------------------------------- |
+| u1300      | ERR_NOT_DAO_OR_EXTENSION        | Caller is not the DAO or an authorized extension. | Ensure call originates from DAO or approved extension.    |
+| u1301      | ERR_FETCHING_TOKEN_DATA         | Error fetching token balance or supply.           | Check DAO token contract (`.aibtc-faktory`) status.       |
+| u1302      | ERR_INSUFFICIENT_BALANCE        | Caller has insufficient token balance for action. | Ensure sufficient DAO tokens for bond, cost, or voting.   |
+| u1303      | ERR_PROPOSAL_NOT_FOUND          | The specified proposal ID does not exist.         | Verify the proposal ID.                                   |
+| u1304      | ERR_PROPOSAL_VOTING_ACTIVE      | Attempt to conclude a proposal while voting open. | Wait for the voting period (`voteEnd`) to pass.           |
+| u1305      | ERR_PROPOSAL_EXECUTION_DELAY    | Attempt to conclude before execution delay ends.  | Wait for the execution start (`execStart`) block.         |
+| u1306      | ERR_PROPOSAL_RATE_LIMIT         | Proposal created too soon after the last one.     | Wait for the next Bitcoin block.                          |
+| u1307      | ERR_SAVING_PROPOSAL             | Internal error saving proposal data.              | Review proposal parameters; contact support if persists.  |
+| u1308      | ERR_PROPOSAL_ALREADY_CONCLUDED  | The proposal has already been concluded.          | No action needed, proposal is finalized.                  |
+| u1309      | ERR_RETRIEVING_START_BLOCK_HASH | Error getting block hash for `at-block` calls.  | Stacks node issue or invalid block height.                |
+| u1310      | ERR_VOTE_TOO_SOON               | Vote cast before voting period (`voteStart`).     | Wait for the voting period to begin.                      |
+| u1311      | ERR_VOTE_TOO_LATE               | Vote cast after voting period (`voteEnd`).        | Voting is closed for this proposal.                       |
+| u1312      | ERR_ALREADY_VOTED               | Voter has already cast this type of vote.         | A voter cannot vote or veto twice on the same proposal.   |
+| u1313      | ERR_INVALID_ACTION              | Action contract is not valid or not active.       | Ensure action contract is registered and enabled in DAO.  |
 
-## Proposal Bond
+## Proposal Financials: Bond, Cost, and Reward
 
-The Action Proposals extension requires a bond of **2,500 DAO tokens** to create a proposal. This bond serves several important purposes:
+Creating an action proposal involves several financial components:
 
-1. **Prevent Spam**: The bond creates a financial barrier to submitting frivolous proposals
-2. **Ensure Quality**: Proposers are incentivized to create well-thought-out proposals
-3. **Align Incentives**: The bond is returned if the proposal passes, aligning proposer incentives with the DAO
+1.  **Proposal Bond (`VOTING_BOND`)**:
+    *   **Amount**: e.g., 5,000 DAO tokens (`.aibtc-faktory` tokens with 8 decimals).
+    *   **Purpose**: To prevent spam and incentivize well-considered proposals.
+    *   **Handling**: Paid by the proposer to the `aibtc-action-proposal-voting` contract upon proposal creation.
+        *   If the proposal passes, is not vetoed, and the action executes successfully, the bond is returned to the proposer.
+        *   If the proposal fails to meet voting criteria, is successfully vetoed, or the action execution fails, the bond is transferred to the DAO's treasury (`.aibtc-treasury`).
 
-The bond amount can be adjusted through governance if needed. If a proposal passes, the bond is returned to the proposer. If a proposal fails, the bond is sent to the treasury.
+2.  **DAO Run Cost (`AIBTC_DAO_RUN_COST_AMOUNT`)**:
+    *   **Amount**: e.g., 100 DAO tokens.
+    *   **Purpose**: To contribute to the operational costs of the DAO infrastructure.
+    *   **Handling**: Paid by the proposer directly to the `.aibtc-dao-run-cost` contract upon proposal creation. This fee is non-refundable.
+
+3.  **Proposal Reward (`VOTING_REWARD`)**:
+    *   **Amount**: e.g., 1,000 DAO tokens.
+    *   **Purpose**: To incentivize the creation of valuable and successful proposals.
+    *   **Handling**:
+        *   Upon proposal creation, this amount is transferred from the DAO treasury (`.aibtc-treasury`) to a dedicated rewards account (`.aibtc-rewards-account`).
+        *   If the proposal passes, is not vetoed, and the action executes successfully, the reward is transferred from `.aibtc-rewards-account` to the proposer.
+        *   If the proposal fails the vote, is vetoed, or if the action execution fails (even if the vote passed), the reward is transferred from `.aibtc-rewards-account` back to the DAO treasury (`.aibtc-treasury`).
+
+These financial mechanisms aim to balance accessibility for proposers with the need to protect DAO resources and encourage high-quality governance participation.
 
 ## Security Considerations
 
-- **Action Validation**: Only pre-approved action contracts can be executed, preventing arbitrary code execution
-- **Proposal Bond**: Requires a significant bond (2,500 tokens) to prevent spam proposals
-- **Voting Power Snapshot**: Voting power is determined at proposal creation time to prevent manipulation
-- **Timelock Periods**: Voting delay and execution delay prevent rushed decisions
-- **Quorum Requirements**: Ensures sufficient participation for valid governance
+- **Action Validation**: Only action contracts registered and enabled by the DAO (`.aibtc-base-dao`) can be proposed, limiting potential attack vectors. The initial focus on `.aibtc-onchain-messaging` further constrains actions.
+- **Proposal Financials**: The bond, run cost, and reward system are designed to deter spam and incentivize good behavior.
+- **Voting Power Snapshot**: Voting power is determined by token balances at the proposal's creation block (`createdStx`), mitigating attempts to manipulate voting power with flash loans or temporary token acquisitions. This is achieved using `at-block` calls.
+- **Time-Locked Stages**: Distinct delay, voting, veto, and execution periods provide time for review and reaction, preventing rushed decisions.
+- **Quorum and Threshold**: Minimum participation (`VOTING_QUORUM`) and approval (`VOTING_THRESHOLD`) requirements ensure proposals have sufficient community backing.
+- **Veto Mechanism**: Provides an additional layer of security, allowing token holders to stop a potentially harmful or contentious proposal even if it initially passes the vote.
+- **Parameter Encoding**: The `parameters` buffer for action contracts must be correctly ABI-encoded. Incorrect encoding could lead to failed action execution. Proposers are responsible for correct encoding.
+- **Gas Limits**: Complex actions or a high number of votes could potentially hit gas limits, though Clarity is designed to be robust against many such issues.
+- **External Contract Dependencies**: The system relies on several external contracts (DAO token, treasury, rewards account, run cost account, user reputation). The security of these contracts is paramount.
 
 ## Related Contracts
 
-- **aibtc-base-dao**: The base DAO contract that this extension integrates with
-- **aibtc-token**: The DAO token used for voting
-- **aibtc-treasury**: Receives proposal bonds for failed proposals
-- **Action Contracts**: Any contract implementing the action trait that can be executed by this extension
+- **`.aibtc-base-dao`**: The core DAO contract that manages extensions and overall governance.
+- **`.aibtc-faktory`**: The SIP-010 DAO token contract used for voting, bonds, costs, and rewards.
+- **`.aibtc-treasury`**: The DAO's main treasury, which funds rewards and receives forfeited bonds.
+- **`.aibtc-dao-users`**: Manages user registration and reputation scores, which are affected by proposal outcomes.
+- **`.aibtc-rewards-account`**: A contract holding proposal rewards temporarily before distribution.
+- **`.aibtc-dao-run-cost`**: A contract that collects the run cost fee from proposers.
+- **Action Contracts (implementing `.aibtc-dao-traits.action`)**:
+    - **`.aibtc-onchain-messaging`**: The primary example and initial target for action proposals, allowing the DAO to send messages.
+- **Traits**:
+    - `.aibtc-dao-traits.extension`
+    - `.aibtc-dao-traits.action-proposal-voting`
+    - `.aibtc-dao-traits.action` (for target action contracts)
 
 ## Versioning and Updates
 
-- **Current Version**: 2.0.0
-- **Last Updated**: April 2025
-- **Changes from v1**:
-  - Added proposal bond mechanism
-  - Improved voting power calculation
-  - Enhanced security validations
+- **Contract Name**: `aibtc-action-proposal-voting`
+- **Current Version**: 3.0.0
+- **Last Updated**: June 2025
+- **Changes from Previous Versions (e.g., `aibtc-action-proposals-v2`)**:
+    - Contract renamed from `aibtc-action-proposals-v2` to `aibtc-action-proposal-voting`.
+    - Introduction of a veto mechanism (`veto-action-proposal`).
+    - Implementation of a proposal reward system (`VOTING_REWARD`) managed via `.aibtc-rewards-account`.
+    - Integration of a DAO run cost fee (`AIBTC_DAO_RUN_COST_AMOUNT`) paid to `.aibtc-dao-run-cost`.
+    - Updated bond amount (`VOTING_BOND`) and handling.
+    - Refined event payloads and error codes for better clarity.
+    - Explicit user registration and reputation updates via `.aibtc-dao-users`.
+    - Clearer distinction between voting, veto, and execution periods.
+    - Initial focus on `.aibtc-onchain-messaging` as the primary action.
