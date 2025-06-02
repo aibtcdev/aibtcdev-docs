@@ -19,7 +19,7 @@ The Token Owner extension (`aibtc-token-owner`) provides management functions fo
 | -------------- | ------------------------------------ |
 | Contract Name  | `aibtc-token-owner`                 |
 | Version        | 1.0.0                               |
-| Implements     | `extension`, `token-owner` traits   |
+| Implements     | `.aibtc-dao-traits.extension`, `.aibtc-dao-traits.token-owner` |
 | Key Parameters | None (stateless extension)          |
 
 ## How It Works
@@ -183,7 +183,7 @@ This function allows the DAO to transfer ownership of the token contract to a ne
 
 ## Versioning and Updates
 
-- **Last Updated**: April 2025
+- **Last Updated**: June 2025
 - **Contract Version**: 1.0.0
-- **Documentation Version**: 1.1.0
-- **Changes from Previous Version**: Updated to match new documentation template format
+- **Documentation Version**: 1.2.0
+- **Changes from Previous Version**: Updated to match new documentation template format and reflect current contract trait paths.

@@ -121,7 +121,6 @@ The Onchain Messaging extension works by emitting `print` events containing the 
 
 ## Security Considerations
 
-- **Message Attribution**: All messages are cryptographically tied to their sender
 - **Message Attribution**: All messages are tied to their `tx-sender` and `contract-caller`.
 - **DAO/Holder Identification**: The `print` event clearly flags if a message originates from the DAO/extension or a DAO token holder, aiding in verifying message authenticity.
 - **Input Validation**: Messages are validated to ensure they are not empty.

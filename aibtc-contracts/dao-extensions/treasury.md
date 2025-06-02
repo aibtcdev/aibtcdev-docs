@@ -223,51 +223,34 @@ This function can only be called by the DAO or an authorized extension. It revok
 
 **Parameters**: None
 
-**Returns**: (response bool) - Returns ok true if authorized, or err u6000 if unauthorized
-
-### `allow-assets-iter`
-
-**Purpose**: Helper function for processing each item in the allow-assets list
-
-**Parameters**:
-
-- `item`: {token: principal, enabled: bool} - The asset item to process
-
-**Returns**: None
+**Returns**: `(response bool err-code)` - Returns `(ok true)` if authorized, or `ERR_NOT_DAO_OR_EXTENSION (err u1900)` if unauthorized.
 
 ## Print Events
 
-| Event                 | Description                           | Data                                                     |
-| --------------------- | ------------------------------------- | -------------------------------------------------------- |
-| `allow-asset`         | Asset allowed/disallowed              | Token principal, enabled status                          |
-| `deposit-stx`         | STX deposited                         | Amount, sender, recipient                                |
-| `deposit-ft`          | Fungible token deposited              | Amount, asset contract, sender, recipient                |
-| `deposit-nft`         | Non-fungible token deposited          | Asset contract, token ID, sender, recipient              |
-| `withdraw-stx`        | STX withdrawn                         | Amount, recipient, sender                                |
-| `withdraw-ft`         | Fungible token withdrawn              | Asset contract, recipient, sender                        |
-| `withdraw-nft`        | Non-fungible token withdrawn          | Asset contract, token ID, recipient, sender              |
-| `delegate-stx`        | STX delegated for stacking           | Amount, delegate address, sender                         |
-| `revoke-delegate-stx` | STX delegation revoked               | Sender                                                   |
+| Event          | Description                | Data                                                                 |
+| -------------- | -------------------------- | -------------------------------------------------------------------- |
+| `allow-asset`  | FT Asset allowed/disallowed | `token` (principal), `enabled` (bool), `contractCaller`, `txSender`    |
+| `deposit-ft`   | Fungible token deposited   | `amount`, `recipient` (SELF), `assetContract`, `contractCaller`, `txSender` |
+| `withdraw-ft`  | Fungible token withdrawn   | `amount`, `recipient`, `assetContract`, `contractCaller`, `txSender`   |
 
 ## Error Handling
 
-| Error Code | Constant           | Description                                | Resolution                                           |
-| ---------- | ------------------ | ------------------------------------------ | ---------------------------------------------------- |
-| u6000      | ERR_UNAUTHORIZED   | Caller is not the DAO or a valid extension | Ensure the function is called through proper DAO governance |
-| u6001      | ERR_UNKNOWN_ASSSET | Asset is not in the allowed list           | Add the asset to the allowed list before attempting to deposit or withdraw |
+| Error Code | Constant                 | Description                                | Resolution                                                                 |
+| ---------- | ------------------------ | ------------------------------------------ | -------------------------------------------------------------------------- |
+| u1900      | ERR_NOT_DAO_OR_EXTENSION | Caller is not the DAO or a valid extension | Ensure the function is called through proper DAO governance.               |
+| u1901      | ERR_ASSET_NOT_ALLOWED    | Asset is not in the allowed list           | Add the FT asset to the allowed list before attempting to deposit or withdraw. |
 
 ## Security Considerations
 
-- **Authorization Control**: All withdrawal and management functions are protected by the `is-dao-or-extension` check, ensuring only authorized entities can access treasury funds
-- **Asset Allowlist**: The treasury maintains an explicit allowlist of approved assets, preventing unauthorized tokens from being deposited or withdrawn
-- **Contract-Call Pattern**: Uses the `as-contract` pattern for withdrawals to ensure proper permissions
-- **Governance Protection**: Changes to treasury settings and withdrawals require going through the DAO's proposal and voting process
-- **Explicit Asset Verification**: All deposit and withdrawal functions verify that the asset is in the allowed list
-- **STX Stacking Security**: Stacking operations are protected by governance controls to prevent unauthorized delegation
+- **Authorization Control**: All withdrawal and `allow-asset` functions are protected by the `is-dao-or-extension` check, ensuring only authorized entities can manage treasury funds and settings.
+- **Asset Allowlist**: The treasury maintains an explicit allowlist of approved FTs, preventing unauthorized tokens from being deposited or withdrawn.
+- **Contract-Call Pattern**: Uses `as-contract` for withdrawals to ensure proper permissions.
+- **Governance Protection**: Changes to treasury settings and withdrawals require going through the DAO's proposal and voting process.
+- **Explicit Asset Verification**: All deposit and withdrawal functions verify that the FT asset is in the allowed list.
 
 ## Integration Examples
 
-### Allowing a New Asset
+### Allowing a New FT Asset
 
 ```clarity
 ;; Example proposal to allow a new token
@@ -283,35 +266,21 @@ This function can only be called by the DAO or an authorized extension. It revok
 ### Withdrawing Funds for a Project
 
 ```clarity
-;; Example proposal to withdraw STX for a project
-(contract-call? .aibtc-base-dao submit-proposal
-  .aibtc-treasury
-  'withdraw-stx
-  (list u5000000 'SP2ZNGJ85ENDY6QRHQ5P2D4FXKGZWCKTB2T0Z55KS)
-  none
-  u0
+;; Example proposal to withdraw FTs for a project
+(contract-call? .aibtc-base-dao execute ;; Or appropriate proposal mechanism
+  .proposal-to-withdraw-ft-contract
+  'SP000000000000000000002Q6VF78.proposal-sender
 )
-```
-
-### Delegating STX for Stacking
-
-```clarity
-;; Example proposal to delegate STX for stacking
-(contract-call? .aibtc-base-dao submit-proposal
-  .aibtc-treasury
-  'delegate-stx
-  (list u10000000 'SP2ZNGJ85ENDY6QRHQ5P2D4FXKGZWCKTB2T0Z55KS)
-  none
-  u0
-)
+;; Where .proposal-to-withdraw-ft-contract would contain:
+;; (contract-call? .aibtc-treasury withdraw-ft .some-ft-token u5000000 'SP2ZNGJ85ENDY6QRHQ5P2D4FXKGZWCKTB2T0Z55KS)
 ```
 
 ## Related Contracts
 
-- **[aibtc-base-dao](../dao-base-layer.md)**: The core DAO contract that authorizes this extension
-- **[aibtc-dao-traits-v3](../dao-traits.md)**: Defines the traits implemented by this extension
-- **[aibtc-payment-processor](./payment-processor.md)**: Works with the treasury for automated payments
-- **[aibtc-token-owner](./token-owner.md)**: Manages the DAO token that may be held in the treasury
+- **`.aibtc-base-dao`**: The core DAO contract that authorizes this extension.
+- **`.aibtc-dao-traits.extension`**: Trait implemented by this extension.
+- **`.aibtc-dao-traits.treasury`**: Trait implemented by this extension.
+- **SIP-010 Compliant FT Contracts**: Various fungible token contracts that the treasury can manage (e.g., `.aibtc-faktory`, `.usda-token`).
 
 ## Review Checklist
 

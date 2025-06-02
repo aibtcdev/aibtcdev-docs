@@ -18,7 +18,7 @@ The DAO Charter extension (`aibtc-dao-charter`) allows the DAO to define and mai
 | -------------- | ------------------------------- |
 | Contract Name  | `aibtc-dao-charter`             |
 | Version        | 1.0.0                           |
-| Implements     | extension, charter              |
+| Implements     | `.aibtc-dao-traits.extension`, `.aibtc-dao-traits.dao-charter` |
 | Key Parameters | Charter text (max 4096 chars)   |
 
 ## How It Works

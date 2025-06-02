@@ -43,7 +43,7 @@ Extensions are modular components that provide specific functionality to the DAO
 Available extensions include:
 - Action Proposals: Lower-threshold governance for predefined actions
 - Core Proposals: High-threshold governance for arbitrary code execution
-- Treasury: Asset management with multi-asset support
+- Treasury: FT Asset management
 - Timed Vault: Operational fund management with periodic withdrawals
 - Onchain Messaging: Verified DAO communication
 - Payments/Invoices: Revenue generation and service payments
