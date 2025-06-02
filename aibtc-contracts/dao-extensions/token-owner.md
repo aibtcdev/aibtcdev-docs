@@ -132,27 +132,27 @@ This function allows the DAO to transfer ownership of the token contract to a ne
 ### Updating Token URI Through a Proposal
 
 ```clarity
-;; Example proposal to update the token URI
-(contract-call? .aibtc-base-dao submit-proposal
-  .aibtc-token-owner
-  'set-token-uri
-  (list "https://arweave.net/newTokenMetadata")
-  none
-  u0
+;; This would typically be done through a DAO proposal.
+;; Example: A proposal contract (.proposal-to-set-uri) calls .aibtc-token-owner
+(contract-call? .aibtc-base-dao execute 
+  .proposal-to-set-uri ;; This is a hypothetical proposal contract
+  'SP000000000000000000002Q6VF78.proposal-sender ;; Example sender
 )
+;; Where .proposal-to-set-uri would contain:
+;; (contract-call? .aibtc-token-owner set-token-uri "https://arweave.net/newTokenMetadata")
 ```
 
 ### Transferring Token Ownership
 
 ```clarity
-;; Example proposal to transfer token ownership
-(contract-call? .aibtc-base-dao submit-proposal
-  .aibtc-token-owner
-  'transfer-ownership
-  (list 'SP2ZNGJ85ENDY6QRHQ5P2D4FXKGZWCKTB2T0Z55KS)
-  none
-  u0
+;; This would typically be done through a DAO proposal.
+;; Example: A proposal contract (.proposal-to-transfer-ownership) calls .aibtc-token-owner
+(contract-call? .aibtc-base-dao execute
+  .proposal-to-transfer-ownership ;; This is a hypothetical proposal contract
+  'SP000000000000000000002Q6VF78.proposal-sender ;; Example sender
 )
+;; Where .proposal-to-transfer-ownership would contain:
+;; (contract-call? .aibtc-token-owner transfer-ownership 'SP2ZNGJ85ENDY6QRHQ5P2D4FXKGZWCKTB2T0Z55KS)
 ```
 
 ## Related Contracts

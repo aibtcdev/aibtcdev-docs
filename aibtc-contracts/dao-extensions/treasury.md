@@ -126,45 +126,6 @@ This function allows depositing SIP-010 fungible tokens into the treasury. The t
 
 This function can only be called by the DAO or an authorized extension. It transfers fungible tokens from the treasury to the specified recipient.
 
-### `withdraw-nft`
-
-**Purpose**: Withdraws a non-fungible token from the treasury
-
-**Parameters**:
-
-- `nft`: nft-trait - The non-fungible token contract
-- `id`: uint - The ID of the NFT to withdraw
-- `recipient`: principal - The recipient of the NFT
-
-**Returns**: (response bool) - Returns true on success or an error
-
-**Example**:
-
-```clarity
-(contract-call? .aibtc-treasury withdraw-nft .bitcoin-monkeys u42 'SP2ZNGJ85ENDY6QRHQ5P2D4FXKGZWCKTB2T0Z55KS)
-```
-
-This function can only be called by the DAO or an authorized extension. It transfers an NFT from the treasury to the specified recipient.
-
-### `delegate-stx`
-
-**Purpose**: Delegates STX for stacking
-
-**Parameters**:
-
-- `maxAmount`: uint - The maximum amount of STX to delegate
-- `to`: principal - The principal to delegate to
-
-**Returns**: (response bool) - Returns true on success or an error
-
-**Example**:
-
-```clarity
-(contract-call? .aibtc-treasury delegate-stx u10000000 'SP2ZNGJ85ENDY6QRHQ5P2D4FXKGZWCKTB2T0Z55KS)
-```
-
-This function can only be called by the DAO or an authorized extension. It delegates STX from the treasury for stacking, allowing the DAO to participate in Stacks consensus.
-
 ### `revoke-delegate-stx`
 
 **Purpose**: Revokes STX delegation

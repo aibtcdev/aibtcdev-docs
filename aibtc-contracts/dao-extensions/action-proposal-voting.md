@@ -44,12 +44,13 @@ The Action Proposal Voting extension (`aibtc-action-proposal-voting`) allows DAO
 flowchart TD
     subgraph Initialization
         Treasury[".aibtc-treasury"] --"Funds VOTING_REWARD"--> RewardsAccount[".aibtc-rewards-account"]
+        Treasury --"Pays AIBTC_DAO_RUN_COST_AMOUNT (via APV)"--> DaoRunCost[".aibtc-dao-run-cost"]
     end
 
     Proposer["DAO Member (Proposer)"] --"1. create-action-proposal(action, params, memo)"--> APV["aibtc-action-proposal-voting"]
     Proposer --"Pays VOTING_BOND"--> APV
-    Proposer --"Pays AIBTC_DAO_RUN_COST_AMOUNT"--> DaoRunCost[".aibtc-dao-run-cost"]
     
+    APV --"Instructs Treasury to pay Run Cost"--> Treasury
     APV --"Records Proposal"--> ProposalState["Proposal State (Details, Blocks, Records)"]
     
     subgraph Voting & Veto Phase
@@ -83,7 +84,7 @@ flowchart TD
 ```
 
 The action proposal lifecycle involves several steps:
-1.  **Proposal Creation (`create-action-proposal`)**: A DAO member proposes an action (e.g., sending a message via `.aibtc-onchain-messaging`). They must provide the action contract, parameters, an optional memo, the `VOTING_BOND` (transferred to this extension), and the `AIBTC_DAO_RUN_COST_AMOUNT` (transferred to `.aibtc-dao-run-cost`). Upon creation, `VOTING_REWARD` is transferred from `.aibtc-treasury` to `.aibtc-rewards-account`.
+1.  **Proposal Creation (`create-action-proposal`)**: A DAO member proposes an action (e.g., sending a message via `.aibtc-onchain-messaging`). They must provide the action contract, parameters, an optional memo, and the `VOTING_BOND` (transferred to this extension). The proposer's balance must also be sufficient to cover the `AIBTC_DAO_RUN_COST_AMOUNT`. Upon proposal creation, this extension (`aibtc-action-proposal-voting`) instructs the `.aibtc-treasury` to transfer the `AIBTC_DAO_RUN_COST_AMOUNT` to `.aibtc-dao-run-cost`. Simultaneously, `VOTING_REWARD` is transferred from `.aibtc-treasury` to `.aibtc-rewards-account`.
 2.  **Voting (`vote-on-action-proposal`)**: After a `VOTING_DELAY`, DAO members can cast votes using their token balance snapshotted at the proposal's creation block. Voting lasts for `VOTING_PERIOD`.
 3.  **Veto (`veto-action-proposal`)**: After the `VOTING_PERIOD` ends, there's an execution delay (equal to `VOTING_DELAY`) during which token holders can cast veto votes.
 4.  **Conclusion (`conclude-action-proposal`)**: After the veto period (execution delay) ends, anyone can call this function. The contract checks:
@@ -347,7 +348,7 @@ Creating an action proposal involves several financial components:
 2.  **DAO Run Cost (`AIBTC_DAO_RUN_COST_AMOUNT`)**:
     *   **Amount**: e.g., 100 DAO tokens.
     *   **Purpose**: To contribute to the operational costs of the DAO infrastructure.
-    *   **Handling**: Paid by the proposer directly to the `.aibtc-dao-run-cost` contract upon proposal creation. This fee is non-refundable.
+    *   **Handling**: Upon proposal creation, the `aibtc-action-proposal-voting` extension instructs the `.aibtc-treasury` to transfer this amount to the `.aibtc-dao-run-cost` contract. The proposer must have a sufficient balance to cover this cost (in addition to the bond), but the transfer is facilitated by the extension via the treasury. This fee is non-refundable.
 
 3.  **Proposal Reward (`VOTING_REWARD`)**:
     *   **Amount**: e.g., 1,000 DAO tokens.
