@@ -8,10 +8,9 @@ The DAO Charter extension (`aibtc-dao-charter`) allows the DAO to define and mai
 
 ## Key Features
 
-- **On-chain Charter Storage**: Permanently records the DAO's mission and values on the blockchain
-- **Version History**: Maintains a complete history of all charter revisions
-- **Inscription Support**: Optional support for Bitcoin inscriptions to enhance permanence
-- **DAO-controlled Updates**: Only the DAO or authorized extensions can modify the charter
+- **On-chain Charter Storage**: Permanently records the DAO's mission and values on the blockchain.
+- **Version History**: Maintains a complete history of all charter revisions.
+- **DAO-controlled Updates**: Only the DAO or authorized extensions can modify the charter.
 
 ## Quick Reference
 
@@ -69,14 +68,13 @@ The DAO Charter extension works by storing the organization's mission and values
 **Purpose**: Sets or updates the DAO charter text
 
 **Parameters**:
-- `charter`: (string-ascii 4096) - The charter text (up to 4096 ASCII characters)
-- `inscriptionId`: (optional (buff 33)) - Optional Bitcoin inscription ID for permanence
+- `charter`: `(string-ascii 4096)` - The charter text (up to 4096 ASCII characters).
 
-**Returns**: (response bool) - Returns success (true) if the charter is updated
+**Returns**: `(response bool err-code)` - Returns `(ok true)` if the charter is updated, otherwise an error.
 
 **Example**:
 ```clarity
-(contract-call? .aibtc-dao-charter set-dao-charter "The mission of our DAO is to..." none)
+(contract-call? .aibtc-dao-charter set-dao-charter "The mission of our DAO is to...")
 ```
 
 **Notes**: This function can only be called by the DAO or an authorized extension. The charter text must be between 1 and 4096 characters.
@@ -114,9 +112,9 @@ The DAO Charter extension works by storing the organization's mission and values
 **Purpose**: Gets a specific version of the DAO charter
 
 **Parameters**:
-- `version`: uint - The version number to retrieve
+- `version`: `uint` - The version number to retrieve.
 
-**Returns**: (optional {burnHeight: uint, createdAt: uint, caller: principal, sender: principal, charter: (string-ascii 4096), inscriptionId: (optional (buff 33))}) - The charter data for the specified version
+**Returns**: `(optional {burnHeight: uint, createdAt: uint, caller: principal, sender: principal, charter: (string-ascii 4096)})` - The charter data for the specified version, or `none` if not found.
 
 **Example**:
 ```clarity
@@ -125,9 +123,9 @@ The DAO Charter extension works by storing the organization's mission and values
 
 ## Print Events
 
-| Event             | Description                    | Data                                                         |
-| ----------------- | ------------------------------ | ------------------------------------------------------------ |
-| `set-dao-charter` | Emitted when charter is updated | Charter text, version, creator, timestamp, optional inscription ID |
+| Event             | Description                    | Data                                                                                                                               |
+| ----------------- | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `set-dao-charter` | Emitted when charter is updated | `burnHeight`, `createdAt`, `contractCaller`, `txSender`, `dao` (SELF), `charter`, `previousCharter`, `version`.                      |
 
 ## Integration Examples
 
@@ -135,13 +133,14 @@ The DAO Charter extension works by storing the organization's mission and values
 
 ```clarity
 ;; This would typically be done through a DAO proposal
-(contract-call? .aibtc-base-dao propose-extension-action
-  .aibtc-dao-charter
-  (contract-call? .aibtc-dao-charter set-dao-charter 
-    "The mission of our DAO is to advance Bitcoin development through collective governance and funding allocation. We value transparency, technical excellence, and community-driven innovation." 
-    none
-  )
+(contract-call? .aibtc-base-dao execute ;; Or appropriate proposal mechanism
+  .proposal-to-set-charter-contract
+  'SP000000000000000000002Q6VF78.proposal-sender
 )
+;; Where .proposal-to-set-charter-contract would contain:
+;; (contract-call? .aibtc-dao-charter set-dao-charter
+;;   "The mission of our DAO is to advance Bitcoin development through collective governance and funding allocation. We value transparency, technical excellence, and community-driven innovation."
+;; )
 ```
 
 ### Reading the Current Charter in a UI Application
@@ -153,12 +152,12 @@ The DAO Charter extension works by storing the organization's mission and values
 
 ## Error Handling
 
-| Error Code | Constant                  | Description                       | Resolution                                           |
-| ---------- | ------------------------- | --------------------------------- | ---------------------------------------------------- |
-| u8000      | ERR_NOT_DAO_OR_EXTENSION  | Caller is not the DAO or extension | Ensure the call is made through the DAO or an authorized extension |
-| u8001      | ERR_SAVING_CHARTER        | Error saving charter data         | Verify the charter data format is correct            |
-| u8002      | ERR_CHARTER_TOO_SHORT     | Charter text is too short         | Ensure the charter text is at least 1 character      |
-| u8003      | ERR_CHARTER_TOO_LONG      | Charter text exceeds maximum      | Reduce charter text to 4096 characters or less       |
+| Error Code | Constant                  | Description                               | Resolution                                                                 |
+| ---------- | ------------------------- | ----------------------------------------- | -------------------------------------------------------------------------- |
+| u1400      | ERR_NOT_DAO_OR_EXTENSION  | Caller is not the DAO or an extension.    | Ensure the call is made through the DAO or an authorized extension.        |
+| u1401      | ERR_SAVING_CHARTER        | Error saving new charter version data.    | Verify the charter data format and contract state; retry.                  |
+| u1402      | ERR_CHARTER_TOO_SHORT     | Charter text is too short (must be >= 1). | Ensure the charter text is at least 1 character long.                      |
+| u1403      | ERR_CHARTER_TOO_LONG      | Charter text exceeds maximum (4096).      | Reduce charter text to 4096 ASCII characters or less.                      |
 
 ## Security Considerations
 

@@ -1,27 +1,26 @@
 ---
-description: Extension that manages DAO assets including STX, SIP-010 FTs, and SIP-009 NFTs
+description: Extension that manages DAO SIP-010 Fungible Tokens (FTs)
 ---
 
 # Treasury Extension
 
-The Treasury extension (`aibtc-treasury`) manages all assets owned by the DAO, including STX, SIP-010 fungible tokens, and SIP-009 non-fungible tokens. It provides controlled access to these assets through DAO governance, ensuring that all financial operations are executed securely and transparently. This extension serves as the financial backbone of the DAO, enabling it to receive, hold, and distribute various digital assets.
+The Treasury extension (`aibtc-treasury`) manages SIP-010 fungible tokens (FTs) owned by the DAO. It provides controlled access to these assets through DAO governance, ensuring that all financial operations are executed securely and transparently. This extension serves as a key financial component of the DAO, enabling it to receive, hold, and distribute various FTs.
 
 ## Key Features
 
-- **Multi-Asset Support**: Manages STX, fungible tokens (FTs), and non-fungible tokens (NFTs)
-- **Asset Allowlist**: Controls which assets can be deposited and withdrawn
-- **Secure Withdrawals**: Ensures only the DAO or authorized extensions can withdraw assets
-- **STX Stacking**: Enables the DAO to participate in Stacks consensus through delegation
-- **Transparent Operations**: Emits detailed events for all financial transactions
+- **Fungible Token Support**: Manages SIP-010 fungible tokens (FTs).
+- **Asset Allowlist**: Controls which FTs can be deposited and withdrawn.
+- **Secure Withdrawals**: Ensures only the DAO or authorized extensions can withdraw FTs.
+- **Transparent Operations**: Emits detailed events for all FT transactions.
 
 ## Quick Reference
 
 | Property       | Value                                |
 | -------------- | ------------------------------------ |
 | Contract Name  | `aibtc-treasury`                    |
-| Version        | 1.0.0                               |
-| Implements     | `extension`, `treasury` traits      |
-| Key Parameters | Allowlist of approved asset contracts |
+| Version        | 3.0.0                               |
+| Implements     | `.aibtc-dao-traits.extension`, `.aibtc-dao-traits.treasury` |
+| Key Parameters | Allowlist of approved FT contracts |
 
 ## How It Works
 
@@ -29,31 +28,27 @@ The Treasury extension (`aibtc-treasury`) manages all assets owned by the DAO, i
 flowchart TD
     A["DAO Contract"]
     B["Treasury Extension"]
-    C["Asset Contracts"]
-    D["STX"]
+    C["FT Asset Contracts"]
     E["Users/Members"]
     
     subgraph Treasury Operations
-        BA["Asset Management"]
-        BB["Deposits"]
-        BC["Withdrawals"]
-        BD["STX Stacking"]
+        BA["Asset Management (Allowlist)"]
+        BB["FT Deposits"]
+        BC["FT Withdrawals"]
     end
     
-    E -->|"Deposit Assets"| B
-    A -->|"Governance Calls"| B
+    E -->|"Deposit FTs"| B
+    A -->|"Governance Calls (Allow Asset, Withdraw FT)"| B
     B --> BA
     B --> BB
     B --> BC
-    B --> BD
-    BA -->|"Allow/Disallow"| C
-    BB -->|"Receive"| C
-    BC -->|"Send"| C
-    BD -->|"Delegate"| D
+    BA -->|"Allow/Disallow FT"| C
+    BB -->|"Receive FT"| C
+    BC -->|"Send FT"| C
     C -->|"Track Balances"| B
 ```
 
-The Treasury extension acts as the financial hub for the DAO. Users can deposit assets directly into the treasury. However, withdrawals and asset management operations can only be performed through DAO governance. The extension maintains an allowlist of approved assets to ensure only recognized tokens can be deposited or withdrawn. For STX, the extension also provides functionality to participate in Stacks consensus through delegation.
+The Treasury extension acts as a specialized financial hub for the DAO's fungible tokens. Users can deposit allowed FTs directly into the treasury. However, withdrawals and asset allowlist management can only be performed through DAO governance. The extension maintains an allowlist of approved FTs to ensure only recognized tokens can be deposited or withdrawn.
 
 ## Public Functions
 
@@ -420,7 +415,7 @@ This function can only be called by the DAO or an authorized extension. It revok
 
 ## Versioning and Updates
 
-- **Last Updated**: April 2025
-- **Contract Version**: 1.0.0
-- **Documentation Version**: 1.1.0
+- **Last Updated**: June 2025
+- **Contract Version**: 3.0.0
+- **Documentation Version**: 1.2.0
 - **Changes from Previous Version**: Updated to match new documentation template format

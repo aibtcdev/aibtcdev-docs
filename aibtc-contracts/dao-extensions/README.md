@@ -27,14 +27,14 @@ Extensions follow a consistent pattern:
 
 | Extension | Purpose | Key Features |
 |-----------|---------|--------------|
-| [Action Proposals](action-proposals.md) | Lower-threshold governance | Predefined actions, faster voting |
+| [Action Proposals](action-proposal-voting.md) | Lower-threshold governance | Predefined actions, faster voting, veto, rewards |
 | [Timed Vault](timed-vault.md) | Operational fund management | Periodic withdrawals, controlled spending |
 | [Core Proposals](core-proposals.md) | High-threshold governance | Arbitrary code execution, high security |
 | [DAO Charter](dao-charter.md) | Mission and values | On-chain organizational constitution |
-| [Onchain Messaging](onchain-messaging.md) | Communication | Verified DAO messages, permanent records |
+| [Onchain Messaging](onchain-messaging.md) | Communication | Verified DAO/user messages, permanent records via print events |
 | [Payments/Invoices](payments-invoices.md) | Revenue generation | Service payments, resource management |
-| [Token Owner](token-owner.md) | Token management | URI updates, ownership controls |
-| [Treasury](treasury.md) | Asset management | Multi-asset support, controlled access |
+| [Token Owner](token-owner.md) | Token management | DAO Token URI updates, ownership controls |
+| [Treasury](treasury.md) | FT Asset management | Fungible token (SIP-010) support, controlled access |
 
 ## Adding New Extensions
 

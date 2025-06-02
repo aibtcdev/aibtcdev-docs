@@ -107,17 +107,17 @@ This function allows the DAO to transfer ownership of the token contract to a ne
 
 ### `is-dao-or-extension`
 
-**Purpose**: Internal authorization check to ensure only the DAO or authorized extensions can call sensitive functions
+**Purpose**: Internal authorization check to ensure only the DAO or authorized extensions can call sensitive functions.
 
 **Parameters**: None
 
-**Returns**: (response bool) - Returns ok true if authorized, or err u7000 if unauthorized
+**Returns**: `(response bool err-code)` - Returns `(ok true)` if authorized, or `ERR_NOT_DAO_OR_EXTENSION (err u1800)` if unauthorized.
 
 ## Error Handling
 
-| Error Code | Constant         | Description                                | Resolution                                           |
-| ---------- | ---------------- | ------------------------------------------ | ---------------------------------------------------- |
-| u7000      | ERR_UNAUTHORIZED | Caller is not the DAO or a valid extension | Ensure the function is called through proper DAO governance |
+| Error Code | Constant                  | Description                                | Resolution                                                                 |
+| ---------- | ------------------------- | ------------------------------------------ | -------------------------------------------------------------------------- |
+| u1800      | ERR_NOT_DAO_OR_EXTENSION  | Caller is not the DAO or a valid extension. | Ensure the function is called through proper DAO governance (e.g., via a proposal). |
 
 ## Security Considerations
 
@@ -157,9 +157,10 @@ This function allows the DAO to transfer ownership of the token contract to a ne
 
 ## Related Contracts
 
-- **[aibtc-token](../token/aibtc-token.md)**: The token contract managed by this extension
-- **[aibtc-base-dao](../dao-base-layer.md)**: The core DAO contract that authorizes this extension
-- **[aibtc-dao-traits-v3](../dao-traits.md)**: Defines the traits implemented by this extension
+- **`.aibtc-faktory`**: The DAO token contract (SIP-010 FT) managed by this extension.
+- **`.aibtc-base-dao`**: The core DAO contract that authorizes this extension's actions.
+- **`.aibtc-dao-traits.extension`**: Trait implemented by this extension.
+- **`.aibtc-dao-traits.token-owner`**: Trait implemented by this extension.
 
 ## Review Checklist
 

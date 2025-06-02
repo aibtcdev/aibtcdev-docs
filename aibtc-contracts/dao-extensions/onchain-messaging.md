@@ -4,46 +4,45 @@ description: Enables sending verified messages from the DAO
 
 # Onchain Messaging Extension
 
-The Onchain Messaging extension (`aibtc-onchain-messaging`) allows for sending verified messages that are stored as blockchain events. This provides a way for the DAO to communicate officially and for users to send messages that can be verified as coming from specific addresses. Messages are permanently recorded on the blockchain, creating an immutable communication record.
+The Onchain Messaging extension (`aibtc-onchain-messaging`) allows for sending verified messages that are stored as blockchain events (via `print`). This provides a way for the DAO to communicate officially and for any Stacks user (including token holders) to send messages that can be verified as coming from specific addresses. Messages are permanently recorded on the blockchain, creating an immutable communication record.
 
 ## Key Features
 
-- **Verified Messaging**: Messages are cryptographically tied to their sender
-- **DAO Official Communications**: Special flag for messages sent by the DAO
-- **Large Message Support**: Supports messages up to 1MB in size
-- **Blockchain Permanence**: All messages are stored as blockchain events
-- **Metadata Capture**: Records sender, block height, and other contextual data
+- **Verified Messaging**: Messages are cryptographically tied to their `tx-sender`.
+- **DAO/Holder Identification**: The contract event indicates if the message sender is the DAO (or an extension) and if the sender holds the DAO token (`.aibtc-faktory`).
+- **Message Size**: Supports messages up to 10,000 ASCII characters.
+- **Blockchain Permanence**: All messages are emitted as `print` events, becoming part of the transaction receipt.
+- **Metadata Capture**: Records `contract-caller`, `tx-sender`, block height, message length, and DAO/holder status.
 
 ## Quick Reference
 
-| Property       | Value                           |
-| -------------- | ------------------------------- |
-| Contract Name  | `aibtc-onchain-messaging`       |
-| Version        | 1.0.0                           |
-| Implements     | extension, messaging            |
-| Key Parameters | Message text (max 1,048,576 chars), isFromDao flag |
+| Property       | Value                                     |
+| -------------- | ----------------------------------------- |
+| Contract Name  | `aibtc-onchain-messaging`                 |
+| Version        | 1.0.0                                     |
+| Implements     | `.aibtc-dao-traits.extension`, `.aibtc-dao-traits.messaging` |
+| Key Parameters | Message text (max 10,000 ASCII chars)     |
 
 ## How It Works
 
 ```mermaid
 flowchart TD
-    A["Individual User"]
-    B["DAO Proposal"]
-    C["Messaging Extension"]
-    D["Blockchain Events"]
+    A["Any Stacks User (tx-sender)"]
+    B["DAO / Extension (contract-caller)"]
+    C["Messaging Extension (`aibtc-onchain-messaging`)"]
+    D["Blockchain Print Events"]
     
     subgraph Messaging Functions
-        CA["send"]
+        CA["send(msg)"]
     end
     
-    A -->|"Personal message"| C
-    B -->|"Official DAO message"| C
+    A -->|"Sends message"| C
+    B -->|"Sends message (e.g., via proposal)"| C
     C --> CA
-    CA -->|"Store message"| D
-    CA -->|"Store metadata"| D
+    CA --"Emits print event with message & metadata"--> D
 ```
 
-The Onchain Messaging extension works by recording messages as blockchain events. When a user or the DAO sends a message, the contract verifies the sender's identity and records both the message content and metadata about the sender. Messages from the DAO are specially flagged, allowing recipients to distinguish official communications from individual messages. All messages are permanently stored on the blockchain, creating an immutable record.
+The Onchain Messaging extension works by emitting `print` events containing the message and associated metadata. Any Stacks user can call the `send` function. The contract determines if the `contract-caller` is the DAO or an authorized extension, and also checks if the `tx-sender` holds the DAO's token (`.aibtc-faktory`). This information, along with the message, sender details, and block height, is included in the `print` event.
 
 ## Public Functions
 
@@ -64,27 +63,25 @@ The Onchain Messaging extension works by recording messages as blockchain events
 
 ### `send`
 
-**Purpose**: Sends a message that is recorded on the blockchain
+**Purpose**: Sends a message that is emitted as a `print` event on the blockchain.
 
 **Parameters**:
-- `msg`: (string-ascii 1048576) - The message text (up to 1,048,576 ASCII characters)
-- `isFromDao`: bool - Flag indicating if the message is an official DAO communication
+- `msg`: `(string-ascii 10000)` - The message text (up to 10,000 ASCII characters).
 
-**Returns**: (response bool) - Returns success (true) if the message is sent
+**Returns**: `(response bool err-code)` - Returns `(ok true)` if the message is sent, otherwise an error.
 
 **Example**:
 ```clarity
-(contract-call? .aibtc-onchain-messaging send "Hello, Stacks blockchain!" false)
+(contract-call? .aibtc-onchain-messaging send "Hello, Stacks blockchain!")
 ```
 
-**Notes**: If `isFromDao` is true, the function verifies that the caller is the DAO or an authorized extension. Messages must be at least 1 character long.
+**Notes**: The contract internally determines if the message originates from the DAO/extension or a DAO token holder. Messages must be at least 1 character long.
 
 ## Print Events
 
-| Event             | Description                    | Data                                                         |
-| ----------------- | ------------------------------ | ------------------------------------------------------------ |
-| Message content   | The actual message content     | Raw message string                                           |
-| `send`            | Metadata about the message     | Caller, block height, isFromDao flag, sender                 |
+| Event    | Description                                     | Key Data Points in Payload                                                                                                |
+| -------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `send`   | Emitted when a message is sent via this contract. | `contractCaller`, `txSender`, `height`, `isFromDao` (bool), `isFromHolder` (bool), `messageLength` (uint), `message` (string-ascii 10000) |
 
 ## Integration Examples
 
@@ -92,59 +89,57 @@ The Onchain Messaging extension works by recording messages as blockchain events
 
 ```clarity
 ;; Individual user sending a personal message
-(contract-call? .aibtc-onchain-messaging send "Hello, Stacks blockchain!" false)
+(contract-call? .aibtc-onchain-messaging send "Hello, Stacks blockchain!")
 ```
 
-### Sending an Official DAO Message
+### Sending an Official DAO Message (via Proposal)
 
 ```clarity
-;; This would typically be done through a DAO proposal
-(contract-call? .aibtc-base-dao propose-extension-action
-  .aibtc-onchain-messaging
-  (contract-call? .aibtc-onchain-messaging send 
-    "Official announcement: The DAO has approved funding for the new development initiative." 
-    true
-  )
-)
-```
+;; This would typically be done through a DAO proposal that calls this extension.
+;; The .aibtc-action-proposal-voting contract is an example of how this can be done.
+;; If a proposal executes a call to .aibtc-onchain-messaging.send, 
+;; the 'isFromDao' flag in the print event will be true.
 
-### Creating a Communication Channel
-
-```clarity
-;; Setting up a regular update channel
-(contract-call? .aibtc-onchain-messaging send 
-  "Weekly Development Update #1: Progress on milestone 1 is at 75%. Team is on track to deliver by end of month." 
-  true
+;; Example: A proposal contract calls .aibtc-onchain-messaging
+(contract-call? .aibtc-base-dao execute ;; Or appropriate proposal mechanism
+  .proposal-to-send-message-contract
+  'SP000000000000000000002Q6VF78.proposal-sender
 )
+;; Where .proposal-to-send-message-contract would contain:
+;; (contract-call? .aibtc-onchain-messaging send
+;;   "Official announcement: The DAO has approved funding for the new development initiative."
+;; )
 ```
 
 ## Error Handling
 
-| Error Code | Constant         | Description                       | Resolution                                           |
-| ---------- | ---------------- | --------------------------------- | ---------------------------------------------------- |
-| u4000      | INPUT_ERROR      | Invalid input (empty message)     | Ensure the message contains at least one character   |
-| u4001      | ERR_UNAUTHORIZED | Caller is not the DAO or extension | For DAO messages, ensure the call is made through the DAO or an authorized extension |
+| Error Code | Constant                  | Description                                       | Resolution                                                                    |
+| ---------- | ------------------------- | ------------------------------------------------- | ----------------------------------------------------------------------------- |
+| u1600      | ERR_NOT_DAO_OR_EXTENSION  | (Contextual) Caller is not DAO for DAO-like actions. | Not directly applicable for `send` by any user, but used internally by contract. |
+| u1601      | ERR_INVALID_INPUT         | Message is empty.                                 | Ensure the message string contains at least one character.                    |
+| u1602      | ERR_FETCHING_TOKEN_DATA   | Error fetching DAO token balance for sender.      | Check `.aibtc-faktory` token contract status; sender may not hold tokens.     |
 
 ## Security Considerations
 
 - **Message Attribution**: All messages are cryptographically tied to their sender
-- **DAO Authorization**: Only the DAO or authorized extensions can send messages flagged as official
-- **Input Validation**: Messages are validated to ensure they're not empty
-- **Size Limits**: The 1MB size limit prevents abuse while allowing substantial content
-- **Immutability**: Once sent, messages cannot be edited or deleted
+- **Message Attribution**: All messages are tied to their `tx-sender` and `contract-caller`.
+- **DAO/Holder Identification**: The `print` event clearly flags if a message originates from the DAO/extension or a DAO token holder, aiding in verifying message authenticity.
+- **Input Validation**: Messages are validated to ensure they are not empty.
+- **Size Limits**: The 10,000 character limit prevents excessive blockchain data usage while allowing for meaningful messages.
+- **Immutability**: Once emitted, `print` events (and thus messages) cannot be edited or deleted.
 
 ## Related Contracts
 
-- **aibtc-base-dao**: The main DAO contract that authorizes official messages
-- **aibtc-dao-traits-v3**: Defines the extension and messaging traits
-- **aibtc-dao-charter**: Works alongside messaging to define the DAO's mission and values
+- **`.aibtc-base-dao`**: The main DAO contract. Messages sent via proposals executed by the DAO will be flagged as `isFromDao: true`.
+- **`.aibtc-faktory`**: The DAO token contract, used to determine if `tx-sender` is a token holder (`isFromHolder`).
+- **`.aibtc-dao-traits.extension`**: Trait implemented by this extension.
+- **`.aibtc-dao-traits.messaging`**: Trait implemented by this extension.
+- **`.aibtc-action-proposal-voting`**: An example of an extension that can use this messaging contract as an action.
 
 ## Message Size Limits
 
-The extension supports messages up to 1MB in size (1,048,576 ASCII characters), making it suitable for a wide range of communication needs, from simple announcements to more detailed documentation or proposals. This size limit allows for:
-
-- Comprehensive announcements
-- Detailed technical specifications
-- Multi-part proposals
-- Regular community updates
-- Documentation of decisions and rationales
+The extension supports messages up to 10,000 ASCII characters. This size is suitable for:
+- Announcements and notifications.
+- Short status updates.
+- Links to off-chain resources or more detailed documents.
+- Recording summaries of decisions or actions.
