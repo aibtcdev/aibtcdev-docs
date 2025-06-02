@@ -113,14 +113,14 @@ The initial and primary action available for proposals is to call the `send` fun
 - `parameters`: `(buff 2048)` - Parameters to pass to the action contract (e.g., ABI-encoded message for `.aibtc-onchain-messaging.send`).
 - `memo`: `(optional (string-ascii 1024))` - Optional description of the proposal.
 
-**Returns**: `(response uint err-code)` - The new proposal ID if successful, otherwise an error.
+**Returns**: `(response bool err-code)` - Returns `(ok true)` if the proposal creation process (including bond and fee transfers) completes successfully, otherwise an error. Note: This indicates success of the creation transaction, not the proposal ID. The proposal ID is internally generated and can be found in the emitted event or by querying `get-total-proposals`.
 
 **Example**:
 ```clarity
 ;; Example: Proposing to send a message via aibtc-onchain-messaging
 (define-constant MESSAGE_TO_SEND "Hello from the DAO via action proposal!")
 (define-constant ACTION_CONTRACT .aibtc-onchain-messaging)
-(define-constant ACTION_PARAMETERS (to-consensus-buff? (tuple (msg MESSAGE_TO_SEND)))) ;; Simplified, actual ABI encoding needed for .send(msg (string-ascii 10000))
+(define-constant ACTION_PARAMETERS (to-consensus-buff? MESSAGE_TO_SEND)) ;; Simplified, actual ABI encoding needed for .send(msg (string-ascii 10000))
 
 (contract-call? .aibtc-action-proposal-voting create-action-proposal ACTION_CONTRACT ACTION_PARAMETERS (some "Proposal to send an official DAO message."))
 ```

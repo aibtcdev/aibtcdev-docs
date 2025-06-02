@@ -160,6 +160,19 @@ This function can only be called by the DAO or an authorized extension. It trans
 (contract-call? .aibtc-treasury get-allowed-asset .usda-token)
 ```
 
+### `get-contract-info`
+
+**Purpose**: Retrieves basic information about the contract instance
+
+**Parameters**: None
+
+**Returns**: `{self: principal, deployedBurnBlock: uint, deployedStacksBlock: uint}` - A tuple containing the contract's own principal, the burn block height at deployment, and the Stacks block height at deployment.
+
+**Example**:
+```clarity
+(contract-call? .aibtc-treasury get-contract-info)
+```
+
 ## Private Functions
 
 ### `is-dao-or-extension`
