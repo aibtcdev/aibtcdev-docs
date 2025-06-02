@@ -86,110 +86,29 @@ The Treasury extension acts as a specialized financial hub for the DAO's fungibl
 (contract-call? .aibtc-treasury allow-asset .usda-token true)
 ```
 
-This function can only be called by the DAO or an authorized extension. It controls which assets can be deposited into and withdrawn from the treasury.
-
-### `allow-assets`
-
-**Purpose**: Adds or updates multiple assets in the allowed list at once
-
-**Parameters**:
-
-- `allowList`: (list 100 {token: principal, enabled: bool}) - List of assets to allow/disallow
-
-**Returns**: (response bool) - Returns true on success or an error
-
-**Example**:
-
-```clarity
-(contract-call? .aibtc-treasury allow-assets 
-  (list 
-    {token: .usda-token, enabled: true}
-    {token: .xbtc-token, enabled: true}
-    {token: .old-token, enabled: false}
-  )
-)
-```
-
-This function provides a convenient way to manage multiple assets in a single transaction.
-
-### `deposit-stx`
-
-**Purpose**: Deposits STX into the treasury
-
-**Parameters**:
-
-- `amount`: uint - The amount of STX to deposit
-
-**Returns**: (response bool) - Returns true on success or an error
-
-**Example**:
-
-```clarity
-(contract-call? .aibtc-treasury deposit-stx u1000000)
-```
-
-Anyone can deposit STX into the treasury. The function transfers STX from the caller to the treasury contract.
+This function can only be called by the DAO or an authorized extension. It controls which FTs can be deposited into and withdrawn from the treasury.
 
 ### `deposit-ft`
 
-**Purpose**: Deposits fungible tokens into the treasury
+**Purpose**: Deposits fungible tokens (FTs) into the treasury
 
 **Parameters**:
 
-- `ft`: ft-trait - The fungible token contract
-- `amount`: uint - The amount of tokens to deposit
+- `ft`: `<sip010-trait>` - The fungible token contract.
+- `amount`: `uint` - The amount of tokens to deposit.
 
-**Returns**: (response bool) - Returns true on success or an error
+**Returns**: `(response (tuple) err-code)` - Returns `(ok (tuple))` on success or an error.
 
 **Example**:
-
 ```clarity
 (contract-call? .aibtc-treasury deposit-ft .usda-token u1000000)
 ```
 
 This function allows depositing SIP-010 fungible tokens into the treasury. The token must be in the allowed list.
 
-### `deposit-nft`
-
-**Purpose**: Deposits a non-fungible token into the treasury
-
-**Parameters**:
-
-- `nft`: nft-trait - The non-fungible token contract
-- `id`: uint - The ID of the NFT to deposit
-
-**Returns**: (response bool) - Returns true on success or an error
-
-**Example**:
-
-```clarity
-(contract-call? .aibtc-treasury deposit-nft .bitcoin-monkeys u42)
-```
-
-This function allows depositing SIP-009 non-fungible tokens into the treasury. The NFT contract must be in the allowed list.
-
-### `withdraw-stx`
-
-**Purpose**: Withdraws STX from the treasury
-
-**Parameters**:
-
-- `amount`: uint - The amount of STX to withdraw
-- `recipient`: principal - The recipient of the STX
-
-**Returns**: (response bool) - Returns true on success or an error
-
-**Example**:
-
-```clarity
-(contract-call? .aibtc-treasury withdraw-stx u1000000 'SP2ZNGJ85ENDY6QRHQ5P2D4FXKGZWCKTB2T0Z55KS)
-```
-
-This function can only be called by the DAO or an authorized extension. It transfers STX from the treasury to the specified recipient.
-
 ### `withdraw-ft`
 
-**Purpose**: Withdraws fungible tokens from the treasury
+**Purpose**: Withdraws fungible tokens (FTs) from the treasury
 
 **Parameters**:
 
