@@ -1,6 +1,6 @@
 ---
 description: >-
-  Action proposals, managed by the aibtc-action-proposal-voting contract, are predefined operations that can be executed with lower voting requirements.
+  Action proposals, managed by the aibtc-action-proposal-voting contract, are predefined operations that can be executed with specific voting requirements.
 ---
 
 # Action Proposals
@@ -150,7 +150,7 @@ After the Veto Period ends (i.e., at or after `execStart`) and before `execEnd`,
 
 Action proposals, as managed by `aibtc-action-proposal-voting`, offer several advantages:
 
-1.  **Lower Voting Requirements**: Easier to pass for routine or predefined operations compared to core proposals.
+1.  **Defined Voting Requirements**: Clear and specific voting parameters suitable for routine or predefined operations.
 2.  **Predefined and Vetted Actions**: Actions are specific contracts, limiting the scope of what can be executed and allowing for focused security reviews.
 3.  **Streamlined Process**: A clear lifecycle with defined periods for voting, veto, and execution.
 4.  **Incentivized Participation**: Proposal bonds, run costs, and rewards encourage thoughtful proposals and discourage spam.

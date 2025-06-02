@@ -4,7 +4,7 @@ description: Submit proposals, vote on them, and execute if they pass.
 
 # DAO Proposals
 
-The DAO is governed entirely by token holders through a proposal system. Proposals come in two main categories: Action Proposals for predefined operations with lower thresholds, and Core Proposals for arbitrary changes with higher thresholds.
+The DAO is governed entirely by token holders through a proposal system. Currently, this is primarily facilitated through Action Proposals, which are used for predefined operations.
 
 ### Overview
 
@@ -32,14 +32,3 @@ Action proposals, managed by the `aibtc-action-proposal-voting` extension, are p
 *   **Proposal Bond**: Required from the proposer, returned on successful execution or forfeited.
 *   **DAO Run Cost**: A fee paid by the proposer towards DAO operational costs.
 *   **Proposer Reward**: Awarded to the proposer for successfully executed proposals.
-
-#### Core Proposals
-
-Core proposals can execute arbitrary Clarity code and make fundamental changes to the DAO. They require higher consensus due to their power.
-
-**Voting Parameters:**
-
-* 90% approval threshold
-* 25% quorum requirement
-* 3-day voting delay
-* 3-day voting period
