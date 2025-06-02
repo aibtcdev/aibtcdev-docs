@@ -7,9 +7,12 @@
 
 - [DAO Base Layer](aibtc-contracts/dao-base-layer.md)
 - [DAO Extensions](aibtc-contracts/dao-extensions/README.md)
-  - [Action Proposal Voting](aibtc-contracts/dao-extensions/action-proposals.md)
+  - [Action Proposal Voting](aibtc-contracts/dao-extensions/action-proposal-voting.md)
   - [DAO Charter](aibtc-contracts/dao-extensions/dao-charter.md)
+  - [DAO Epoch](aibtc-contracts/dao-extensions/dao-epoch.md)
+  - [DAO Users](aibtc-contracts/dao-extensions/dao-users.md)
   - [Onchain Messaging](aibtc-contracts/dao-extensions/onchain-messaging.md)
+  - [Rewards Account](aibtc-contracts/dao-extensions/rewards-account.md)
   - [Token Owner](aibtc-contracts/dao-extensions/token-owner.md)
   - [Treasury](aibtc-contracts/dao-extensions/treasury.md)
 - [DAO Proposals](aibtc-contracts/dao-proposals/README.md)
