@@ -126,22 +126,6 @@ This function allows depositing SIP-010 fungible tokens into the treasury. The t
 
 This function can only be called by the DAO or an authorized extension. It transfers fungible tokens from the treasury to the specified recipient.
 
-### `revoke-delegate-stx`
-
-**Purpose**: Revokes STX delegation
-
-**Parameters**: None
-
-**Returns**: (response bool) - Returns true on success or an error
-
-**Example**:
-
-```clarity
-(contract-call? .aibtc-treasury revoke-delegate-stx)
-```
-
-This function can only be called by the DAO or an authorized extension. It revokes the STX delegation, which will unlock the STX after the current cycle ends.
-
 ## Read-Only Functions
 
 ### `is-allowed-asset`
