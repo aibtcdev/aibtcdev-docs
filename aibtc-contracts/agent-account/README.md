@@ -1,53 +1,56 @@
 ---
-description: User-Agent Account for managing assets and DAO interactions
+description: A special account contract between a user and an agent for managing assets and DAO interactions. Only the user can withdraw funds.
 ---
 
-# Agent Account
+# aibtc-agent-account
 
-The Agent Account contract (`aibtc-user-agent-account`) provides a secure interface between a user and an agent for managing assets and interacting with DAOs. It enables key features to allow user self-custody and control and agent interaction with DAO proposals.
+The `aibtc-agent-account` contract is a specialized smart contract designed to facilitate interactions between a user (the owner) and an agent. It provides a secure mechanism for managing STX and Fungible Tokens, where only the owner can withdraw assets. The agent, with permissions granted by the owner, can perform actions such as participating in DAO proposals and trading on approved DEXs. This contract aims to provide a clear separation of roles and capabilities, ensuring the owner retains ultimate control over their funds while allowing an agent to act on their behalf within defined boundaries.
 
-## Contract Overview
+## Quick Reference
 
-- **Title**: aibtc-user-agent-account
-- **Version**: 1.0.0
-- **Implements**: 
-  - `aibtc-user-agent-account-traits.aibtc-account` trait
-  - `aibtc-user-agent-account-traits.aibtc-proposals-v3` trait
-  - `aibtc-user-agent-account-traits.faktory-dex-approval` trait
-  - `aibtc-user-agent-account-traits.faktory-buy-sell` trait
-- **Constants**:
-  - `DEPLOYED_BURN_BLOCK`: Bitcoin block height at deployment
-  - `DEPLOYED_STACKS_BLOCK`: Stacks block height at deployment
-  - `SELF`: Contract's own principal
-  - `ACCOUNT_OWNER`: Owner principal
-  - `ACCOUNT_AGENT`: Agent principal
-  - `SBTC_TOKEN`: sBTC token contract
-  - `DAO_TOKEN`: DAO token contract
-  - `DAO_TOKEN_DEX`: DAO token DEX contract
-  - Error constants: `ERR_UNAUTHORIZED`, `ERR_UNKNOWN_ASSET`, `ERR_OPERATION_FAILED`, `ERR_BUY_SELL_NOT_ALLOWED`
+| Property       | Value                           |
+| -------------- | ------------------------------- |
+| Contract Name  | `aibtc-agent-account`           |
+| Version        | `1.0.0`                         |
+| Implements     | `.aibtc-agent-account-traits.aibtc-account`, `.aibtc-agent-account-traits.aibtc-proposals`, `.aibtc-agent-account-traits.faktory-dex-approval`, `.aibtc-agent-account-traits.faktory-buy-sell` |
+| Key Parameters | `ACCOUNT_OWNER`, `ACCOUNT_AGENT`, `SBTC_TOKEN`, `DAO_TOKEN`, `DAO_TOKEN_DEX` |
+
+**Constants**:
+- `DEPLOYED_BURN_BLOCK`: Bitcoin block height at deployment.
+- `DEPLOYED_STACKS_BLOCK`: Stacks block height at deployment.
+- `SELF`: Contract's own principal.
+- `ACCOUNT_OWNER`: Principal of the account owner (user).
+- `ACCOUNT_AGENT`: Principal of the account agent.
+- `SBTC_TOKEN`: Contract principal for the sBTC token.
+- `DAO_TOKEN`: Contract principal for the DAO token.
+- `DAO_TOKEN_DEX`: Contract principal for the DAO token DEX.
+
+**Error Constants**:
+- `ERR_UNAUTHORIZED (err u1100)`
+- `ERR_UNKNOWN_ASSET (err u1101)`
+- `ERR_OPERATION_FAILED (err u1102)`
+- `ERR_BUY_SELL_NOT_ALLOWED (err u1103)`
 
 ## Print Events
 
-| Event                      | Description                                | Data                                                   |
-| -------------------------- | ------------------------------------------ | ------------------------------------------------------ |
-| `deposit-stx`              | Emitted when STX is deposited              | Amount, sender, caller, recipient                      |
-| `deposit-ft`               | Emitted when a fungible token is deposited | Amount, asset contract, sender, caller, recipient      |
-| `withdraw-stx`             | Emitted when STX is withdrawn              | Amount, sender, caller, recipient                      |
-| `withdraw-ft`              | Emitted when a fungible token is withdrawn | Amount, asset contract, sender, caller, recipient      |
-| `approve-asset`            | Emitted when an asset is approved          | Asset, approved status, sender, caller                 |
-| `revoke-asset`             | Emitted when an asset approval is revoked  | Asset, approved status, sender, caller                 |
-| `acct-approve-dex`         | Emitted when a DEX is approved             | DEX contract, approved status, sender, caller          |
-| `acct-revoke-dex`          | Emitted when a DEX approval is revoked     | DEX contract, approved status, sender, caller          |
-| `set-agent-can-buy-sell`   | Emitted when agent buy/sell is toggled     | Can buy/sell status, sender, caller                    |
-| `acct-buy-asset`           | Emitted when buying an asset               | DEX contract, asset, amount, sender, caller            |
-| `acct-sell-asset`          | Emitted when selling an asset              | DEX contract, asset, amount, sender, caller            |
-| `acct-propose-action`      | Emitted when proposing an action           | Proposal contract, action, parameters, sender, caller  |
-| `acct-create-proposal`     | Emitted when creating a proposal           | Proposal contract, proposal, sender, caller            |
-| `vote-on-action-proposal`  | Emitted when voting on an action proposal  | Proposal contract, proposal ID, vote, sender, caller   |
-| `vote-on-core-proposal`    | Emitted when voting on a core proposal     | Proposal contract, proposal, vote, sender, caller      |
-| `conclude-action-proposal` | Emitted when concluding an action proposal | Proposal contract, proposal ID, action, sender, caller |
-| `conclude-core-proposal`   | Emitted when concluding a core proposal    | Proposal contract, proposal, sender, caller            |
-| `user-agent-account-created` | Emitted when the agent account is created | Configuration details                                  |
+| Event                                       | Description                                     | Data Payload Fields                                                                 |
+| ------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `aibtc-agent-account/deposit-stx`           | Emitted when STX is deposited                   | `contractCaller`, `txSender`, `amount`, `recipient` (SELF)                          |
+| `aibtc-agent-account/deposit-ft`            | Emitted when a fungible token is deposited      | `amount`, `assetContract`, `sender` (txSender), `caller` (contractCaller), `recipient` (SELF) |
+| `aibtc-agent-account/withdraw-stx`          | Emitted when STX is withdrawn                   | `amount`, `sender` (SELF), `caller` (contractCaller), `recipient` (ACCOUNT_OWNER)     |
+| `aibtc-agent-account/withdraw-ft`           | Emitted when a fungible token is withdrawn      | `amount`, `assetContract`, `sender` (SELF), `caller` (contractCaller), `recipient` (ACCOUNT_OWNER) |
+| `aibtc-agent-account/approve-asset`         | Emitted when an asset is approved               | `asset`, `approved` (true), `sender` (txSender), `caller` (contractCaller)          |
+| `aibtc-agent-account/revoke-asset`          | Emitted when an asset approval is revoked       | `asset`, `approved` (false), `sender` (txSender), `caller` (contractCaller)         |
+| `aibtc-agent-account/create-action-proposal`| Emitted when an action proposal is created    | `proposalContract`, `action`, `parameters`, `sender` (txSender), `caller` (contractCaller) |
+| `aibtc-agent-account/vote-on-action-proposal`| Emitted when voting on an action proposal     | `proposalContract`, `proposalId`, `vote`, `sender` (txSender), `caller` (contractCaller) |
+| `aibtc-agent-account/veto-action-proposal`  | Emitted when an action proposal is vetoed       | `proposalContract`, `proposalId`, `sender` (txSender), `caller` (contractCaller)    |
+| `aibtc-agent-account/conclude-action-proposal`| Emitted when concluding an action proposal    | `proposalContract`, `proposalId`, `action`, `sender` (txSender), `caller` (contractCaller) |
+| `aibtc-agent-account/acct-buy-asset`        | Emitted when buying an asset via Faktory DEX    | `dexContract`, `asset`, `amount`, `sender` (txSender), `caller` (contractCaller)    |
+| `aibtc-agent-account/acct-sell-asset`       | Emitted when selling an asset via Faktory DEX   | `dexContract`, `asset`, `amount`, `sender` (txSender), `caller` (contractCaller)    |
+| `aibtc-agent-account/acct-approve-dex`      | Emitted when a Faktory DEX is approved          | `dexContract`, `approved` (true), `sender` (txSender), `caller` (contractCaller)    |
+| `aibtc-agent-account/acct-revoke-dex`       | Emitted when a Faktory DEX approval is revoked  | `dexContract`, `approved` (false), `sender` (txSender), `caller` (contractCaller)   |
+| `aibtc-agent-account/set-agent-can-buy-sell`| Emitted when agent buy/sell permission is set | `canBuySell`, `sender` (txSender), `caller` (contractCaller)                      |
+| `aibtc-agent-account/user-agent-account-created` | Emitted when the agent account is created  | `account` (SELF), `agent` (ACCOUNT_AGENT), `owner` (ACCOUNT_OWNER), `daoToken` (DAO_TOKEN), `daoTokenDex` (DAO_TOKEN_DEX), `sbtcToken` (SBTC_TOKEN) |
 
 ## Public Functions
 
@@ -66,31 +69,28 @@ The Agent Account contract (`aibtc-user-agent-account`) provides a secure interf
 
 | Function                   | Description                          | Parameters                                                                                  |
 | -------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------------- |
-| `acct-propose-action`      | Propose an action to a DAO           | `action-proposals`: action-proposals-trait, `action`: action-trait, `parameters`: buff 2048, `memo`: optional string-ascii 1024 |
-| `acct-create-proposal`     | Create a proposal in a DAO           | `core-proposals`: core-proposals-trait, `proposal`: proposal-trait, `memo`: optional string-ascii 1024 |
-| `vote-on-action-proposal`  | Vote on an action proposal           | `action-proposals`: action-proposals-trait, `proposalId`: uint, `vote`: bool                |
-| `vote-on-core-proposal`    | Vote on a core proposal              | `core-proposals`: core-proposals-trait, `proposal`: proposal-trait, `vote`: bool            |
-| `conclude-action-proposal` | Conclude an action proposal          | `action-proposals`: action-proposals-trait, `proposalId`: uint, `action`: action-trait      |
-| `conclude-core-proposal`   | Conclude a core proposal             | `core-proposals`: core-proposals-trait, `proposal`: proposal-trait                          |
+| `create-action-proposal`   | Create an action proposal            | `voting-contract`: action-proposal-voting-trait, `action`: action-trait, `parameters`: (buff 2048), `memo`: (optional (string-ascii 1024)) |
+| `vote-on-action-proposal`  | Vote on an action proposal           | `voting-contract`: action-proposal-voting-trait, `proposalId`: uint, `vote`: bool           |
+| `veto-action-proposal`     | Veto an action proposal              | `voting-contract`: action-proposal-voting-trait, `proposalId`: uint                         |
+| `conclude-action-proposal` | Conclude an action proposal          | `voting-contract`: action-proposal-voting-trait, `proposalId`: uint, `action`: action-trait |
 
 ### Faktory DEX Trading Functions
 
 | Function                 | Description                                | Parameters                                                      |
 | ------------------------ | ------------------------------------------ | --------------------------------------------------------------- |
-| `acct-buy-asset`         | Buy an asset from a Faktory DEX            | `faktory-dex`: dao-faktory-dex, `asset`: faktory-token, `amount`: uint |
-| `acct-sell-asset`        | Sell an asset to a Faktory DEX             | `faktory-dex`: dao-faktory-dex, `asset`: faktory-token, `amount`: uint |
-| `acct-approve-dex`       | Add a DEX to the approved list             | `faktory-dex`: dao-faktory-dex                                 |
-| `acct-revoke-dex`        | Remove a DEX from the approved list        | `faktory-dex`: dao-faktory-dex                                 |
+| `acct-buy-asset`         | Buy an asset from a Faktory DEX            | `faktory-dex`: `<dao-faktory-dex>`, `asset`: `<faktory-token>`, `amount`: uint |
+| `acct-sell-asset`        | Sell an asset to a Faktory DEX             | `faktory-dex`: `<dao-faktory-dex>`, `asset`: `<faktory-token>`, `amount`: uint |
+| `acct-approve-dex`       | Add a DEX to the approved list             | `faktory-dex`: `<dao-faktory-dex>`                               |
+| `acct-revoke-dex`        | Remove a DEX from the approved list        | `faktory-dex`: `<dao-faktory-dex>`                               |
 | `set-agent-can-buy-sell` | Set whether the agent can buy/sell assets  | `canBuySell`: bool                                             |
 
 ## Read-Only Functions
 
-| Function            | Description                             | Parameters         |
-| ------------------- | --------------------------------------- | ------------------ |
-| `is-approved-asset` | Check if an asset is approved           | `asset`: principal |
-| `is-approved-dex`   | Check if a DEX is approved              | `dex`: principal   |
-| `get-balance-stx`   | Get the STX balance of the agent account | None               |
-| `get-configuration` | Get the agent account configuration      | None               |
+| Function            | Description                             | Parameters         | Returns                                                                                                                               |
+| ------------------- | --------------------------------------- | ------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `is-approved-asset` | Check if an asset is approved           | `asset`: principal | `bool`                                                                                                                                |
+| `is-approved-dex`   | Check if a DEX is approved              | `dex`: principal   | `bool`                                                                                                                                |
+| `get-configuration` | Get the agent account configuration     | None               | `{ account: principal, agent: principal, owner: principal, daoToken: principal, daoTokenDex: principal, sbtcToken: principal }`      |
 
 ## Private Functions
 
@@ -103,12 +103,12 @@ The Agent Account contract (`aibtc-user-agent-account`) provides a secure interf
 
 ## Error Codes
 
-| Code  | Constant               | Description                       |
-| ----- | ---------------------- | --------------------------------- |
-| u9000 | ERR_UNAUTHORIZED       | Caller is not authorized          |
-| u9001 | ERR_UNKNOWN_ASSET      | Asset is not in the approved list |
-| u9002 | ERR_OPERATION_FAILED   | Operation failed                  |
-| u9003 | ERR_BUY_SELL_NOT_ALLOWED | Buy/sell operation not allowed for agent |
+| Code  | Constant                 | Description                               |
+| ----- | ------------------------ | ----------------------------------------- |
+| u1100 | ERR_UNAUTHORIZED         | Caller is not authorized.                 |
+| u1101 | ERR_UNKNOWN_ASSET        | Asset is not in the approved list.        |
+| u1102 | ERR_OPERATION_FAILED     | The requested operation failed.           |
+| u1103 | ERR_BUY_SELL_NOT_ALLOWED | Buy/sell operation not allowed for agent. |
 
 ## Security Features
 
@@ -126,12 +126,10 @@ The Agent Account contract (`aibtc-user-agent-account`) provides a secure interf
 ### Access Control
 
 The agent account implements strict access control:
-- **Owner-only functions**: withdraw-stx, withdraw-ft, approve-asset, revoke-asset, acct-approve-dex, acct-revoke-dex, set-agent-can-buy-sell
-- **Owner and Agent functions**: acct-propose-action, acct-create-proposal, vote-on-action-proposal, vote-on-core-proposal, conclude-action-proposal, conclude-core-proposal
-- **Trading functions**: acct-buy-asset, acct-sell-asset 
-  - Owner can always use these
-  - Agent can only use these when explicitly permitted by the owner via set-agent-can-buy-sell
-- **Public functions**: deposit-stx, deposit-ft (anyone can deposit assets to the agent account)
+- **Owner-only functions**: `withdraw-stx`, `withdraw-ft`, `approve-asset`, `revoke-asset`, `acct-approve-dex`, `acct-revoke-dex`, `set-agent-can-buy-sell`. These functions assert `(is-owner)`.
+- **Owner and Agent functions**: `create-action-proposal`, `vote-on-action-proposal`, `veto-action-proposal`, `conclude-action-proposal`. These functions assert `(is-authorized)`, which checks if the caller is the owner or the agent.
+- **Trading functions**: `acct-buy-asset`, `acct-sell-asset`. These functions assert `(buy-sell-allowed)`, which allows the owner, or the agent if `agentCanBuySell` is true.
+- **Public deposit functions**: `deposit-stx`, `deposit-ft`. Anyone can deposit assets to the agent account, provided the FT is an approved asset for `deposit-ft`.
 
 ### Asset Protection
 
@@ -185,44 +183,39 @@ sequenceDiagram
     participant ActionProposals
     participant CoreProposals
     
+    participant Owner
+    participant Agent
+    participant AgentAccount
+    participant VotingContract as "Action Proposal<br/>Voting Contract"
+    
     Owner->>AgentAccount: deposit-stx
-    Owner->>AgentAccount: deposit-ft
+    Owner->>AgentAccount: deposit-ft (DAO Token, sBTC, etc.)
     
-    Owner->>AgentAccount: acct-propose-action
-    AgentAccount->>ActionProposals: propose-action
+    Note over Owner, AgentAccount: Owner or Agent can interact with DAO proposals
     
-    Agent->>AgentAccount: acct-propose-action
-    AgentAccount->>ActionProposals: propose-action
+    Owner->>AgentAccount: create-action-proposal(VotingContract, ...)
+    AgentAccount->>VotingContract: create-action-proposal(action, params, memo)
     
-    Owner->>AgentAccount: vote-on-action-proposal
-    AgentAccount->>ActionProposals: vote-on-proposal
+    Agent->>AgentAccount: create-action-proposal(VotingContract, ...)
+    AgentAccount->>VotingContract: create-action-proposal(action, params, memo)
     
-    Agent->>AgentAccount: vote-on-action-proposal
-    AgentAccount->>ActionProposals: vote-on-proposal
+    Owner->>AgentAccount: vote-on-action-proposal(VotingContract, proposalId, vote)
+    AgentAccount->>VotingContract: vote-on-action-proposal(proposalId, vote)
     
-    Owner->>AgentAccount: conclude-action-proposal
-    AgentAccount->>ActionProposals: conclude-proposal
+    Agent->>AgentAccount: vote-on-action-proposal(VotingContract, proposalId, vote)
+    AgentAccount->>VotingContract: vote-on-action-proposal(proposalId, vote)
+
+    Owner->>AgentAccount: veto-action-proposal(VotingContract, proposalId)
+    AgentAccount->>VotingContract: veto-action-proposal(proposalId)
+
+    Agent->>AgentAccount: veto-action-proposal(VotingContract, proposalId)
+    AgentAccount->>VotingContract: veto-action-proposal(proposalId)
     
-    Agent->>AgentAccount: conclude-action-proposal
-    AgentAccount->>ActionProposals: conclude-proposal
+    Owner->>AgentAccount: conclude-action-proposal(VotingContract, proposalId, action)
+    AgentAccount->>VotingContract: conclude-action-proposal(proposalId, action)
     
-    Owner->>AgentAccount: acct-create-proposal
-    AgentAccount->>CoreProposals: create-proposal
-    
-    Agent->>AgentAccount: acct-create-proposal
-    AgentAccount->>CoreProposals: create-proposal
-    
-    Owner->>AgentAccount: vote-on-core-proposal
-    AgentAccount->>CoreProposals: vote-on-proposal
-    
-    Agent->>AgentAccount: vote-on-core-proposal
-    AgentAccount->>CoreProposals: vote-on-proposal
-    
-    Owner->>AgentAccount: conclude-core-proposal
-    AgentAccount->>CoreProposals: conclude-proposal
-    
-    Agent->>AgentAccount: conclude-core-proposal
-    AgentAccount->>CoreProposals: conclude-proposal
+    Agent->>AgentAccount: conclude-action-proposal(VotingContract, proposalId, action)
+    AgentAccount->>VotingContract: conclude-action-proposal(proposalId, action)
 ```
 
 ### DEX Trading Interaction Flow
@@ -307,42 +300,16 @@ The contract automatically initializes on deployment with:
 4. Emitting a creation event with the configuration details
 
 ```clarity
-;; initialize approved contracts
+;; initialize approved contracts and DEXes during contract deployment (within the `begin` block)
 (map-set ApprovedAssets SBTC_TOKEN true)
 (map-set ApprovedAssets DAO_TOKEN true)
 (map-set ApprovedDexes DAO_TOKEN_DEX true)
+;; The agentCanBuySell data variable is initialized to false by default.
 
 ;; print creation event
 (print {
-  notification: "user-agent-account-created",
-  payload: (get-configuration)
+  notification: "aibtc-agent-account/user-agent-account-created",
+  payload: (get-configuration) ;; This retrieves owner, agent, tokens, etc.
 })
 ```
 
-## Contract Naming Convention
-
-Agent account contracts follow a specific naming convention that incorporates both the owner and agent addresses:
-
-```
-aibtc-user-agent-account-OWNER_FIRST5-OWNER_LAST5-AGENT_FIRST5-AGENT_LAST5
-```
-
-Where:
-
-- `OWNER_FIRST5` represents the first 5 characters of the owner's Stacks address
-- `OWNER_LAST5` represents the last 5 characters of the owner's Stacks address
-- `AGENT_FIRST5` represents the first 5 characters of the agent's Stacks address
-- `AGENT_LAST5` represents the last 5 characters of the agent's Stacks address
-
-For example, if an owner with address `ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM` were to deploy an agent account for an agent with address `ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG`, it would be named:
-
-```
-aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG
-```
-
-This naming convention ensures that:
-
-1. Each user-agent pair has a unique agent account
-2. Agent accounts are easily identifiable by both the owner's and agent's addresses
-3. One agent can deploy multiple agent accounts for different users
-4. Multiple agents can deploy different agent accounts for the same user
