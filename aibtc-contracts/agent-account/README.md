@@ -313,3 +313,25 @@ The contract automatically initializes on deployment with:
 })
 ```
 
+## Related Contracts and Traits
+
+The `aibtc-agent-account` contract interacts with or implements the following:
+
+**Implemented Traits:**
+- `.aibtc-agent-account-traits.aibtc-account`: Defines standard account functionalities.
+- `.aibtc-agent-account-traits.aibtc-proposals`: Defines proposal interaction functionalities.
+- `.aibtc-agent-account-traits.faktory-dex-approval`: Defines DEX approval functionalities.
+- `.aibtc-agent-account-traits.faktory-buy-sell`: Defines DEX trading functionalities.
+
+**Used Traits:**
+- `'SP3FBR2AGK5H9QBDH3EEN6DF8EK8JY7RX8QJ5SVTE.sip-010-trait-ft-standard.sip-010-trait` (ft-trait): For fungible token interactions.
+- `.aibtc-dao-traits.action` (action-trait): For defining actions in proposals.
+- `.aibtc-dao-traits.action-proposal-voting` (action-proposal-voting-trait): For interacting with action proposal voting contracts.
+- `.aibtc-dao-traits.faktory-dex` (dao-faktory-dex): For interacting with Faktory DEX contracts.
+- `'STTWD9SPRQVD3P733V89SV0P8RZRZNQADG034F0A.faktory-trait-v1.sip-010-trait` (faktory-token): For interacting with Faktory-compatible tokens.
+
+**Key Contract Dependencies (Constants):**
+- `'STV9K21TBFAK4KNRJXF5DFP8N7W46G4V9RJ5XDY2.sbtc-token` (SBTC_TOKEN): The sBTC token contract.
+- `.aibtc-faktory` (DAO_TOKEN): The DAO's primary token contract.
+- `.aibtc-faktory-dex` (DAO_TOKEN_DEX): The DAO's primary token DEX contract.
+
