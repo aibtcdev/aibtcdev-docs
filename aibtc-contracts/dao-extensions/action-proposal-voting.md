@@ -110,15 +110,15 @@ The action proposal lifecycle involves several steps:
     - If a veto attempt met quorum and veto votes exceeded 'yes' votes.
     - If the proposal is not expired (within `execEnd` block).
 5.  **Outcome**:
-    _ **Passed & Executed**: If the proposal passes, is not vetoed, and the action executes successfully:
-    _ The `VOTING_BOND` is returned to the proposer.
-    _ The `VOTING_REWARD` is transferred from `.aibtc-rewards-account` to the proposer.
-    _ The proposer's reputation is increased via `.aibtc-dao-users`.
-    _ **Failed, Vetoed, or Execution Failed**: If the proposal fails to pass, is successfully vetoed, or the action execution fails:
-    _ The `VOTING_BOND` is transferred to `.aibtc-treasury`.
-    _ If action execution failed (but vote passed), the `VOTING_REWARD` is transferred from `.aibtc-rewards-account` to `.aibtc-treasury`.
-    _ The proposer's reputation is decreased via `.aibtc-dao-users`.
-    The initial and primary action available for proposals is to call the `send` function of the `.aibtc-onchain-messaging` contract.
+    - **Passed & Executed**: If the proposal passes, is not vetoed, and the action executes successfully:
+    - The `VOTING_BOND` is returned to the proposer.
+    - The `VOTING_REWARD` is transferred from `.aibtc-rewards-account` to the proposer.
+    - The proposer's reputation is increased via `.aibtc-dao-users`.
+    - **Failed, Vetoed, or Execution Failed**: If the proposal fails to pass, is successfully vetoed, or the action execution fails:
+    - The `VOTING_BOND` is transferred to `.aibtc-treasury`.
+    - If action execution failed (but vote passed), the `VOTING_REWARD` is transferred from `.aibtc-rewards-account` to `.aibtc-treasury`.
+    - The proposer's reputation is decreased via `.aibtc-dao-users`.
+      The initial and primary action available for proposals is to call the `send` function of the `.aibtc-onchain-messaging` contract.
 
 ## Public Functions
 
