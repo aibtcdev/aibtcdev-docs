@@ -13,37 +13,37 @@ The Token Owner extension (`aibtc-token-owner`) provides management functions fo
 - **Permission Gating**: Ensures only the DAO or authorized extensions can modify token settings
 - **Contract Interoperability**: Interfaces between the DAO and token contract using proper permissions
 
+{% hint style="info" %}
+The first cohort of AIBTC DAOs will not have the ability to change the DAO token owner.
+
+Future iterations of AIBTC DAOs can implement an extension that allows for this.
+{% endhint %}
+
 ## Quick Reference
 
-| Property       | Value                                |
-| -------------- | ------------------------------------ |
-| Contract Name  | `aibtc-token-owner`                 |
-| Version        | 1.0.0                               |
+| Property       | Value                                                          |
+| -------------- | -------------------------------------------------------------- |
+| Contract Name  | `aibtc-token-owner`                                            |
 | Implements     | `.aibtc-dao-traits.extension`, `.aibtc-dao-traits.token-owner` |
-| Key Parameters | None (stateless extension)          |
+| Key Parameters | None (stateless extension)                                     |
 
 ## How It Works
 
 ```mermaid
 flowchart TD
-    A["DAO Contract"]
+    A["DAO Created"]
     B["Token Owner Extension"]
-    C["Token Contract"]
-    D["Updated Token URI"]
-    E["New Token Owner"]
-    
-    subgraph Extension Functions
+    C["Blockchain"]
+
+    subgraph UF["DAO Protected Functions"]
         BA["set-token-uri"]
         BB["transfer-ownership"]
     end
-    
-    A -->|"Proposal Execution"| B
-    B --> BA
-    B --> BB
-    BA -->|"Updates metadata"| C
-    BB -->|"Changes ownership"| C
-    C --> D
-    C --> E
+
+    A -->|"DAO Initialized"| B
+    B -->|"Accept function calls"| UF
+    BA -->|"Set new URI"| C
+    BB -->|"Set new owner"| C
 ```
 
 The Token Owner extension acts as an authorized intermediary between the DAO and its token contract. When the DAO approves a proposal to update token settings, it calls the appropriate function on this extension. The extension verifies the caller is authorized (either the DAO itself or another approved extension), then uses `as-contract` to call the token contract with the proper permissions.
@@ -61,12 +61,6 @@ The Token Owner extension acts as an authorized intermediary between the DAO and
 
 **Returns**: (response bool) - Returns true on success
 
-**Example**:
-
-```clarity
-(contract-call? .aibtc-token-owner callback tx-sender 0x)
-```
-
 ### `set-token-uri`
 
 **Purpose**: Updates the token's URI metadata, which controls how the token appears in wallets and explorers
@@ -76,12 +70,6 @@ The Token Owner extension acts as an authorized intermediary between the DAO and
 - `value`: (string-utf8 256) - The new URI string for the token metadata
 
 **Returns**: (response bool) - Returns true on success or an error
-
-**Example**:
-
-```clarity
-(contract-call? .aibtc-token-owner set-token-uri "https://example.com/token-metadata.json")
-```
 
 This function can only be called by the DAO or an authorized extension. It updates the token's metadata URI, which typically points to a JSON file containing token information like name, symbol, description, and image.
 
@@ -94,12 +82,6 @@ This function can only be called by the DAO or an authorized extension. It updat
 - `new-owner`: principal - The principal that will become the new token contract owner
 
 **Returns**: (response bool) - Returns true on success or an error
-
-**Example**:
-
-```clarity
-(contract-call? .aibtc-token-owner transfer-ownership 'SP2ZNGJ85ENDY6QRHQ5P2D4FXKGZWCKTB2T0Z55KS)
-```
 
 This function allows the DAO to transfer ownership of the token contract to a new principal, which could be useful during contract upgrades or governance changes.
 
@@ -115,9 +97,9 @@ This function allows the DAO to transfer ownership of the token contract to a ne
 
 ## Error Handling
 
-| Error Code | Constant                  | Description                                | Resolution                                                                 |
-| ---------- | ------------------------- | ------------------------------------------ | -------------------------------------------------------------------------- |
-| u1800      | ERR_NOT_DAO_OR_EXTENSION  | Caller is not the DAO or a valid extension. | Ensure the function is called through proper DAO governance (e.g., via a proposal). |
+| Error Code | Constant                 | Description                                 | Resolution                                                                          |
+| ---------- | ------------------------ | ------------------------------------------- | ----------------------------------------------------------------------------------- |
+| u1800      | ERR_NOT_DAO_OR_EXTENSION | Caller is not the DAO or a valid extension. | Ensure the function is called through proper DAO governance (e.g., via a proposal). |
 
 ## Security Considerations
 
@@ -127,44 +109,9 @@ This function allows the DAO to transfer ownership of the token contract to a ne
 - **No Direct State**: The extension maintains no state of its own, reducing attack surface
 - **Limited Functionality**: The extension provides only the minimum necessary functions for token management
 
-## Integration Examples
-
-### Updating Token URI Through a Proposal
-
-```clarity
-;; This would typically be done through a DAO proposal.
-;; Example: A proposal contract (.proposal-to-set-uri) calls .aibtc-token-owner
-(contract-call? .aibtc-base-dao execute 
-  .proposal-to-set-uri ;; This is a hypothetical proposal contract
-  'SP000000000000000000002Q6VF78.proposal-sender ;; Example sender
-)
-;; Where .proposal-to-set-uri would contain:
-;; (contract-call? .aibtc-token-owner set-token-uri "https://arweave.net/newTokenMetadata")
-```
-
-### Transferring Token Ownership
-
-```clarity
-;; This would typically be done through a DAO proposal.
-;; Example: A proposal contract (.proposal-to-transfer-ownership) calls .aibtc-token-owner
-(contract-call? .aibtc-base-dao execute
-  .proposal-to-transfer-ownership ;; This is a hypothetical proposal contract
-  'SP000000000000000000002Q6VF78.proposal-sender ;; Example sender
-)
-;; Where .proposal-to-transfer-ownership would contain:
-;; (contract-call? .aibtc-token-owner transfer-ownership 'SP2ZNGJ85ENDY6QRHQ5P2D4FXKGZWCKTB2T0Z55KS)
-```
-
 ## Related Contracts
 
 - **`.aibtc-faktory`**: The DAO token contract (SIP-010 FT) managed by this extension.
 - **`.aibtc-base-dao`**: The core DAO contract that authorizes this extension's actions.
 - **`.aibtc-dao-traits.extension`**: Trait implemented by this extension.
 - **`.aibtc-dao-traits.token-owner`**: Trait implemented by this extension.
-
-## Versioning and Updates
-
-- **Last Updated**: June 2025
-- **Contract Version**: 1.0.0
-- **Documentation Version**: 1.2.0
-- **Changes from Previous Version**: Updated to match new documentation template format and reflect current contract trait paths.

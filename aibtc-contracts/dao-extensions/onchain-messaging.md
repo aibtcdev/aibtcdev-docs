@@ -16,30 +16,31 @@ The Onchain Messaging extension (`aibtc-onchain-messaging`) allows for sending v
 
 ## Quick Reference
 
-| Property       | Value                                     |
-| -------------- | ----------------------------------------- |
-| Contract Name  | `aibtc-onchain-messaging`                 |
-| Version        | 1.0.0                                     |
+| Property       | Value                                                        |
+| -------------- | ------------------------------------------------------------ |
+| Contract Name  | `aibtc-onchain-messaging`                                    |
 | Implements     | `.aibtc-dao-traits.extension`, `.aibtc-dao-traits.messaging` |
-| Key Parameters | Message text (max 10,000 ASCII chars)     |
+| Key Parameters | Message text (max 10,000 ASCII chars)                        |
 
 ## How It Works
 
 ```mermaid
 flowchart TD
-    A["Any Stacks User (tx-sender)"]
-    B["DAO / Extension (contract-caller)"]
-    C["Messaging Extension (`aibtc-onchain-messaging`)"]
-    D["Blockchain Print Events"]
-    
-    subgraph Messaging Functions
-        CA["send(msg)"]
+    A["DAO Created"]
+    B["On-chain Messaging Extension"]
+    C["Evaluate tx-sender"]
+    D["Blockchain"]
+
+    subgraph UF["DAO Protected Functions"]
+        BA["send"]
     end
-    
-    A -->|"Sends message"| C
-    B -->|"Sends message (e.g., via proposal)"| C
-    C --> CA
-    CA --"Emits print event with message & metadata"--> D
+
+    A -->|"DAO Initialized"| B
+    B -->|"Accept function calls"| UF
+    BA -->|"Evaluate tx-sender"| C
+    C -->|"From DAO"| D
+    C -->|"From Holder"| D
+    C -->|"From anyone"| D
 ```
 
 The Onchain Messaging extension works by emitting `print` events containing the message and associated metadata. Any Stacks user can call the `send` function. The contract determines if the `contract-caller` is the DAO or an authorized extension, and also checks if the `tx-sender` holds the DAO's token (`.aibtc-faktory`). This information, along with the message, sender details, and block height, is included in the `print` event.
@@ -51,73 +52,37 @@ The Onchain Messaging extension works by emitting `print` events containing the 
 **Purpose**: Standard extension callback function required by the extension trait
 
 **Parameters**:
+
 - `sender`: principal - The principal that triggered the callback
 - `memo`: (buff 34) - Optional memo data
 
 **Returns**: (response bool) - Returns success (true) if the callback is processed
-
-**Example**:
-```clarity
-(contract-call? .aibtc-onchain-messaging callback tx-sender 0x00)
-```
 
 ### `send`
 
 **Purpose**: Sends a message that is emitted as a `print` event on the blockchain.
 
 **Parameters**:
+
 - `msg`: `(string-ascii 10000)` - The message text (up to 10,000 ASCII characters).
 
 **Returns**: `(response bool err-code)` - Returns `(ok true)` if the message is sent, otherwise an error.
-
-**Example**:
-```clarity
-(contract-call? .aibtc-onchain-messaging send "Hello, Stacks blockchain!")
-```
 
 **Notes**: The contract internally determines if the message originates from the DAO/extension or a DAO token holder. Messages must be at least 1 character long.
 
 ## Print Events
 
-| Event    | Description                                     | Key Data Points in Payload                                                                                                |
-| -------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| `send`   | Emitted when a message is sent via this contract. | `contractCaller`, `txSender`, `height`, `isFromDao` (bool), `isFromHolder` (bool), `messageLength` (uint), `message` (string-ascii 10000) |
-
-## Integration Examples
-
-### Sending a Personal Message
-
-```clarity
-;; Individual user sending a personal message
-(contract-call? .aibtc-onchain-messaging send "Hello, Stacks blockchain!")
-```
-
-### Sending an Official DAO Message (via Proposal)
-
-```clarity
-;; This would typically be done through a DAO proposal that calls this extension.
-;; The .aibtc-action-proposal-voting contract is an example of how this can be done.
-;; If a proposal executes a call to .aibtc-onchain-messaging.send, 
-;; the 'isFromDao' flag in the print event will be true.
-
-;; Example: A proposal contract calls .aibtc-onchain-messaging
-(contract-call? .aibtc-base-dao execute ;; Or appropriate proposal mechanism
-  .proposal-to-send-message-contract
-  'SP000000000000000000002Q6VF78.proposal-sender
-)
-;; Where .proposal-to-send-message-contract would contain:
-;; (contract-call? .aibtc-onchain-messaging send
-;;   "Official announcement: The DAO has approved funding for the new development initiative."
-;; )
-```
+| Event  | Description                                       | Key Data Points in Payload                                                                                                                |
+| ------ | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `send` | Emitted when a message is sent via this contract. | `contractCaller`, `txSender`, `height`, `isFromDao` (bool), `isFromHolder` (bool), `messageLength` (uint), `message` (string-ascii 10000) |
 
 ## Error Handling
 
-| Error Code | Constant                  | Description                                       | Resolution                                                                    |
-| ---------- | ------------------------- | ------------------------------------------------- | ----------------------------------------------------------------------------- |
-| u1600      | ERR_NOT_DAO_OR_EXTENSION  | (Contextual) Caller is not DAO for DAO-like actions. | Not directly applicable for `send` by any user, but used internally by contract. |
-| u1601      | ERR_INVALID_INPUT         | Message is empty.                                 | Ensure the message string contains at least one character.                    |
-| u1602      | ERR_FETCHING_TOKEN_DATA   | Error fetching DAO token balance for sender.      | Check `.aibtc-faktory` token contract status; sender may not hold tokens.     |
+| Error Code | Constant                 | Description                                          | Resolution                                                                       |
+| ---------- | ------------------------ | ---------------------------------------------------- | -------------------------------------------------------------------------------- |
+| u1600      | ERR_NOT_DAO_OR_EXTENSION | (Contextual) Caller is not DAO for DAO-like actions. | Not directly applicable for `send` by any user, but used internally by contract. |
+| u1601      | ERR_INVALID_INPUT        | Message is empty.                                    | Ensure the message string contains at least one character.                       |
+| u1602      | ERR_FETCHING_TOKEN_DATA  | Error fetching DAO token balance for sender.         | Check `.aibtc-faktory` token contract status; sender may not hold tokens.        |
 
 ## Security Considerations
 
@@ -138,6 +103,7 @@ The Onchain Messaging extension works by emitting `print` events containing the 
 ## Message Size Limits
 
 The extension supports messages up to 10,000 ASCII characters. This size is suitable for:
+
 - Announcements and notifications.
 - Short status updates.
 - Links to off-chain resources or more detailed documents.

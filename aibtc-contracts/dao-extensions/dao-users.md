@@ -15,38 +15,31 @@ The DAO Users extension (`aibtc-dao-users`) is responsible for tracking unique u
 
 ## Quick Reference
 
-| Property       | Value                                                          |
-| -------------- | -------------------------------------------------------------- |
-| Contract Name  | `aibtc-dao-users`                                              |
-| Version        | 1.0.0                                                          |
-| Implements     | `.aibtc-dao-traits.extension`, `.aibtc-dao-traits.dao-users`   |
+| Property       | Value                                                           |
+| -------------- | --------------------------------------------------------------- |
+| Contract Name  | `aibtc-dao-users`                                               |
+| Implements     | `.aibtc-dao-traits.extension`, `.aibtc-dao-traits.dao-users`    |
 | Key Parameters | None directly; relies on DAO/extension calls for modifications. |
 
 ## How It Works
 
 ```mermaid
 flowchart TD
-    A["DAO/Authorized Extension"]
-    B["DAO Users Extension<br>(aibtc-dao-users)"]
-    C["User Data Storage<br>(UserData & UserIndexes maps)"]
-    
-    subgraph User Functions
+    A["DAO Created"]
+    B["Users Extension"]
+    C["Blockchain"]
+
+    subgraph UF["DAO Protected Functions"]
         BA["get-or-create-user-index"]
         BB["increase-user-reputation"]
         BC["decrease-user-reputation"]
     end
-    
-    A --"Call get-or-create-user-index(address)"--> B
-    B --> BA
-    BA --"Check/Create user"--> C
-    
-    A --"Call increase-user-reputation(address, amount)"--> B
-    B --> BB
-    BB --"Update reputation"--> C
-    
-    A --"Call decrease-user-reputation(address, amount)"--> B
-    B --> BC
-    BC --"Update reputation"--> C
+
+    A -->|"DAO Initialized"| B
+    B -->|"Accept function calls"| UF
+    BA -->|"Read or create user record"| C
+    BB -->|"Add user reputation"| C
+    BC -->|"Subtract user reputation"| C
 ```
 
 The DAO or an authorized extension interacts with this contract to manage users. When `get-or-create-user-index` is called for a principal, the extension checks if the user already exists. If not, it creates a new entry, assigning a unique index and initializing their data (including a reputation of 0). The `increase-user-reputation` and `decrease-user-reputation` functions allow authorized callers to modify a user's reputation score. All user data is stored in internal maps.
@@ -58,62 +51,43 @@ The DAO or an authorized extension interacts with this contract to manage users.
 **Purpose**: Standard extension callback function required by the extension trait.
 
 **Parameters**:
+
 - `sender`: `principal` - The principal that triggered the callback.
 - `memo`: `(buff 34)` - Optional memo data.
 
 **Returns**: `(response bool)` - Returns `(ok true)` if the callback is processed.
-
-**Example**:
-```clarity
-(contract-call? .aibtc-dao-users callback tx-sender 0x00)
-```
 
 ### `get-or-create-user-index`
 
 **Purpose**: Retrieves the index for an existing user or creates a new user entry if one doesn't exist.
 
 **Parameters**:
+
 - `address`: `principal` - The principal of the user.
 
 **Returns**: `(response uint err-code)` - Returns `(ok user-index)` on success, or an error if the caller is not authorized.
-
-**Example**:
-```clarity
-;; Called by DAO or an authorized extension
-(contract-call? .aibtc-dao-users get-or-create-user-index 'SPNEWUSERADDRESS)
-```
 
 ### `increase-user-reputation`
 
 **Purpose**: Increases the reputation score of a specified user.
 
 **Parameters**:
+
 - `address`: `principal` - The principal of the user.
 - `amount`: `uint` - The amount by which to increase the reputation (converted to `int`).
 
 **Returns**: `(response bool err-code)` - Returns `(ok true)` on success, or an error.
-
-**Example**:
-```clarity
-;; Called by DAO or an authorized extension
-(contract-call? .aibtc-dao-users increase-user-reputation 'SPUSERADDRESS u10)
-```
 
 ### `decrease-user-reputation`
 
 **Purpose**: Decreases the reputation score of a specified user.
 
 **Parameters**:
+
 - `address`: `principal` - The principal of the user.
 - `amount`: `uint` - The amount by which to decrease the reputation (converted to `int`).
 
 **Returns**: `(response bool err-code)` - Returns `(ok true)` on success, or an error.
-
-**Example**:
-```clarity
-;; Called by DAO or an authorized extension
-(contract-call? .aibtc-dao-users decrease-user-reputation 'SPUSERADDRESS u5)
-```
 
 ## Read-Only Functions
 
@@ -125,89 +99,50 @@ The DAO or an authorized extension interacts with this contract to manage users.
 
 **Returns**: `uint` - The total count of users.
 
-**Example**:
-```clarity
-(contract-call? .aibtc-dao-users get-user-count)
-;; Example response: u150
-```
-
 ### `get-user-index`
 
 **Purpose**: Gets the unique index for a given user principal.
 
 **Parameters**:
+
 - `address`: `principal` - The user's principal.
 
 **Returns**: `(optional uint)` - The user's index if found, otherwise `none`.
-
-**Example**:
-```clarity
-(contract-call? .aibtc-dao-users get-user-index 'SPUSERADDRESS)
-;; Example response: (some u42)
-```
 
 ### `get-user-data-by-index`
 
 **Purpose**: Gets the full user data record for a given user index.
 
 **Parameters**:
+
 - `userIndex`: `uint` - The user's unique index.
 
 **Returns**: `(optional {address: principal, createdAt: uint, reputation: int})` - The user data tuple if found, otherwise `none`.
-
-**Example**:
-```clarity
-(contract-call? .aibtc-dao-users get-user-data-by-index u42)
-;; Example response: (some {address: 'SPUSERADDRESS, createdAt: u12345, reputation: 10})
-```
 
 ### `get-user-data-by-address`
 
 **Purpose**: Gets the full user data record for a given user principal. This is a convenience function that first looks up the index.
 
 **Parameters**:
+
 - `address`: `principal` - The user's principal.
 
 **Returns**: `(optional {address: principal, createdAt: uint, reputation: int})` - The user data tuple if found, otherwise `none`.
 
-**Example**:
-```clarity
-(contract-call? .aibtc-dao-users get-user-data-by-address 'SPUSERADDRESS)
-;; Example response: (some {address: 'SPUSERADDRESS, createdAt: u12345, reputation: 10})
-```
-
 ## Print Events
 
-| Event                                               | Description                                     | Data                                                                                   |
-| --------------------------------------------------- | ----------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `aibtc-dao-users/get-or-create-user-index`          | Emitted when a new user index is created.       | `userIndex`, `address`, `createdAt` (burn block), `contractCaller`, `txSender`         |
-| `aibtc-dao-users/increase-user-reputation`          | Emitted when a user's reputation is increased.  | `userIndex`, `address`, `createdAt` (burn block of event), `contractCaller`, `txSender` |
-| `aibtc-dao-users/decrease-user-reputation`          | Emitted when a user's reputation is decreased.  | `userIndex`, `address`, `createdAt` (burn block of event), `contractCaller`, `txSender` |
-
-## Integration Examples
-
-### Awarding Reputation After Successful Proposal
-
-```clarity
-;; Within a proposal execution logic (called by the DAO)
-(define-private (finalize-proposal (proposer principal) (proposal-id uint))
-  (begin
-    ;; ... other proposal finalization logic ...
-
-    ;; Award reputation to the proposer
-    (try! (contract-call? .aibtc-dao-users increase-user-reputation proposer u25))
-    
-    (ok true)
-  )
-)
-```
+| Event                                      | Description                                    | Data                                                                                    |
+| ------------------------------------------ | ---------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `aibtc-dao-users/get-or-create-user-index` | Emitted when a new user index is created.      | `userIndex`, `address`, `createdAt` (burn block), `contractCaller`, `txSender`          |
+| `aibtc-dao-users/increase-user-reputation` | Emitted when a user's reputation is increased. | `userIndex`, `address`, `createdAt` (burn block of event), `contractCaller`, `txSender` |
+| `aibtc-dao-users/decrease-user-reputation` | Emitted when a user's reputation is decreased. | `userIndex`, `address`, `createdAt` (burn block of event), `contractCaller`, `txSender` |
 
 ## Error Handling
 
-| Error Code | Constant                  | Description                                       | Resolution                                                                    |
-| ---------- | ------------------------- | ------------------------------------------------- | ----------------------------------------------------------------------------- |
-| u1500      | ERR_NOT_DAO_OR_EXTENSION  | Caller is not the DAO or an authorized extension. | Ensure calls modifying user data are made by `.aibtc-base-dao` or a registered extension. |
-| u1501      | ERR_USER_NOT_FOUND        | User principal or index not found for an operation. | Ensure the user exists before attempting to modify reputation, or use `get-or-create-user-index`. |
+| Error Code | Constant                 | Description                                         | Resolution                                                                                        |
+| ---------- | ------------------------ | --------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| u1500      | ERR_NOT_DAO_OR_EXTENSION | Caller is not the DAO or an authorized extension.   | Ensure calls modifying user data are made by `.aibtc-base-dao` or a registered extension.         |
+| u1501      | ERR_USER_NOT_FOUND       | User principal or index not found for an operation. | Ensure the user exists before attempting to modify reputation, or use `get-or-create-user-index`. |
 
 ## Security Considerations
 

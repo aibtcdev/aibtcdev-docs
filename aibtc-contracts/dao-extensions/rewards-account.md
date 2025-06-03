@@ -17,7 +17,6 @@ The DAO Rewards Account extension (`aibtc-rewards-account`) provides a secure co
 | Property       | Value                                                              |
 | -------------- | ------------------------------------------------------------------ |
 | Contract Name  | `aibtc-rewards-account`                                            |
-| Version        | 2.0.0                                                              |
 | Implements     | `.aibtc-dao-traits.extension`, `.aibtc-dao-traits.rewards-account` |
 | Key Parameters | Relies on DAO/extension calls to specify token and amount.         |
 
@@ -25,23 +24,20 @@ The DAO Rewards Account extension (`aibtc-rewards-account`) provides a secure co
 
 ```mermaid
 flowchart TD
-    A["DAO/Authorized Extension"]
-    B["Rewards Account Extension<br>(aibtc-rewards-account)"]
-    C["Token Contract<br>(e.g., .aibtc-faktory)"]
-    D["Recipient"]
-    
-    subgraph Rewards Account Functions
+    A["DAO Created"]
+    B["Rewards Account Extension"]
+    C["Blockchain"]
+
+    subgraph UF["DAO Protected Functions"]
         BA["transfer-reward"]
     end
-    
-    A --"Call transfer-reward(recipient, amount)"--> B
-    B --> BA
-    BA --"Verify caller, check balance"--> B
-    BA --"as-contract call transfer(amount, SELF, recipient, none)"--> C
-    C --"Transfer tokens"--> D
+
+    A -->|"DAO Initialized"| B
+    B -->|"Accept function calls"| UF
+    BA --> C
 ```
 
-The DAO or an authorized extension initiates a reward payment by calling the `transfer-reward` function on this extension. The extension verifies the caller's authorization and its own balance of the specified token (e.g., aIBTC via `.aibtc-faktory`). If valid, it executes a token transfer from its own account to the designated recipient.
+The DAO or an authorized extension initiates a reward payment by calling the `transfer-reward` function on this extension. The extension verifies the caller's authorization and its own balance of the specified token (e.g., AIBTC via `.aibtc-faktory`). If valid, it executes a token transfer from its own account to the designated recipient.
 
 ## Public Functions
 
@@ -50,63 +46,41 @@ The DAO or an authorized extension initiates a reward payment by calling the `tr
 **Purpose**: Standard extension callback function required by the extension trait.
 
 **Parameters**:
+
 - `sender`: `principal` - The principal that triggered the callback.
 - `memo`: `(buff 34)` - Optional memo data.
 
 **Returns**: `(response bool)` - Returns `(ok true)` if the callback is processed.
-
-**Example**:
-```clarity
-(contract-call? .aibtc-rewards-account callback tx-sender 0x00)
-```
 
 ### `transfer-reward`
 
 **Purpose**: Transfers a specified amount of tokens from this contract to a recipient.
 
 **Parameters**:
+
 - `recipient`: `principal` - The principal to receive the reward.
 - `amount`: `uint` - The amount of tokens to transfer.
 
 **Returns**: `(response bool err-code)` - Returns `(ok true)` if the transfer is successful, otherwise an error.
 
-**Example**:
-```clarity
-;; Assuming this call is made by the DAO or an authorized extension
-(contract-call? .aibtc-rewards-account transfer-reward 'SPRECIPIENTADDRESS u1000000)
-```
-
 **Notes**: This function can only be called by the DAO (`.aibtc-base-dao`) or an authorized extension. The contract must have a sufficient balance of the token being transferred (managed by `.aibtc-faktory` in this context).
 
 ## Read-Only Functions
 
-This contract does not have specific read-only functions beyond those potentially inherited or implied by its traits. Balances are typically checked via the token contract (e.g., `(contract-call? .aibtc-faktory get-balance .aibtc-rewards-account)`).
+This contract does not have specific read-only functions. Balances are typically checked via the token contract (e.g., `(contract-call? .aibtc-faktory get-balance .aibtc-rewards-account)`).
 
 ## Print Events
 
-| Event                                   | Description                                  | Data                                                                 |
-| --------------------------------------- | -------------------------------------------- | -------------------------------------------------------------------- |
-| `aibtc-rewards-account/transfer-reward` | Emitted when a reward transfer is successful | `recipient`, `amount`, `contractCaller`, `txSender`                  |
-
-## Integration Examples
-
-### Transferring a Reward via a DAO Proposal
-
-```clarity
-;; This would typically be part of a DAO proposal execution
-;; The proposal would call .aibtc-base-dao to execute this:
-(contract-call? .aibtc-rewards-account transfer-reward
-  'SPRECIPIENTFORPROPOSALXYZ  ;; Recipient's principal
-  u500000000 ;; Amount of reward (e.g., 500 aIBTC tokens)
-)
-```
+| Event                                   | Description                                  | Data                                                |
+| --------------------------------------- | -------------------------------------------- | --------------------------------------------------- |
+| `aibtc-rewards-account/transfer-reward` | Emitted when a reward transfer is successful | `recipient`, `amount`, `contractCaller`, `txSender` |
 
 ## Error Handling
 
-| Error Code | Constant                  | Description                                       | Resolution                                                                    |
-| ---------- | ------------------------- | ------------------------------------------------- | ----------------------------------------------------------------------------- |
-| u1700      | ERR_NOT_DAO_OR_EXTENSION  | Caller is not the DAO or an authorized extension. | Ensure the call is made by `.aibtc-base-dao` or a registered extension.       |
-| u1701      | ERR_INSUFFICIENT_BALANCE  | The contract has insufficient tokens for transfer. | Ensure the rewards account has been funded with enough tokens before transfer. |
+| Error Code | Constant                 | Description                                        | Resolution                                                                     |
+| ---------- | ------------------------ | -------------------------------------------------- | ------------------------------------------------------------------------------ |
+| u1700      | ERR_NOT_DAO_OR_EXTENSION | Caller is not the DAO or an authorized extension.  | Ensure the call is made by `.aibtc-base-dao` or a registered extension.        |
+| u1701      | ERR_INSUFFICIENT_BALANCE | The contract has insufficient tokens for transfer. | Ensure the rewards account has been funded with enough tokens before transfer. |
 
 ## Security Considerations
 

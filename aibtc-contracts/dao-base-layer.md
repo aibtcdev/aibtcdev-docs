@@ -41,6 +41,7 @@ Extensions are modular components that provide specific functionality to the DAO
 - Interacts with the DAO through a standardized interface
 
 Available extensions include:
+
 - Action Proposals: Predefined actions, faster voting, veto, rewards
 - DAO Charter: Mission and values / On-chain organizational constitution
 - DAO Epoch: Bitcoin block-based epochs, configurable length
@@ -55,6 +56,7 @@ Available extensions include:
 The DAO is governed entirely by token holders through proposals. Currently, this is primarily facilitated through Action Proposals.
 
 **Action Proposals**:
+
 - Used for predefined operations, such as sending on-chain messages.
 - Feature lower voting thresholds (e.g., 66% approval, 15% quorum).
 - Follow a lifecycle of creation, voting, conclusion, and execution.
