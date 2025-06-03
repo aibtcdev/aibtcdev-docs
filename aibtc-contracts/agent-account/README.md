@@ -250,16 +250,6 @@ flowchart TD
 | u1102      | ERR_OPERATION_FAILED     | A general failure occurred during the operation.    | This may indicate an issue with an external contract call; check transaction details and related contracts. |
 | u1103      | ERR_BUY_SELL_NOT_ALLOWED | The `ACCOUNT_AGENT` attempted a trade action when not permitted. | The `ACCOUNT_OWNER` must call `set-agent-can-buy-sell` with `true` to enable agent trading.           |
 
-## Security Considerations
-
-- Only the owner can withdraw assets
-- Only the owner and agent can interact with DAOs
-- Assets must be explicitly approved before they can be deposited or withdrawn
-- DEXes must be explicitly approved before they can be used for trading
-- Agent buy/sell permissions can be toggled by the owner
-- Pre-approved tokens and DEXes are configured at deployment
-- All actions are logged with detailed print events
-- Permission checks are performed via private functions (`is-authorized`, `is-owner`, `is-agent`, `buy-sell-allowed`)
 
 ## Security Considerations
 
