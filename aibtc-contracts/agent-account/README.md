@@ -72,7 +72,7 @@ flowchart TD
 | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Contract Name           | `aibtc-agent-account`                                                                                                                                                                          |
 | Implements              | `.aibtc-agent-account-traits.aibtc-account`, `.aibtc-agent-account-traits.aibtc-proposals`, `.aibtc-agent-account-traits.faktory-dex-approval`, `.aibtc-agent-account-traits.faktory-buy-sell` |
-| Key Constants           | `ACCOUNT_OWNER`, `ACCOUNT_AGENT`, `SBTC_TOKEN`, `DAO_TOKEN`, `DAO_TOKEN_DEX`, `DEPLOYED_BURN_BLOCK`, `DEPLOYED_STACKS_BLOCK`, `SELF`                                                            |
+| Key Constants           | `ACCOUNT_OWNER`, `ACCOUNT_AGENT`, `SBTC_TOKEN`, `DAO_TOKEN`, `DAO_TOKEN_DEX`, `DEPLOYED_BURN_BLOCK`, `DEPLOYED_STACKS_BLOCK`, `SELF`                                                           |
 | Initial Approved Assets | `SBTC_TOKEN`, `DAO_TOKEN`                                                                                                                                                                      |
 | Initial Approved DEX    | `DAO_TOKEN_DEX`                                                                                                                                                                                |
 
@@ -100,156 +100,207 @@ flowchart TD
 ## Public Functions
 
 ### `deposit-stx`
+
 **Purpose**: Deposits STX into the agent account.
 **Parameters**:
-  - `amount`: `uint` - The amount of STX to deposit.
+
+- `amount`: `uint` - The amount of STX to deposit.
+
 **Returns**: `(response (bool true) uint)` - Success or error code.
 **Authorization**: Anyone can call this function.
 
 ### `deposit-ft`
+
 **Purpose**: Deposits a specified amount of a fungible token (FT) into the agent account.
 **Parameters**:
-  - `ft`: `<ft-trait>` - The contract principal of the fungible token.
-  - `amount`: `uint` - The amount of the token to deposit.
+
+- `ft`: `<ft-trait>` - The contract principal of the fungible token.
+- `amount`: `uint` - The amount of the token to deposit.
+
 **Returns**: `(response (bool true) uint)` - Success or error code.
 **Authorization**: Anyone can call this function.
 **Notes**: The asset must be an approved asset (`is-approved-asset` must be true).
 
 ### `withdraw-stx`
+
 **Purpose**: Withdraws STX from the agent account to the `ACCOUNT_OWNER`.
 **Parameters**:
-  - `amount`: `uint` - The amount of STX to withdraw.
+
+- `amount`: `uint` - The amount of STX to withdraw.
+
 **Returns**: `(response (bool true) uint)` - Success or error code.
 **Authorization**: Only `ACCOUNT_OWNER`.
 
 ### `withdraw-ft`
+
 **Purpose**: Withdraws a specified amount of a fungible token (FT) from the agent account to the `ACCOUNT_OWNER`.
 **Parameters**:
-  - `ft`: `<ft-trait>` - The contract principal of the fungible token.
-  - `amount`: `uint` - The amount of the token to withdraw.
+
+- `ft`: `<ft-trait>` - The contract principal of the fungible token.
+- `amount`: `uint` - The amount of the token to withdraw.
+
 **Returns**: `(response (bool true) uint)` - Success or error code.
 **Authorization**: Only `ACCOUNT_OWNER`.
 **Notes**: The asset must be an approved asset.
 
 ### `approve-asset`
+
 **Purpose**: Approves a fungible token asset, allowing it to be deposited and managed by the account.
 **Parameters**:
-  - `asset`: `principal` - The contract principal of the asset to approve.
+
+- `asset`: `principal` - The contract principal of the asset to approve.
+
 **Returns**: `(response (bool true) uint)` - Success or error code.
 **Authorization**: Only `ACCOUNT_OWNER`.
 
 ### `revoke-asset`
+
 **Purpose**: Revokes approval for a fungible token asset.
 **Parameters**:
-  - `asset`: `principal` - The contract principal of the asset to revoke.
+
+- `asset`: `principal` - The contract principal of the asset to revoke.
+
 **Returns**: `(response (bool true) uint)` - Success or error code.
 **Authorization**: Only `ACCOUNT_OWNER`.
 
 ### `create-action-proposal`
+
 **Purpose**: Creates an action proposal through a specified voting contract.
 **Parameters**:
-  - `voting-contract`: `<action-proposal-voting-trait>` - The contract principal of the voting contract.
-  - `action`: `<action-trait>` - The contract principal of the action to be proposed.
-  - `parameters`: `(buff 2048)` - ABI-encoded parameters for the action.
-  - `memo`: `(optional (string-ascii 1024))` - An optional memo for the proposal.
+
+- `voting-contract`: `<action-proposal-voting-trait>` - The contract principal of the voting contract.
+- `action`: `<action-trait>` - The contract principal of the action to be proposed.
+- `parameters`: `(buff 2048)` - ABI-encoded parameters for the action.
+- `memo`: `(optional (string-ascii 1024))` - An optional memo for the proposal.
+
 **Returns**: `(response principal uint)` - Success (returning proposal ID) or error code.
 **Authorization**: `ACCOUNT_OWNER` or `ACCOUNT_AGENT`.
 
 ### `vote-on-action-proposal`
+
 **Purpose**: Casts a vote on an existing action proposal.
 **Parameters**:
-  - `voting-contract`: `<action-proposal-voting-trait>` - The contract principal of the voting contract.
-  - `proposalId`: `uint` - The ID of the proposal to vote on.
-  - `vote`: `bool` - The vote (`true` for yes, `false` for no).
+
+- `voting-contract`: `<action-proposal-voting-trait>` - The contract principal of the voting contract.
+- `proposalId`: `uint` - The ID of the proposal to vote on.
+- `vote`: `bool` - The vote (`true` for yes, `false` for no).
+
 **Returns**: `(response bool uint)` - Success or error code.
 **Authorization**: `ACCOUNT_OWNER` or `ACCOUNT_AGENT`.
 
 ### `veto-action-proposal`
+
 **Purpose**: Vetoes an action proposal.
 **Parameters**:
-  - `voting-contract`: `<action-proposal-voting-trait>` - The contract principal of the voting contract.
-  - `proposalId`: `uint` - The ID of the proposal to veto.
+
+- `voting-contract`: `<action-proposal-voting-trait>` - The contract principal of the voting contract.
+- `proposalId`: `uint` - The ID of the proposal to veto.
+
 **Returns**: `(response bool uint)` - Success or error code.
 **Authorization**: `ACCOUNT_OWNER` or `ACCOUNT_AGENT`.
 
 ### `conclude-action-proposal`
+
 **Purpose**: Concludes an action proposal, potentially executing it if passed.
 **Parameters**:
-  - `voting-contract`: `<action-proposal-voting-trait>` - The contract principal of the voting contract.
-  - `proposalId`: `uint` - The ID of the proposal to conclude.
-  - `action`: `<action-trait>` - The contract principal of the action associated with the proposal.
+
+- `voting-contract`: `<action-proposal-voting-trait>` - The contract principal of the voting contract.
+- `proposalId`: `uint` - The ID of the proposal to conclude.
+- `action`: `<action-trait>` - The contract principal of the action associated with the proposal.
+
 **Returns**: `(response bool uint)` - Success or error code.
 **Authorization**: `ACCOUNT_OWNER` or `ACCOUNT_AGENT`.
 
 ### `acct-buy-asset`
+
 **Purpose**: Buys an asset from an approved Faktory DEX.
 **Parameters**:
-  - `faktory-dex`: `<dao-faktory-dex>` - The contract principal of the DEX.
-  - `asset`: `<faktory-token>` - The contract principal of the asset to buy.
-  - `amount`: `uint` - The amount of the asset to buy.
+
+- `faktory-dex`: `<dao-faktory-dex>` - The contract principal of the DEX.
+- `asset`: `<faktory-token>` - The contract principal of the asset to buy.
+- `amount`: `uint` - The amount of the asset to buy.
+
 **Returns**: `(response bool uint)` - Success or error code.
 **Authorization**: `ACCOUNT_OWNER`, or `ACCOUNT_AGENT` if `agentCanBuySell` is true.
 **Notes**: The DEX must be an approved DEX.
 
 ### `acct-sell-asset`
+
 **Purpose**: Sells an asset to an approved Faktory DEX.
 **Parameters**:
-  - `faktory-dex`: `<dao-faktory-dex>` - The contract principal of the DEX.
-  - `asset`: `<faktory-token>` - The contract principal of the asset to sell.
-  - `amount`: `uint` - The amount of the asset to sell.
+
+- `faktory-dex`: `<dao-faktory-dex>` - The contract principal of the DEX.
+- `asset`: `<faktory-token>` - The contract principal of the asset to sell.
+- `amount`: `uint` - The amount of the asset to sell.
+
 **Returns**: `(response bool uint)` - Success or error code.
 **Authorization**: `ACCOUNT_OWNER`, or `ACCOUNT_AGENT` if `agentCanBuySell` is true.
 **Notes**: The DEX must be an approved DEX.
 
 ### `acct-approve-dex`
+
 **Purpose**: Approves a Faktory DEX for trading.
 **Parameters**:
-  - `faktory-dex`: `<dao-faktory-dex>` - The contract principal of the DEX to approve.
+
+- `faktory-dex`: `<dao-faktory-dex>` - The contract principal of the DEX to approve.
+
 **Returns**: `(response (bool true) uint)` - Success or error code.
 **Authorization**: Only `ACCOUNT_OWNER`.
 
 ### `acct-revoke-dex`
+
 **Purpose**: Revokes approval for a Faktory DEX.
 **Parameters**:
-  - `faktory-dex`: `<dao-faktory-dex>` - The contract principal of the DEX to revoke.
+
+- `faktory-dex`: `<dao-faktory-dex>` - The contract principal of the DEX to revoke.
+
 **Returns**: `(response (bool true) uint)` - Success or error code.
 **Authorization**: Only `ACCOUNT_OWNER`.
 
 ### `set-agent-can-buy-sell`
+
 **Purpose**: Sets or revokes the `ACCOUNT_AGENT`'s permission to buy and sell assets on approved DEXs.
 **Parameters**:
-  - `canBuySell`: `bool` - `true` to allow, `false` to disallow.
+
+- `canBuySell`: `bool` - `true` to allow, `false` to disallow.
+
 **Returns**: `(response (bool true) uint)` - Success or error code.
 **Authorization**: Only `ACCOUNT_OWNER`.
 
 ## Read-Only Functions
 
 ### `is-approved-asset`
+
 **Purpose**: Checks if a given asset principal is on the approved list.
 **Parameters**:
-  - `asset`: `principal` - The asset contract principal to check.
+
+- `asset`: `principal` - The asset contract principal to check.
+
 **Returns**: `bool` - `true` if approved, `false` otherwise.
 
 ### `is-approved-dex`
+
 **Purpose**: Checks if a given DEX principal is on the approved list.
 **Parameters**:
-  - `dex`: `principal` - The DEX contract principal to check.
+
+- `dex`: `principal` - The DEX contract principal to check.
+
 **Returns**: `bool` - `true` if approved, `false` otherwise.
 
 ### `get-configuration`
+
 **Purpose**: Retrieves the core configuration of the agent account.
 **Parameters**: None.
 **Returns**: `(response { account: principal, agent: principal, owner: principal, daoToken: principal, daoTokenDex: principal, sbtcToken: principal } none)` - A tuple containing key principals.
 
 ## Error Handling
 
-| Error Code | Constant                 | Description                                         | Resolution                                                                                                |
-| ---------- | ------------------------ | --------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| u1100      | ERR_UNAUTHORIZED         | Caller is not authorized to perform the action.     | Ensure the `tx-sender` is the `ACCOUNT_OWNER` or `ACCOUNT_AGENT` as required by the function.             |
-| u1101      | ERR_UNKNOWN_ASSET        | The specified asset is not in the approved list.    | The `ACCOUNT_OWNER` must call `approve-asset` for the asset or `acct-approve-dex` for the DEX first.      |
-| u1102      | ERR_OPERATION_FAILED     | A general failure occurred during the operation.    | This may indicate an issue with an external contract call; check transaction details and related contracts. |
-| u1103      | ERR_BUY_SELL_NOT_ALLOWED | The `ACCOUNT_AGENT` attempted a trade action when not permitted. | The `ACCOUNT_OWNER` must call `set-agent-can-buy-sell` with `true` to enable agent trading.           |
-
+| Error Code | Constant                 | Description                                                      | Resolution                                                                                                  |
+| ---------- | ------------------------ | ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| u1100      | ERR_UNAUTHORIZED         | Caller is not authorized to perform the action.                  | Ensure the `tx-sender` is the `ACCOUNT_OWNER` or `ACCOUNT_AGENT` as required by the function.               |
+| u1101      | ERR_UNKNOWN_ASSET        | The specified asset is not in the approved list.                 | The `ACCOUNT_OWNER` must call `approve-asset` for the asset or `acct-approve-dex` for the DEX first.        |
+| u1102      | ERR_OPERATION_FAILED     | A general failure occurred during the operation.                 | This may indicate an issue with an external contract call; check transaction details and related contracts. |
+| u1103      | ERR_BUY_SELL_NOT_ALLOWED | The `ACCOUNT_AGENT` attempted a trade action when not permitted. | The `ACCOUNT_OWNER` must call `set-agent-can-buy-sell` with `true` to enable agent trading.                 |
 
 ## Security Considerations
 
