@@ -2,6 +2,8 @@
 description: "AI Meets Bitcoin: Build, trade, explore, and govern—all on-chain."
 ---
 
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/aibtcdev/aibtcdev-docs)
+
 # AIBTC
 
 ## AI DAOs: On-Chain Governance Without Permission
