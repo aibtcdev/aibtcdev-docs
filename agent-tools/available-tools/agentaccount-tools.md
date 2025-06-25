@@ -137,6 +137,45 @@ Votes on an action proposal. Can be called by the owner, or the agent if permitt
 }
 ```
 
+### `agentaccount_veto_action_proposal`
+
+Vetoes an action proposal. Can be called by the owner, or the agent if permitted.
+
+**Input Parameters**:
+- `agent_account_contract`: Contract principal of the agent account.
+- `voting_contract`: The principal of the action proposal voting contract.
+- `proposal_id`: The ID of the proposal to veto.
+
+**Output**:
+```json
+{
+  "success": true,
+  "txid": "0xabcd...",
+  "proposal_id": 1,
+  "vetoed": true
+}
+```
+
+### `agentaccount_conclude_action_proposal`
+
+Concludes an action proposal. Can be called by the owner, or the agent if permitted.
+
+**Input Parameters**:
+- `agent_account_contract`: Contract principal of the agent account.
+- `voting_contract`: The principal of the action proposal voting contract.
+- `proposal_id`: The ID of the proposal to conclude.
+- `action_contract`: The principal of the action contract associated with the proposal.
+
+**Output**:
+```json
+{
+  "success": true,
+  "txid": "0xbcde...",
+  "proposal_id": 1,
+  "concluded": true
+}
+```
+
 ### `agentaccount_faktory_buy_asset`
 
 Buys an asset from an approved Faktory DEX. Can be called by the owner, or the agent if permitted.
@@ -154,6 +193,26 @@ Buys an asset from an approved Faktory DEX. Can be called by the owner, or the a
   "txid": "0x789a...",
   "asset_bought": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.some-faktory-token",
   "amount": 10000
+}
+```
+
+### `agentaccount_faktory_sell_asset`
+
+Sells an asset to an approved Faktory DEX. Can be called by the owner, or the agent if permitted.
+
+**Input Parameters**:
+- `agent_account_contract`: Contract principal of the agent account.
+- `faktory_dex_contract`: The principal of the Faktory DEX.
+- `asset_contract`: The principal of the asset to sell.
+- `amount`: The amount of the asset to sell.
+
+**Output**:
+```json
+{
+  "success": true,
+  "txid": "0xcdef...",
+  "asset_sold": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.some-faktory-token",
+  "amount": 5000
 }
 ```
 
