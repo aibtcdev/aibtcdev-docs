@@ -4,34 +4,31 @@ description: Example of how to use the smart contract documentation template
 
 # Agent Account Documentation Example
 
-This is an example of how to apply the smart contract documentation template to the Agent Account contract.
+This is an example of how to apply the smart contract documentation template to the `aibtc-agent-account` contract.
 
 ```yaml
 ---
-description: User-Agent Account for managing assets and DAO interactions
+description: A special account contract between a user and an agent for managing assets and DAO interactions.
 ---
 ```
 
 # Agent Account
 
-The Agent Account provides a secure interface between users and their agents, enabling controlled asset management and DAO participation. It creates a permission structure where users maintain full control of their assets while allowing agents to perform specific actions on their behalf.
+The Agent Account provides a secure interface between an owner (user) and an agent, enabling controlled asset management and DAO participation. It creates a permission structure where the owner maintains full control of their assets while allowing an agent to perform specific, permitted actions on their behalf.
 
 ## Key Features
 
-- **Self-Custody**: Users maintain exclusive withdrawal rights
-- **Agent Delegation**: Controlled permissions for agents to interact with DAOs
-- **Asset Management**: Deposit, withdraw, and trade approved assets
-- **DAO Governance**: Create, vote on, and conclude proposals
-- **Trading Controls**: Optional agent trading with user-defined limits
+- **Self-Custody**: The owner has exclusive withdrawal rights.
+- **Agent Delegation**: The owner can grant the agent specific permissions for DAO interactions, contract approvals, and trading.
+- **Unified Contract Approval**: A single allowlist for all external contracts (tokens, DEXs, etc.).
+- **Transparent Operations**: All significant actions are logged via print events.
 
 ## Quick Reference
 
-| Property          | Value                                                                          |
-| ----------------- | ------------------------------------------------------------------------------ |
-| Contract Name     | `aibtc-user-agent-account`                                                     |
-| Version           | 1.0.0                                                                          |
-| Implements        | `aibtc-account`, `aibtc-proposals-v3`, `faktory-dex-approval`, `faktory-buy-sell` |
-| Naming Convention | `aibtc-user-agent-account-[OWNER_FIRST5]-[OWNER_LAST5]-[AGENT_FIRST5]-[AGENT_LAST5]` |
+| Property      | Value                                                                                                                                                                          |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Contract Name | `aibtc-agent-account`                                                                                                                                                          |
+| Implements    | `.aibtc-agent-account-traits.aibtc-account`, `.aibtc-agent-account-traits.aibtc-proposals`, `.aibtc-agent-account-traits.aibtc-account-config`, `.aibtc-agent-account-traits.faktory-buy-sell` |
 
 ## How It Works
 
@@ -44,25 +41,24 @@ flowchart TD
     E["Approved DEXes"]
     
     subgraph Owner Operations
-        CA["Asset Management"]
-        CB["Permission Control"]
+        direction LR
+        CA["Manages Assets"]
+        CB["Manages Permissions"]
     end
     
     subgraph Agent Operations
+        direction LR
         CC["Governance Actions"]
         CD["Trading Operations"]
     end
     
-    A -->|"Deposits assets"| CA
-    A -->|"Withdraws assets"| CA
-    A -->|"Approves assets/DEXes"| CB
-    A -->|"Controls agent permissions"| CB
-    A -->|"Proposes actions"| CC
-    A -->|"Votes on proposals"| CC
-    A -->|"Trades assets"| CD
-    B -->|"Proposes actions"| CC
-    B -->|"Votes on proposals"| CC
-    B -->|"Trades assets ONLY if permitted"| CD
+    A -->|"Deposits/Withdraws"| CA
+    A -->|"Sets Agent Permissions"| CB
+    A -->|"Can always perform any action"| C
+
+    B -->|"Deposits Assets"| C
+    B -->|"Performs Governance (if permitted)"| CC
+    B -->|"Trades Assets (if permitted)"| CD
     
     CA --> C
     CB --> C
@@ -73,139 +69,103 @@ flowchart TD
     C -->|"Trades on"| E
 ```
 
-The Agent Account acts as a secure intermediary, with different permission levels for owners and agents. The owner (user who created the account) maintains full control over assets and configuration, while agents can perform governance actions and (only when explicitly permitted by the owner) trading operations. The owner has exclusive withdrawal rights.
+The Agent Account acts as a secure intermediary. The owner maintains full control over assets and can grant the agent specific permissions. The agent can only perform actions like voting or trading if explicitly permitted by the owner. Only the owner can withdraw assets.
 
 ## Public Functions
 
 ### `deposit-stx`
 
-**Purpose**: Deposits STX into the agent account
-
-**Parameters**:
-
-- `amount`: uint - Amount of STX to deposit
-
-**Returns**: (response bool uint) - Success or error code
-
-**Example**:
-
-```clarity
-(contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG deposit-stx u1000000)
-```
+**Purpose**: Deposits STX into the agent account.
+**Parameters**: `amount`: `uint`
+**Authorization**: Owner or Agent
+**Example**: `(contract-call? .aibtc-agent-account deposit-stx u1000000)`
 
 ### `withdraw-stx`
 
-**Purpose**: Withdraws STX from the agent account (user only)
+**Purpose**: Withdraws STX from the agent account to the owner.
+**Parameters**: `amount`: `uint`
+**Authorization**: Owner Only
+**Example**: `(contract-call? .aibtc-agent-account withdraw-stx u500000)`
 
-**Parameters**:
+### `approve-contract`
 
-- `amount`: uint - Amount of STX to withdraw
+**Purpose**: Approves an external contract for interaction.
+**Parameters**: `contract`: `principal`
+**Authorization**: Owner, or Agent if permitted.
+**Example**: `(contract-call? .aibtc-agent-account approve-contract .my-token)`
 
-**Returns**: (response bool uint) - Success or error code
+### `set-agent-can-buy-sell-assets`
 
-**Example**:
-
-```clarity
-(contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG withdraw-stx u500000)
-```
-
-### `vote-on-action-proposal`
-
-**Purpose**: Votes on an action proposal (user or agent)
-
-**Parameters**:
-
-- `action-proposals`: action-proposals-trait - The action proposals contract
-- `proposalId`: uint - The proposal ID
-- `vote`: bool - True for yes, false for no
-
-**Returns**: (response bool uint) - Success or error code
-
-**Example**:
-
-```clarity
-(contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG vote-on-action-proposal .aibtc-action-proposals-v3 u5 true)
-```
+**Purpose**: Allows the owner to enable or disable the agent's trading ability.
+**Parameters**: `canBuySell`: `bool`
+**Authorization**: Owner Only
+**Example**: `(contract-call? .aibtc-agent-account set-agent-can-buy-sell-assets true)`
 
 ## Read-Only Functions
 
-### `get-balance-stx`
+### `is-approved-contract`
 
-**Purpose**: Gets the current STX balance of the agent account
+**Purpose**: Checks if a contract is on the approved list.
+**Parameters**: `contract`: `principal`
+**Returns**: `bool`
+**Example**: `(contract-call? .aibtc-agent-account is-approved-contract .my-dex)`
 
+### `get-configuration`
+
+**Purpose**: Gets the core agent account configuration.
 **Parameters**: None
-
-**Returns**: uint - Current STX balance
-
-**Example**:
-
-```clarity
-(contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG get-balance-stx)
-```
-
-#### `get-configuration`
-
-**Purpose**: Gets the agent account configuration
-
-**Parameters**: None
-
-**Returns**: Tuple with user, agent, and other configuration details
-
-**Example**:
-
-```clarity
-(contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG get-configuration)
-```
+**Returns**: A tuple with `owner`, `agent`, and `account` principals.
+**Example**: `(contract-call? .aibtc-agent-account get-configuration)`
 
 ## Print Events
 
-| Event                     | Description                               | Data                                                 |
-| ------------------------- | ----------------------------------------- | ---------------------------------------------------- |
-| `deposit-stx`             | Emitted when STX is deposited             | Amount, sender, caller, recipient                    |
-| `withdraw-stx`            | Emitted when STX is withdrawn             | Amount, sender, caller, recipient                    |
-| `vote-on-action-proposal` | Emitted when voting on an action proposal | Proposal contract, proposal ID, vote, sender, caller |
+| Event                             | Description                               |
+| --------------------------------- | ----------------------------------------- |
+| `deposit-stx`                     | Emitted when STX is deposited.            |
+| `withdraw-stx`                    | Emitted when STX is withdrawn.            |
+| `approve-contract`                | Emitted when a contract is approved.      |
+| `set-agent-can-buy-sell-assets`   | Emitted when agent trading permission is changed. |
 
 ## Integration Examples
 
-### Depositing STX and Voting on a Proposal
+### Depositing STX and Approving a Contract
 
 ```clarity
-;; Deposit STX to the agent account
-(contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG deposit-stx u1000000)
+;; Deposit STX to the agent account (as owner or agent)
+(contract-call? .aibtc-agent-account deposit-stx u1000000)
 
-;; Vote on an action proposal
-(contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG vote-on-action-proposal .aibtc-action-proposals-v3 u5 true)
+;; Approve a DEX for trading (as owner)
+(contract-call? .aibtc-agent-account approve-contract .aibtc-faktory-dex)
 ```
 
 ### Agent Trading with Permission
 
 ```clarity
 ;; Owner enables agent trading (must be called by the owner)
-(contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG set-agent-can-buy-sell true)
+(contract-call? .aibtc-agent-account set-agent-can-buy-sell-assets true)
 
 ;; Agent buys tokens (will only succeed if agent trading is enabled)
-(contract-call? .aibtc-user-agent-account-ST1PQ-PGZGM-ST2CY-RK9AG acct-buy-asset .aibtc-token-dex .aibtc-token u100000000)
+(as-contract (contract-call? .aibtc-agent-account faktory-buy-asset .aibtc-faktory-dex .aibtc-token u100000000))
 ```
 
 ## Error Handling
 
-| Error Code | Constant                 | Description                              | Resolution                                                       |
-| ---------- | ------------------------ | ---------------------------------------- | ---------------------------------------------------------------- |
-| u9000      | ERR_UNAUTHORIZED         | Caller is not authorized                 | Ensure you're calling from the correct principal (user or agent) |
-| u9001      | ERR_UNKNOWN_ASSET        | Asset is not in the approved list        | Call approve-asset first to add the asset to the approved list   |
-| u9002      | ERR_OPERATION_FAILED     | Operation failed                         | Check parameters and try again                                   |
-| u9003      | ERR_BUY_SELL_NOT_ALLOWED | Buy/sell operation not allowed for agent | User must call set-agent-can-buy-sell to enable trading          |
+| Error Code | Constant                    | Description                               |
+| ---------- | --------------------------- | ----------------------------------------- |
+| u1100      | ERR_CALLER_NOT_OWNER        | Caller is not the owner.                  |
+| u1101      | ERR_CONTRACT_NOT_APPROVED   | The target contract is not approved.      |
+| u1103      | ERR_OPERATION_NOT_ALLOWED   | The caller cannot perform this action.    |
 
 ## Security Considerations
 
-- **Principal Separation**: User and agent addresses are separate and have different permissions
-- **Asset Approval**: Assets must be explicitly approved before they can be used
-- **Withdrawal Restrictions**: Only the user can withdraw assets
-- **Trading Controls**: Agent trading can be enabled/disabled by the user
-- **Immutable Configuration**: User and agent addresses cannot be changed after deployment
+- **Principal Separation**: Owner and agent have different, clearly defined permissions.
+- **Contract Approval**: External contracts must be explicitly approved before use.
+- **Withdrawal Restrictions**: Only the owner can withdraw assets.
+- **Configurable Permissions**: The owner has granular control over the agent's abilities.
+- **Immutable Configuration**: Owner and agent addresses cannot be changed after deployment.
 
 ## Related Contracts
 
-- **DAO Action Proposals**: The agent account can interact with action proposals for voting
-- **DAO Core Proposals**: The agent account can interact with core proposals for voting
-- **Faktory DEX**: The agent account can trade on approved DEXes
+- **DAO Proposal Contracts**: The agent account can interact with proposal contracts for voting.
+- **Faktory DEX**: The agent account can trade on approved DEXes.
+- **sBTC Token**: The sBTC contract is approved by default for deposits.
