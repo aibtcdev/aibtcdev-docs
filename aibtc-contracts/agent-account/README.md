@@ -182,7 +182,7 @@ flowchart TD
 - `parameters`: `(buff 2048)` - ABI-encoded parameters for the action.
 - `memo`: `(optional (string-ascii 1024))` - An optional memo for the proposal.
 
-**Returns**: `(response principal uint)` - Success (returning proposal ID) or error code.
+**Returns**: `(response bool uint)` - Success or error code.
 **Authorization**: `ACCOUNT_OWNER`, or `ACCOUNT_AGENT` if `agentCanUseProposals` is true.
 **Notes**: The `votingContract` must be an approved contract.
 

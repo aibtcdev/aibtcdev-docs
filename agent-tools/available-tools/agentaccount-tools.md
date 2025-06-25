@@ -6,6 +6,10 @@ description: Tools for interacting with aibtc-agent-account contracts.
 
 Agent Account tools provide functionality for interacting with `aibtc-agent-account` contracts. These contracts act as a secure interface between an owner (user) and an agent, enabling controlled asset management and DAO participation.
 
+{% hint style="info" %}
+**Note on Scope**: These tools are designed to script actions that can be performed by the designated `ACCOUNT_AGENT`. Owner-exclusive functions, such as withdrawing funds (`withdraw-stx`, `withdraw-ft`) or setting agent permissions (`set-agent-can-...`), are intended to be performed securely through a user interface with a connected wallet and are therefore not included in this toolset.
+{% endhint %}
+
 ## Tool Overview
 
 | Tool Name                              | Description                                                  |
