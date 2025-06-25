@@ -42,12 +42,12 @@ flowchart TD
     C["Actor 2"]
     D["Outcome 1"]
     E["Outcome 2"]
-    
+
     subgraph Contract Functions
         BA["Function 1"]
         BB["Function 2"]
     end
-    
+
     A -->|"Action"| B
     C -->|"Action"| B
     B --> BA
@@ -111,13 +111,6 @@ flowchart TD
 ```clarity
 ;; Example of how to use this contract for a specific purpose
 (contract-call? .[contract-name] [function-name] [params])
-```
-
-### [Example Use Case 2]
-
-```clarity
-;; Another example showing a different use case
-(contract-call? .[contract-name] [function-name] [different-params])
 ```
 
 ## Error Handling

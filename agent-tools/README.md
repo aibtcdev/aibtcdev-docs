@@ -24,22 +24,6 @@ Tools follow a consistent pattern:
 3. **Error Handling**: Tools provide standardized error responses
 4. **Return Values**: Tools return structured data that can be parsed by agents
 
-## Effective Prompting Patterns
-
-When using agent tools, following consistent prompting patterns helps ensure successful execution. Each prompt should:
-
-1. **Start with a clear action description** that matches the tool's purpose
-2. **Include all required parameters** with appropriate values
-3. **Use parameter names that match** the tool's expected inputs
-
-### Example Prompting Pattern
-
-```
-[Action description that matches tool purpose]
-- [parameter1 name]: [parameter1 value]
-- [parameter2 name]: [parameter2 value]
-```
-
 ### Useful Debugging Techniques
 
 When working with tools, these prompting patterns can help with debugging:

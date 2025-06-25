@@ -55,11 +55,11 @@ The `aibtc-action-proposal-voting` contract introduces several mechanisms:
 
 | Action Contract            | Target Function | Description                            | Parameters (for `send` function) |
 | -------------------------- | --------------- | -------------------------------------- | -------------------------------- |
-| `.aibtc-onchain-messaging` | `send`          | Posts a verified DAO message on-chain. | `msg (string-ascii 2043)`        |
+| `.aibtc-onchain-messaging` | `send`          | Posts a verified DAO message on-chain. | `msg (string-utf8 2043)`         |
 
 The `.aibtc-action-send-message` contract:
 
-- Posts a message (up to 2,043 ASCII characters) that is emitted as a `print` event.
+- Posts a message (up to 2,043 UTF-8 characters) that is emitted as a `print` event.
 - The event includes metadata indicating if the message originated from the DAO (via an extension like this one) or a token holder.
 - Provides a transparent and immutable way for the DAO to make official announcements or communications.
 
