@@ -80,6 +80,7 @@ flowchart TD
 | Property                   | Value                                                                                                                                                                                          |
 | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Contract Name              | `aibtc-agent-account`                                                                                                                                                                          |
+| Version                    | `2.0.0`                                                                                                                                                                                        |
 | Implements                 | `.aibtc-agent-account-traits.aibtc-account`, `.aibtc-agent-account-traits.aibtc-proposals`, `.aibtc-agent-account-traits.aibtc-account-config`, `.aibtc-agent-account-traits.faktory-buy-sell` |
 | Key Constants              | `ACCOUNT_OWNER`, `ACCOUNT_AGENT`, `SBTC_TOKEN`, `DEPLOYED_BURN_BLOCK`, `DEPLOYED_STACKS_BLOCK`, `SELF`                                                                                           |
 | Initial Approved Contracts | `SBTC_TOKEN`                                                                                                                                                                                   |
@@ -103,7 +104,7 @@ flowchart TD
 | `aibtc-agent-account/set-agent-can-use-proposals`      | Emitted when agent proposal permission is set      | `canUseProposals`, `sender`, `caller`                                                                           |
 | `aibtc-agent-account/set-agent-can-approve-revoke-contracts` | Emitted when agent contract approval permission is set | `canApproveRevokeContracts`, `sender`, `caller`                                                                 |
 | `aibtc-agent-account/set-agent-can-buy-sell-assets`    | Emitted when agent buy/sell permission is set      | `canBuySell`, `sender`, `caller`                                                                                |
-| `aibtc-agent-account/user-agent-account-created`       | Emitted when the agent account is created          | `account`, `agent`, `owner`                                                                                     |
+| `aibtc-agent-account/user-agent-account-created`       | Emitted when the agent account is created          | `account`, `agent`, `owner`, `sbtc`                                                                             |
 
 ## Public Functions
 
@@ -115,7 +116,7 @@ flowchart TD
 - `amount`: `uint` - The amount of STX to deposit.
 
 **Returns**: `(response (bool true) uint)` - Success or error code.
-**Authorization**: `ACCOUNT_OWNER` or `ACCOUNT_AGENT`.
+**Authorization**: `ACCOUNT_OWNER` or `ACCOUNT_AGENT` (as `tx-sender`).
 
 ### `deposit-ft`
 
@@ -126,7 +127,7 @@ flowchart TD
 - `amount`: `uint` - The amount of the token to deposit.
 
 **Returns**: `(response (bool true) uint)` - Success or error code.
-**Authorization**: `ACCOUNT_OWNER` or `ACCOUNT_AGENT`.
+**Authorization**: `ACCOUNT_OWNER` or `ACCOUNT_AGENT` (as `tx-sender`).
 **Notes**: The FT's contract must be an approved contract.
 
 ### `withdraw-stx`
@@ -290,7 +291,7 @@ flowchart TD
 
 **Purpose**: Retrieves the core configuration of the agent account.
 **Parameters**: None.
-**Returns**: `(response { account: principal, agent: principal, owner: principal } none)` - A tuple containing key principals.
+**Returns**: `(response { account: principal, agent: principal, owner: principal, sbtc: principal } none)` - A tuple containing key principals.
 
 ## Error Handling
 
@@ -429,7 +430,7 @@ The contract automatically initializes on deployment with:
 ;; print creation event
 (print {
   notification: "aibtc-agent-account/user-agent-account-created",
-  payload: (get-configuration) ;; This retrieves owner, agent, and account principal
+  payload: (get-configuration) ;; This retrieves owner, agent, account, and sbtc principals
 })
 ```
 

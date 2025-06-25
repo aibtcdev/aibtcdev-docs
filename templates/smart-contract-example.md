@@ -114,7 +114,7 @@ The Agent Account acts as a secure intermediary. The owner maintains full contro
 
 **Purpose**: Gets the core agent account configuration.
 **Parameters**: None
-**Returns**: A tuple with `owner`, `agent`, and `account` principals.
+**Returns**: A tuple with `owner`, `agent`, `account`, and `sbtc` principals.
 **Example**: `(contract-call? .aibtc-agent-account get-configuration)`
 
 ## Print Events

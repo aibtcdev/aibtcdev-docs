@@ -1,786 +1,260 @@
 ---
-description: Tools for interacting with Smart Wallets
+description: Tools for interacting with aibtc-agent-account contracts.
 ---
 
-# Smart Wallet Tools
+# Agent Account Tools
 
-Smart Wallet tools provide functionality for deploying, managing, and interacting with Smart Wallets, which are programmable wallets that can hold assets and interact with various contracts on the Stacks blockchain.
+Agent Account tools provide functionality for interacting with `aibtc-agent-account` contracts. These contracts act as a secure interface between an owner (user) and an agent, enabling controlled asset management and DAO participation.
 
 ## Tool Overview
 
-| Tool Name | Description | Key Features |
-|-----------|-------------|--------------|
-| `smartwallet_deploy_smart_wallet` | Deploy a new smart wallet | Owner assignment, DAO token linking |
-| `smartwallet_deposit_stx` | Deposit STX to a smart wallet | Transaction creation, balance update |
-| `smartwallet_withdraw_stx` | Withdraw STX from a smart wallet | Transaction creation, balance update |
-| `smartwallet_deposit_ft` | Deposit fungible tokens to a smart wallet | Token transfers, balance update |
-| `smartwallet_withdraw_ft` | Withdraw fungible tokens from a smart wallet | Token transfers, balance update |
-| `smartwallet_approve_asset` | Approve an asset for use with the smart wallet | Asset authorization |
-| `smartwallet_revoke_asset` | Revoke an asset from the smart wallet | Asset deauthorization |
-| `smartwallet_approve_dex` | Approve a DEX for use with the smart wallet | DEX authorization |
-| `smartwallet_revoke_dex` | Revoke a DEX from the smart wallet | DEX deauthorization |
-| `smartwallet_set_agent_can_buy_sell` | Set whether agent can buy/sell assets | Permission management |
-| `smartwallet_buy_asset` | Buy an asset from a DEX | Trading functionality |
-| `smartwallet_sell_asset` | Sell an asset to a DEX | Trading functionality |
-| `smartwallet_proxy_propose_action` | Propose an action to a DAO | Governance participation |
-| `smartwallet_proxy_create_proposal` | Create a proposal in a DAO | Governance participation |
-| `smartwallet_vote_on_action_proposal` | Vote on an action proposal | Governance participation |
-| `smartwallet_vote_on_core_proposal` | Vote on a core proposal | Governance participation |
-| `smartwallet_conclude_action_proposal` | Conclude an action proposal | Governance participation |
-| `smartwallet_conclude_core_proposal` | Conclude a core proposal | Governance participation |
-| `smartwallet_get_balance_stx` | Get the STX balance from a smart wallet | Current balance |
-| `smartwallet_is_approved_asset` | Check if an asset is approved in the smart wallet | Asset status |
-| `smartwallet_is_approved_dex` | Check if a DEX is approved in the smart wallet | DEX status |
-| `smartwallet_get_configuration` | Get the configuration of a smart wallet | Comprehensive wallet info |
+| Tool Name                              | Description                                                  |
+| -------------------------------------- | ------------------------------------------------------------ |
+| `agentaccount_deposit_stx`             | Deposit STX to an agent account.                             |
+| `agentaccount_deposit_ft`              | Deposit fungible tokens to an agent account.                 |
+| `agentaccount_approve_contract`        | Approve a contract for interaction (owner or permitted agent). |
+| `agentaccount_revoke_contract`         | Revoke a contract's approval (owner or permitted agent).     |
+| `agentaccount_create_action_proposal`  | Create a DAO action proposal (owner or permitted agent).     |
+| `agentaccount_vote_on_action_proposal` | Vote on a DAO action proposal (owner or permitted agent).    |
+| `agentaccount_veto_action_proposal`    | Veto a DAO action proposal (owner or permitted agent).       |
+| `agentaccount_conclude_action_proposal`| Conclude a DAO action proposal (owner or permitted agent).   |
+| `agentaccount_faktory_buy_asset`       | Buy an asset from a Faktory DEX (owner or permitted agent).  |
+| `agentaccount_faktory_sell_asset`      | Sell an asset to a Faktory DEX (owner or permitted agent).   |
+| `agentaccount_get_configuration`       | Get the configuration of an agent account.                   |
+| `agentaccount_is_approved_contract`    | Check if a contract is approved.                             |
 
 ## Tool Details
 
-### smartwallet_deploy_smart_wallet
+### `agentaccount_deposit_stx`
 
-Deploys a new smart wallet for a user.
+Deposits STX into an agent account. Can be called by the owner or the agent.
 
 **Input Parameters**:
-- `owner_address`: Stacks address of the wallet owner
-- `agent_address`: Stacks address of the agent
-- `dao_token_contract`: Contract principal of the DAO token
-- `dao_token_dex_contract` (optional): Contract principal of the DAO token DEX
+- `agent_account_contract`: Contract principal of the agent account.
+- `amount`: Amount of STX to deposit in microstacks.
 
 **Output**:
 ```json
 {
   "success": true,
-  "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
-  "smart_wallet_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG",
-  "owner": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
-  "agent": "ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG"
-}
-```
-
-**Example Prompt**:
-```
-Deploy a new smart wallet with the following details:
-- owner_address: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-- agent_address: ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG
-- dao_token_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
-- dao_token_dex_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token-dex
-```
-
-### smartwallet_deposit_stx
-
-Deposits STX into a smart wallet.
-
-**Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `amount`: Amount of STX to deposit in microstacks
-
-**Output**:
-```json
-{
-  "success": true,
-  "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
+  "txid": "0x1234...",
   "amount": 1000000,
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
+  "recipient": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-agent-account-..."
 }
 ```
 
-**Example Prompt**:
-```
-Deposit STX to a smart wallet with the following details:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- amount: 1000000
-```
+### `agentaccount_deposit_ft`
 
-### smartwallet_withdraw_stx
-
-Withdraws STX from a smart wallet. Only the owner can withdraw.
+Deposits fungible tokens into an agent account. Can be called by the owner or the agent. The token contract must be approved first.
 
 **Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `amount`: Amount of STX to withdraw in microstacks
+- `agent_account_contract`: Contract principal of the agent account.
+- `ft_contract`: Contract principal of the fungible token.
+- `amount`: Amount of tokens to deposit (in the token's smallest unit).
 
 **Output**:
 ```json
 {
   "success": true,
-  "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
-  "amount": 1000000,
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
+  "txid": "0x2345...",
+  "amount": 5000,
+  "token_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.some-token",
+  "recipient": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-agent-account-..."
 }
 ```
 
-**Example Prompt**:
-```
-Withdraw STX from a smart wallet with the following details:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- amount: 1000000
-```
+### `agentaccount_approve_contract`
 
-### smartwallet_deposit_ft
-
-Deposits fungible tokens into a smart wallet.
+Approves a contract for interaction. Can be called by the owner, or the agent if permitted.
 
 **Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `ft_contract`: Contract principal of the fungible token
-- `amount`: Amount of tokens to deposit
+- `agent_account_contract`: Contract principal of the agent account.
+- `contract_to_approve`: The principal of the contract to approve.
 
 **Output**:
 ```json
 {
   "success": true,
-  "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
-  "amount": 100,
-  "token_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token",
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
+  "txid": "0x3456...",
+  "approved_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-faktory-dex"
 }
 ```
 
-**Example Prompt**:
-```
-Deposit fungible tokens to a smart wallet with the following details:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- ft_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
-- amount: 100
-```
+### `agentaccount_revoke_contract`
 
-### smartwallet_withdraw_ft
-
-Withdraws fungible tokens from a smart wallet. Only the owner can withdraw.
+Revokes a contract's approval. Can be called by the owner, or the agent if permitted.
 
 **Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `ft_contract`: Contract principal of the fungible token
-- `amount`: Amount of tokens to withdraw
+- `agent_account_contract`: Contract principal of the agent account.
+- `contract_to_revoke`: The principal of the contract to revoke.
 
 **Output**:
 ```json
 {
   "success": true,
-  "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
-  "amount": 100,
-  "token_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token",
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
+  "txid": "0x4567...",
+  "revoked_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-faktory-dex"
 }
 ```
 
-**Example Prompt**:
-```
-Withdraw fungible tokens from a smart wallet with the following details:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- ft_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
-- amount: 100
-```
+### `agentaccount_create_action_proposal`
 
-### smartwallet_approve_asset
-
-Approves an asset for use with the smart wallet.
+Creates an action proposal via an approved voting contract. Can be called by the owner, or the agent if permitted.
 
 **Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `asset_contract`: Contract principal of the asset to approve
+- `agent_account_contract`: Contract principal of the agent account.
+- `voting_contract`: The principal of the action proposal voting contract.
+- `action_contract`: The principal of the action to be proposed.
+- `parameters`: `(buff 2048)` - ABI-encoded parameters for the action.
+- `memo`: `(optional (string-ascii 1024))` - An optional memo.
 
 **Output**:
 ```json
 {
   "success": true,
-  "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
-  "asset_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token",
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
+  "txid": "0x5678...",
+  "proposal_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.action-proposal-voting"
 }
 ```
 
-**Example Prompt**:
-```
-Approve an asset for use with the smart wallet:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- asset_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
-```
+### `agentaccount_vote_on_action_proposal`
 
-### smartwallet_revoke_asset
-
-Revokes an asset from the smart wallet.
+Votes on an action proposal. Can be called by the owner, or the agent if permitted.
 
 **Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `asset_contract`: Contract principal of the asset to revoke
+- `agent_account_contract`: Contract principal of the agent account.
+- `voting_contract`: The principal of the action proposal voting contract.
+- `proposal_id`: The ID of the proposal to vote on.
+- `vote`: `bool` - `true` for yes, `false` for no.
 
 **Output**:
 ```json
 {
   "success": true,
-  "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
-  "asset_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token",
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
+  "txid": "0x6789...",
+  "proposal_id": 1,
+  "vote": true
 }
 ```
 
-**Example Prompt**:
-```
-Revoke an asset from the smart wallet:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- asset_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
-```
+### `agentaccount_faktory_buy_asset`
 
-### smartwallet_approve_dex
-
-Approves a DEX for use with the smart wallet.
+Buys an asset from an approved Faktory DEX. Can be called by the owner, or the agent if permitted.
 
 **Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `dex_contract`: Contract principal of the DEX to approve
+- `agent_account_contract`: Contract principal of the agent account.
+- `faktory_dex_contract`: The principal of the Faktory DEX.
+- `asset_contract`: The principal of the asset to buy.
+- `amount`: The amount of the asset to buy.
 
 **Output**:
 ```json
 {
   "success": true,
-  "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
-  "dex_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token-dex",
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
+  "txid": "0x789a...",
+  "asset_bought": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.some-faktory-token",
+  "amount": 10000
 }
 ```
 
-**Example Prompt**:
-```
-Approve a DEX for use with the smart wallet:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- dex_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token-dex
-```
+### `agentaccount_get_configuration`
 
-### smartwallet_revoke_dex
-
-Revokes a DEX from the smart wallet.
+Gets the configuration of an agent account. This is a read-only tool.
 
 **Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `dex_contract`: Contract principal of the DEX to revoke
+- `agent_account_contract`: Contract principal of the agent account.
 
 **Output**:
 ```json
 {
-  "success": true,
-  "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
-  "dex_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token-dex",
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
-}
-```
-
-**Example Prompt**:
-```
-Revoke a DEX from the smart wallet:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- dex_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token-dex
-```
-
-### smartwallet_set_agent_can_buy_sell
-
-Sets whether the agent can buy/sell assets through the smart wallet.
-
-**Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `can_buy_sell`: Boolean indicating whether the agent can buy/sell (true/false)
-
-**Output**:
-```json
-{
-  "success": true,
-  "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
-  "can_buy_sell": true,
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
-}
-```
-
-**Example Prompt**:
-```
-Set whether the agent can buy/sell assets through the smart wallet:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- can_buy_sell: true
-```
-
-### smartwallet_buy_asset
-
-Buys an asset from a DEX through the smart wallet.
-
-**Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `dex_contract`: Contract principal of the DEX
-- `asset_contract`: Contract principal of the asset to buy
-- `amount`: Amount of the asset to buy
-
-**Output**:
-```json
-{
-  "success": true,
-  "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
-  "dex_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token-dex",
-  "asset_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token",
-  "amount": 100,
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
-}
-```
-
-**Example Prompt**:
-```
-Buy an asset from a DEX through the smart wallet:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- dex_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token-dex
-- asset_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
-- amount: 100
-```
-
-### smartwallet_sell_asset
-
-Sells an asset to a DEX through the smart wallet.
-
-**Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `dex_contract`: Contract principal of the DEX
-- `asset_contract`: Contract principal of the asset to sell
-- `amount`: Amount of the asset to sell
-
-**Output**:
-```json
-{
-  "success": true,
-  "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
-  "dex_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token-dex",
-  "asset_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token",
-  "amount": 100,
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
-}
-```
-
-**Example Prompt**:
-```
-Sell an asset to a DEX through the smart wallet:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- dex_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token-dex
-- asset_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
-- amount: 100
-```
-
-### smartwallet_proxy_propose_action
-
-Proposes an action to a DAO through the smart wallet.
-
-**Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `action_proposals_contract`: Contract principal of the action proposals extension
-- `action_contract`: Contract principal of the action to propose
-- `parameters`: Parameters for the action (format depends on the action)
-
-**Output**:
-```json
-{
-  "success": true,
-  "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
-  "action_proposals_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-action-proposals-v2",
-  "action_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-action-send-message",
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
-}
-```
-
-**Example Prompt**:
-```
-Propose an action to a DAO through the smart wallet:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- action_proposals_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-action-proposals-v2
-- action_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-action-send-message
-- parameters: "Hello, DAO!"
-```
-
-### smartwallet_proxy_create_proposal
-
-Creates a proposal in a DAO through the smart wallet.
-
-**Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `core_proposals_contract`: Contract principal of the core proposals extension
-- `proposal_contract`: Contract principal of the proposal to create
-- `dao_token_contract`: Contract principal of the DAO token
-
-**Output**:
-```json
-{
-  "success": true,
-  "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
-  "core_proposals_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-core-proposals-v2",
-  "proposal_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-add-extension",
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
-}
-```
-
-**Example Prompt**:
-```
-Create a proposal in a DAO through the smart wallet:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- core_proposals_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-core-proposals-v2
-- proposal_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-add-extension
-- dao_token_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
-```
-
-### smartwallet_vote_on_action_proposal
-
-Votes on an action proposal through the smart wallet.
-
-**Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `action_proposals_contract`: Contract principal of the action proposals extension
-- `proposal_id`: ID of the proposal to vote on
-- `vote`: Boolean indicating vote (true for yes, false for no)
-
-**Output**:
-```json
-{
-  "success": true,
-  "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
-  "action_proposals_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-action-proposals-v2",
-  "proposal_id": 123,
-  "vote": true,
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
-}
-```
-
-**Example Prompt**:
-```
-Vote on an action proposal through the smart wallet:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- action_proposals_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-action-proposals-v2
-- proposal_id: 123
-- vote: true
-```
-
-### smartwallet_vote_on_core_proposal
-
-Votes on a core proposal through the smart wallet.
-
-**Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `core_proposals_contract`: Contract principal of the core proposals extension
-- `proposal_contract`: Contract principal of the proposal
-- `vote`: Boolean indicating vote (true for yes, false for no)
-
-**Output**:
-```json
-{
-  "success": true,
-  "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
-  "core_proposals_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-core-proposals-v2",
-  "proposal_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-add-extension",
-  "vote": true,
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
-}
-```
-
-**Example Prompt**:
-```
-Vote on a core proposal through the smart wallet:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- core_proposals_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-core-proposals-v2
-- proposal_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-add-extension
-- vote: true
-```
-
-### smartwallet_conclude_action_proposal
-
-Concludes an action proposal through the smart wallet.
-
-**Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `action_proposals_contract`: Contract principal of the action proposals extension
-- `proposal_id`: ID of the proposal to conclude
-- `action_contract`: Contract principal of the action
-
-**Output**:
-```json
-{
-  "success": true,
-  "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
-  "action_proposals_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-action-proposals-v2",
-  "proposal_id": 123,
-  "action_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-action-send-message",
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
-}
-```
-
-**Example Prompt**:
-```
-Conclude an action proposal through the smart wallet:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- action_proposals_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-action-proposals-v2
-- proposal_id: 123
-- action_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-action-send-message
-```
-
-### smartwallet_conclude_core_proposal
-
-Concludes a core proposal through the smart wallet.
-
-**Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `core_proposals_contract`: Contract principal of the core proposals extension
-- `proposal_contract`: Contract principal of the proposal
-- `dao_token_contract`: Contract principal of the DAO token
-
-**Output**:
-```json
-{
-  "success": true,
-  "txid": "0x8912c9f4a79114eb4bdb153fc35fa3d3cddd3c681a855a8f2f27ab5799f552c0",
-  "core_proposals_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-core-proposals-v2",
-  "proposal_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-add-extension",
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
-}
-```
-
-**Example Prompt**:
-```
-Conclude a core proposal through the smart wallet:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- core_proposals_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-core-proposals-v2
-- proposal_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-add-extension
-- dao_token_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
-```
-
-### smartwallet_get_balance_stx
-
-Gets the STX balance from a smart wallet.
-
-**Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-
-**Output**:
-```json
-{
-  "balance": 1000000,
-  "readable": "1.0 STX",
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
-}
-```
-
-**Example Prompt**:
-```
-Get the STX balance from a smart wallet:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-```
-
-### smartwallet_is_approved_asset
-
-Checks if a specific asset is approved in the smart wallet.
-
-**Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `asset_contract`: Contract principal of the asset to check
-
-**Output**:
-```json
-{
-  "approved": true,
-  "asset_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token",
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
-}
-```
-
-**Example Prompt**:
-```
-Check if an asset is approved in the smart wallet:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- asset_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
-```
-
-### smartwallet_is_approved_dex
-
-Checks if a specific DEX is approved in the smart wallet.
-
-**Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-- `dex_contract`: Contract principal of the DEX to check
-
-**Output**:
-```json
-{
-  "approved": true,
-  "dex_contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token-dex",
-  "smart_wallet": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG"
-}
-```
-
-**Example Prompt**:
-```
-Check if a DEX is approved in the smart wallet:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-- dex_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token-dex
-```
-
-### smartwallet_get_configuration
-
-Gets the configuration of a smart wallet.
-
-**Input Parameters**:
-- `smart_wallet_contract`: Contract principal of the smart wallet
-
-**Output**:
-```json
-{
+  "account": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-agent-account-...",
   "owner": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   "agent": "ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG",
-  "dao_token": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token",
-  "sbtc_token": "STV9K21TBFAK4KNRJXF5DFP8N7W46G4V9RJ5XDY2.sbtc-token",
-  "approved_assets": [
-    "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token"
-  ],
-  "approved_dexes": [
-    "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token-dex"
-  ],
-  "agent_can_buy_sell": true,
-  "created_at": 12345
+  "sbtc": "STV9K21TBFAK4KNRJXF5DFP8N7W46G4V9RJ5XDY2.sbtc-token"
 }
 ```
 
-**Example Prompt**:
+### `agentaccount_is_approved_contract`
+
+Checks if a specific contract is approved in the agent account. This is a read-only tool.
+
+**Input Parameters**:
+- `agent_account_contract`: Contract principal of the agent account.
+- `contract_to_check`: The principal of the contract to check.
+
+**Output**:
+```json
+{
+  "approved": true,
+  "contract": "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-faktory-dex"
+}
 ```
-Get the configuration of a smart wallet:
-- smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-```
 
-## Smart Wallet Workflow Examples
-
-### Asset Management Workflow
-
-1. **Deploy a new smart wallet**
-   ```
-   Deploy a new smart wallet with the following details:
-   - owner_address: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM
-   - agent_address: ST2CY5V39NHDPWSXMW9QDT3HC3GD6Q6XX4CFRK9AG
-   - dao_token_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
-   - dao_token_dex_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token-dex
-   ```
-
-2. **Deposit STX to the smart wallet**
-   ```
-   Deposit STX to my smart wallet with the following details:
-   - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-   - amount: 1000000
-   ```
-
-3. **Approve an asset for use with the smart wallet**
-   ```
-   Approve a token for use with my smart wallet:
-   - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-   - asset_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
-   ```
-
-4. **Check if an asset is approved**
-   ```
-   Check if the token is approved for my smart wallet:
-   - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-   - asset_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
-   ```
-
-5. **Get the smart wallet configuration**
-   ```
-   Get the configuration of my smart wallet:
-   - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-   ```
-
-### DEX Trading Workflow
-
-1. **Approve a DEX for trading**
-   ```
-   Approve a DEX for use with my smart wallet:
-   - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-   - dex_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token-dex
-   ```
-
-2. **Allow agent to buy/sell assets**
-   ```
-   Allow my agent to buy/sell assets through my smart wallet:
-   - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-   - can_buy_sell: true
-   ```
-
-3. **Buy tokens from the DEX**
-   ```
-   Buy tokens from the DEX through my smart wallet:
-   - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-   - dex_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token-dex
-   - asset_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
-   - amount: 100
-   ```
-
-4. **Sell tokens to the DEX**
-   ```
-   Sell tokens to the DEX through my smart wallet:
-   - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-   - dex_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token-dex
-   - asset_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
-   - amount: 50
-   ```
+## Workflow Examples
 
 ### DAO Governance Workflow
 
-1. **Propose an action to the DAO**
-   ```
-   Propose an action to the DAO through my smart wallet:
-   - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-   - action_proposals_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-action-proposals-v2
-   - action_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-action-send-message
-   - parameters: "Hello, DAO!"
-   ```
+1.  **Approve the DAO's voting contract**
+    *Note: This can be done by the owner, or the agent if `agentCanApproveRevokeContracts` is `true`.*
+    ```
+    Approve a contract for my agent account:
+    - agent_account_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-agent-account-...
+    - contract_to_approve: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.action-proposal-voting
+    ```
 
-2. **Vote on an action proposal**
-   ```
-   Vote on an action proposal through my smart wallet:
-   - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-   - action_proposals_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-action-proposals-v2
-   - proposal_id: 123
-   - vote: true
-   ```
+2.  **Create a new proposal**
+    *Note: This can be done by the owner, or the agent if `agentCanUseProposals` is `true`.*
+    ```
+    Create an action proposal using my agent account:
+    - agent_account_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-agent-account-...
+    - voting_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.action-proposal-voting
+    - action_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.some-action
+    - parameters: 0x...
+    ```
 
-3. **Create a core proposal**
-   ```
-   Create a core proposal through my smart wallet:
-   - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-   - core_proposals_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-core-proposals-v2
-   - proposal_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-add-extension
-   - dao_token_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
-   ```
+3.  **Vote on the proposal**
+    ```
+    Vote on an action proposal using my agent account:
+    - agent_account_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-agent-account-...
+    - voting_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.action-proposal-voting
+    - proposal_id: 1
+    - vote: true
+    ```
 
-4. **Vote on a core proposal**
-   ```
-   Vote on a core proposal through my smart wallet:
-   - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-   - core_proposals_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-core-proposals-v2
-   - proposal_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-add-extension
-   - vote: true
-   ```
+### DEX Trading Workflow
 
-5. **Conclude a proposal**
-   ```
-   Conclude a core proposal through my smart wallet:
-   - smart_wallet_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-smart-wallet-ST1PQ-PGZGM-ST2CY-RK9AG
-   - core_proposals_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-core-proposals-v2
-   - proposal_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.proposal-add-extension
-   - dao_token_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-token
-   ```
+1.  **Approve the DEX contract**
+    *Note: This can be done by the owner, or the agent if `agentCanApproveRevokeContracts` is `true`.*
+    ```
+    Approve a DEX for my agent account:
+    - agent_account_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-agent-account-...
+    - contract_to_approve: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-faktory-dex
+    ```
+
+2.  **Buy an asset**
+    *Note: This can only be done if the owner has enabled trading for the agent by calling `set-agent-can-buy-sell-assets(true)` directly on the contract.*
+    ```
+    Buy an asset using my agent account:
+    - agent_account_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-agent-account-...
+    - faktory_dex_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.aibtc-faktory-dex
+    - asset_contract: ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM.some-faktory-token
+    - amount: 10000
+    ```
 
 ## Error Handling
 
-All Smart Wallet tools return standardized error responses when operations fail:
+The Agent Account tools return standardized error responses based on the contract's error codes:
 
 ```json
 {
   "success": false,
-  "error": "Unauthorized access",
-  "code": 9000
+  "error": "Caller is not the owner.",
+  "code": "u1100"
 }
 ```
 
-Common error codes:
-- 9000: Unauthorized access (caller is not authorized)
-- 9001: Unknown asset (asset is not in the approved list)
-- 9002: Operation failed (general operation failure)
-- 9003: Buy/sell not allowed (agent does not have permission to buy/sell)
-- 9004: Smart wallet not found
-- 9005: Asset already approved
-- 9006: DEX not approved
-- 9007: Insufficient balance
+| Error Code | Constant                    | Description                               |
+| ---------- | --------------------------- | ----------------------------------------- |
+| `u1100`    | `ERR_CALLER_NOT_OWNER`      | Caller is not the owner.                  |
+| `u1101`    | `ERR_CONTRACT_NOT_APPROVED` | The target contract is not approved.      |
+| `u1103`    | `ERR_OPERATION_NOT_ALLOWED` | The caller cannot perform this action.    |
