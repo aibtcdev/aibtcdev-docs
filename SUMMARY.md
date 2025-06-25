@@ -45,11 +45,6 @@
 - [Error Handling](aibtc-cache/error-handling.md)
 - [Utilities](aibtc-cache/utilities.md)
 
-## Prompting
-
-- [Action Proposal Prompts](prompting/action-proposal-prompts.md)
-- [Agent Account Prompts](prompting/agent-account-prompts.md)
-
 ## Links
 
 - [Common Terms](introduction/common-terms.md)
@@ -69,7 +64,6 @@
 - [Cache Service Documentation](templates/cache-service-documentation.md)
 - [Cache Endpoint Documentation](templates/cache-endpoint-documentation.md)
 - [Agent Tool Documentation](templates/agent-tool-documentation.md)
-- [Prompting Documentation](templates/prompting-documentation.md)
 
 ### Example Implementations
 

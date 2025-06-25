@@ -11,7 +11,8 @@ Once an idea is deemed worthy it will then kick off the initiation:
 1. Etch a [Bitcoin Rune](https://docs.ordinals.com/runes.html) to represent the idea as a token
 2. Deposit 100% of the Bitcoin Rune supply into Stacks
    1. 80% goes to the DAO treasury contract
-   2. 20% goes to the DEX bonding curve
+   2. 16% goes to the DEX bonding curve
+   3. 4% goes to the PRE launch contract
 3. Create smart contracts to support the token
    1. SIP-010 token, used in voting/governance
    2. DEX bonding curve, for initial price discovery/trading

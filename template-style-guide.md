@@ -19,6 +19,7 @@ This style guide provides guidelines for maintaining consistency, readability, a
 ### Required Elements
 
 1. **YAML Frontmatter**: Always include at the very top of every document
+
    ```yaml
    ---
    description: Concise one-line description of the document's purpose
@@ -26,10 +27,12 @@ This style guide provides guidelines for maintaining consistency, readability, a
    ```
 
 2. **Title (H1)**: Every document must have exactly one H1 title
+
    - Must be the first content after the frontmatter
    - Should clearly describe the document's purpose
 
 3. **Introduction**: 1-2 paragraphs immediately following the title
+
    - Explain what the document covers and why it matters
    - Identify the target audience
 
@@ -44,28 +47,34 @@ This style guide provides guidelines for maintaining consistency, readability, a
 Most documentation should include these sections in this order:
 
 1. **Key Features**: List 3-5 most important features with brief explanations
+
    - Use bold for feature names
    - Keep explanations to one line each
 
 2. **Overview Table**: When applicable, provide a summary table of components
+
    - Use consistent column headers across similar documents
    - Align text left, numbers center
 
 3. **Visual Diagrams**: Include Mermaid diagrams for complex workflows
+
    - Keep diagrams focused on key interactions
    - Always include an explanation paragraph below each diagram
    - Different diagram types are acceptable based on content needs
 
 4. **Details Section**: Organize detailed information in logical sections
+
    - Use consistent heading levels (H2 for major sections, H3 for subsections)
    - Group related information together
 
 5. **Examples**: Provide practical, real-world examples
+
    - Include complete code snippets that can be copied and used
    - Explain what the example demonstrates
    - Use consistent formatting within code blocks
 
 6. **Error Handling/Troubleshooting**: Document common errors and solutions
+
    - Use tables for error codes and resolutions
    - Include practical troubleshooting steps
 
@@ -124,18 +133,9 @@ Most documentation should include these sections in this order:
 ### Agent Tool Documentation
 
 - Focus on how agents should use the tool
-- Include example prompts that work with the tool
 - Document all input parameters and expected outputs
 - Provide complete workflow examples
 - Include troubleshooting information
-
-### Prompting Documentation
-
-- Use realistic, complete prompt examples
-- Explain all placeholders and variables
-- Include expected outputs
-- Provide troubleshooting for common issues
-- Show complete workflows with multiple prompts
 
 ## Table Formatting Standards
 
