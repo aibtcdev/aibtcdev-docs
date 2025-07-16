@@ -14,6 +14,24 @@ This style guide provides guidelines for maintaining consistency, readability, a
 - **Accessibility**: Make documentation approachable for all skill levels
 - **Maintainability**: Structure content to be easily updated
 
+## Documentation Categories
+
+Our documentation is organized into four categories based on user goals. When creating or updating documentation, ensure it fits into one of these categories:
+
+1.  **Tutorials**: Learning-oriented guides designed to get a developer from zero to a first successful outcome.
+2.  **How-To Guides**: Goal-oriented "recipes" that provide step-by-step instructions to solve a specific problem.
+3.  **Reference**: Information-oriented technical descriptions of the system and its components (APIs, contracts, etc.).
+4.  **Explanation**: Understanding-oriented discussions that clarify high-level concepts and design decisions.
+
+## Rules for Automated Documentation Auditing
+
+To ensure documentation stays synchronized with the source code, an AI agent can perform audits based on the following rules:
+
+- **Rule 1 (File Mapping):** Source code artifacts map directly to documentation files in the `docs/reference/` directory. A change in a source file implies its corresponding documentation file needs review.
+  - Example: A change in `aibtc-contracts/dao-extensions/dao-charter.md` requires a review of `docs/reference/smart-contracts/dao-extensions/dao-charter.md`.
+- **Rule 2 (Metadata):** The YAML frontmatter in each reference document is critical for tracking. The `version` property in the documentation must correspond to the version of the contract or tool it documents.
+- **Rule 3 (Template Usage):** When creating a new reference document, the appropriate template from the `/templates` directory must be used to ensure all required machine-readable fields are present.
+
 ## Document Structure Standards
 
 ### Required Elements

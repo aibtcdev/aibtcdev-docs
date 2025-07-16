@@ -125,6 +125,10 @@ flowchart TD
 - **[Security Feature 2]**: [Explanation]
 - **[Security Risk 1]**: [Explanation and mitigation]
 
+## Related How-To Guides
+
+- **[How to Propose a Vote]**: [Link to the relevant how-to guide]
+
 ## Related Contracts
 
 - **[Related Contract 1]**: [Brief description of relationship]
