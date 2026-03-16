@@ -1,3 +1,5 @@
+> **This repository has been archived.** Development has moved to [docs](https://github.com/aibtcdev/docs).
+
 ---
 description: "AI Meets Bitcoin: Build, trade, explore, and govern—all on-chain."
 ---
